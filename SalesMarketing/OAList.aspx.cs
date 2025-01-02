@@ -83,7 +83,66 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
         }
         if (e.CommandName == "RowView")
         {
-            Response.Redirect("Pdf_CustomerPurchase.aspx?Pono=" + objcls.encrypt(e.CommandArgument.ToString()) + " ");
+
+            string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SP_GetSubProductsByProjectCode", connection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Pono", e.CommandArgument.ToString());
+                    connection.Open();
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        DataTable dt = new DataTable();
+                        adapter.Fill(dt);
+
+                        ViewState["FinalExcel"] = dt;
+
+                        connection.Close();
+
+                        Response.Clear();
+                        DateTime now = DateTime.Today;
+                        string filename = "ProjectDetails_" + now.ToString("dd-MM-yyyy"); 
+                        Response.AddHeader("content-disposition", "attachment; filename=" + filename + ".xls");
+                        Response.ContentType = "application/vnd.ms-excel";
+
+                        StringWriter stringWrite = new StringWriter();
+                        HtmlTextWriter htmlWrite = new HtmlTextWriter(stringWrite);
+
+                        htmlWrite.Write("<table border='1' cellpadding='5' cellspacing='0'>");
+
+                        htmlWrite.Write("<tr>");
+                        foreach (DataColumn column in dt.Columns)
+                        {
+                            htmlWrite.Write("<th style='background-color: orange; color: white; text-align: center; vertical-align: middle;'>");
+                            htmlWrite.Write(column.ColumnName);
+                            htmlWrite.Write("</th>");
+                        }
+                        htmlWrite.Write("</tr>");
+
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            htmlWrite.Write("<tr>");
+                            foreach (DataColumn column in dt.Columns)
+                            {
+                                htmlWrite.Write("<td style='text-align: center; vertical-align: middle;'>");
+                                htmlWrite.Write(row[column].ToString());
+                                htmlWrite.Write("</td>");
+                            }
+                            htmlWrite.Write("</tr>");
+                        }
+
+                        htmlWrite.Write("</table>");
+
+                        Response.Write(stringWrite.ToString());
+                        Response.End();
+                    }
+                }
+            }
+
+            // Response.Redirect("Pdf_CustomerPurchase.aspx?Pono=" + objcls.encrypt(e.CommandArgument.ToString()) + " ");
             // Response.Write("<script>window.open ('Pdf_Quotation.aspx?Quotationno=" + (e.CommandArgument.ToString()) + "','_blank');</script>");
         }
     }
@@ -165,7 +224,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             string company = txtCustomerName.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_CustomerPurchaseOrderHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE CP.IsDeleted = 0  CustomerName='" + txtCustomerName.Text + "' ORDER BY CP.ID DESC", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE CP.IsDeleted = 0 AND CustomerName='" + txtCustomerName.Text + "' ORDER BY CP.ID DESC", Cls_Main.Conn);
             sad.Fill(dt);
             GVPurchase.EmptyDataText = "Not Records Found";
             GVPurchase.DataSource = dt;
@@ -194,7 +253,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT * FROM [tbl_OrderAcceptanceHdr] where " + "SerialNo like @Search + '%' and IsDeleted=0";
+                com.CommandText = "SELECT * FROM [tbl_OrderAcceptanceHdr] where " + "ProjectCode like @Search + '%' and IsDeleted=0";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -204,7 +263,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                 {
                     while (sdr.Read())
                     {
-                        countryNames.Add(sdr["SerialNo"].ToString());
+                        countryNames.Add(sdr["ProjectCode"].ToString());
                     }
                 }
                 con.Close();
@@ -219,7 +278,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             string Cpono = txtCpono.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName AND SerialNo='" + Cpono + "' ORDER BY CP.ID DESC", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT Distinct * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName Where ProjectCode='" + Cpono + "' ORDER BY CP.ID DESC", Cls_Main.Conn);
             sad.Fill(dt);
             GVPurchase.EmptyDataText = "Not Records Found";
             GVPurchase.DataSource = dt;
@@ -244,7 +303,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                     {
                         string Quono = txtCpono.Text;
                         DataTable dt = new DataTable();
-                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where SerialNo = '" + Quono + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
+                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where ProjectCode = '" + Quono + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
                         sad.Fill(dt);
                         GVPurchase.EmptyDataText = "Not Records Found";
                         GVPurchase.DataSource = dt;
@@ -283,7 +342,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                         string Quono = txtCpono.Text;
 
                         DataTable dt = new DataTable();
-                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE (CP.CreatedBy='" + Session["UserCode"].ToString() + "' OR CP.UserName='" + Session["UserCode"].ToString() + "') AND  SerialNo = '" + Quono + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
+                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE (CP.CreatedBy='" + Session["UserCode"].ToString() + "' OR CP.UserName='" + Session["UserCode"].ToString() + "') AND  ProjectCode = '" + Quono + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
                         sad.Fill(dt);
                         GVPurchase.EmptyDataText = "Not Records Found";
                         GVPurchase.DataSource = dt;
@@ -339,7 +398,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT DISTINCT GSTNo FROM [tbl_OrderAcceptanceHdr] where " + "GSTNo like @Search + '%' and IsDeleted=0";
+                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_OrderAcceptanceHdr] where " + "ProjectName like @Search + '%' and IsDeleted=0";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -349,7 +408,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                 {
                     while (sdr.Read())
                     {
-                        countryNames.Add(sdr["GSTNo"].ToString());
+                        countryNames.Add(sdr["ProjectName"].ToString());
                     }
                 }
                 con.Close();
@@ -365,7 +424,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             string GST = txtGST.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where GSTNo = '" + GST + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where ProjectName = '" + GST + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
             sad.Fill(dt);
             GVPurchase.EmptyDataText = "Not Records Found";
             GVPurchase.DataSource = dt;
