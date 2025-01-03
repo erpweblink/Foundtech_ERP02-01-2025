@@ -40,7 +40,8 @@ public partial class Production_Packing : System.Web.UI.Page
                 " COUNT(*) AS TotalRecords, SUM(CAST(OutwardQty AS INT)) AS OutwardQty " +
                 " FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo=PD.JobNo " +
                 " Where PD.Stage = 'Packaging' and PD.Status < 2 " +
-                " GROUP BY  PD.ProjectCode, PD.ProjectName, PH.CustomerName");
+                " GROUP BY  PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+                " ORDER BY PD.ProjectCode desc ");
         MainGridLoad.DataSource = Dt;
         MainGridLoad.DataBind();
 

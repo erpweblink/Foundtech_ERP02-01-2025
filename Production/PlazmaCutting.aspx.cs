@@ -43,7 +43,8 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
         " FROM[tbl_ProductionDTLS] AS PD " +
         " INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
         " WHERE PD.Stage = 'PlazmaCutting' AND PD.Status < 2 " +
-        " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName");
+        " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+        " ORDER BY PD.ProjectCode desc ");
         MainGridLoad.DataSource = Dt;
         MainGridLoad.DataBind();
 
