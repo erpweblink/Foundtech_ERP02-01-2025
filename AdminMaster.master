@@ -181,12 +181,12 @@
                             <div class="collapse" id="maps">
                                 <ul class="nav nav-collapse">
                                     <li>
-                                        <a href="../Production/ProductionList.aspx">
+                                        <a href="../Production/ProdListGPWise.aspx">
                                             <span class="sub-item">Production List</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="../Production/Drawing.aspx">
+                                        <a href="../Production/DrawingDetails.aspx">
                                             <span class="sub-item">Drawing</span>
                                         </a>
                                     </li>

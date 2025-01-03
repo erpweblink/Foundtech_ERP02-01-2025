@@ -36,9 +36,13 @@ public partial class Production_Painting : System.Web.UI.Page
     //Fill GridView
     private void FillGrid()
     {
-        DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo=PD.JobNo where PD.Stage='Painting' AND CONVERT(bigint,ISNULL(TotalQTY,0))>=CONVERT(bigint,ISNULL(OutwardQTY,0)) AND PD.Status<2");
-        GVPurchase.DataSource = Dt;
-        GVPurchase.DataBind();
+        DataTable Dt = Cls_Main.Read_Table("SELECT  PD.ProjectCode, PD.ProjectName, PH.CustomerName, " +
+         " COUNT(*) AS TotalRecords, SUM(CAST(OutwardQty AS INT)) AS OutwardQty " +
+         " FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo=PD.JobNo " +
+         " Where PD.Stage = 'Painting' and PD.Status < 2 " +
+         " GROUP BY  PD.ProjectCode, PD.ProjectName, PH.CustomerName");
+        MainGridLoad.DataSource = Dt;
+        MainGridLoad.DataBind();
     }
 
 
@@ -51,15 +55,19 @@ public partial class Production_Painting : System.Web.UI.Page
 
             DivWarehouse.Visible = true;
             divtable.Visible = false;
-            int rowIndex = Convert.ToInt32(e.CommandArgument);
-            GridViewRow row = GVPurchase.Rows[rowIndex];
+            string rowIndex = e.CommandArgument.ToString();
+            GridViewRow row = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
+            GridView gvPurchase = (GridView)row.FindControl("GVPurchase");
+
             hdnJobid.Value = ((Label)row.FindControl("jobno")).Text;
             GetRequestdata(hdnJobid.Value);
         }
         if (e.CommandName == "Edit")
         {
-            int rowIndex = Convert.ToInt32(e.CommandArgument);
-            GridViewRow row = GVPurchase.Rows[rowIndex];
+            string rowIndex = e.CommandArgument.ToString();
+            GridViewRow row = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
+            GridView gvPurchase = (GridView)row.FindControl("GVPurchase");
+
             string Total_Price = ((Label)row.FindControl("Total_Price")).Text;
             string InwardQty = ((Label)row.FindControl("InwardQty")).Text;
             string OutwardQty = ((Label)row.FindControl("OutwardQty")).Text;
@@ -91,8 +99,10 @@ public partial class Production_Painting : System.Web.UI.Page
         }
         if (e.CommandName == "DrawingFiles")
         {
-            int rowIndex = Convert.ToInt32(e.CommandArgument);
-            GridViewRow row = GVPurchase.Rows[rowIndex];
+            string rowIndex = e.CommandArgument.ToString();
+            GridViewRow row = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
+            GridView gvPurchase = (GridView)row.FindControl("GVPurchase");
+
             string JobNo = ((Label)row.FindControl("jobno")).Text;
             DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_DrawingDetails AS PD where JobNo='" + JobNo + "'");
             if (Dt.Rows.Count > 0)
@@ -111,7 +121,7 @@ public partial class Production_Painting : System.Web.UI.Page
 
     protected void GVPurchase_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
-        GVPurchase.PageIndex = e.NewPageIndex;
+        //GVPurchase.PageIndex = e.NewPageIndex;
         FillGrid();
     }
 
@@ -458,6 +468,70 @@ public partial class Production_Painting : System.Web.UI.Page
             }
         }
     }
+
+    private static DataTable GetData(string query)
+    {
+        string strConnString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+        using (SqlConnection con = new SqlConnection(strConnString))
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandText = query;
+                using (SqlDataAdapter sda = new SqlDataAdapter())
+                {
+                    cmd.Connection = con;
+                    sda.SelectCommand = cmd;
+                    using (DataSet ds = new DataSet())
+                    {
+                        DataTable dt = new DataTable();
+                        sda.Fill(dt);
+                        return dt;
+                    }
+                }
+            }
+        }
+    }
+
+    protected void MainGridLoad_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        try
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                Label ProjectCode = e.Row.FindControl("lblProjectCode") as Label;
+                GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
+
+                if (GVPurchase == null)
+                {
+
+                    return;
+                }
+
+                if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
+                {
+                    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
+                        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+                        " WHERE Pd.Stage = 'Painting' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
+                    if (data != null && data.Rows.Count > 0)
+                    {
+                        GVPurchase.DataSource = data;
+                        GVPurchase.DataBind();
+                    }
+                    else
+                    {
+                        GVPurchase.Visible = false;
+                    }
+                }
+
+            }
+        }
+        catch
+        {
+            throw;
+        }
+
+    }
+
 }
 
 

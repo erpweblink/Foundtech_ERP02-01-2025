@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/AdminMaster.master" AutoEventWireup="true" CodeFile="Painting.aspx.cs" Inherits="Production_Painting" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/AdminMaster.master" AutoEventWireup="true" CodeFile="DrawingDetails.aspx.cs" Inherits="Production_DrawingDetails" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
@@ -14,7 +14,7 @@
                     },
                 },
             }).then(function () {
-                window.location.href = "Painting.aspx";
+                window.location.href = "Drawing.aspx";
             });
         };
         function DeleteResult(msg) {
@@ -27,11 +27,71 @@
                     },
                 },
             }).then(function () {
-                window.location.href = "Painting.aspx";
+                window.location.href = "Drawing.aspx";
             });
         };
     </script>
+    <link href="../Content1/css/styles.css" rel="stylesheet" />
 
+    <script type="text/javascript">
+        $(function () {
+            $("[id*=ddlRMC]").select2();
+
+        });
+        function addNewDiv() {
+            // Get the count of file input fields to create unique names
+            var fileCount = $('input[type="file"]').length;
+
+            // Append new file input and remark fields to the container
+            $('#container').append(`
+        <div class="col-md-6 mb-3">
+            <input type="hidden" name="HFfile1" />
+            <label class="form-label LblStyle" style="font-weight: bold;">Drawing Attachment:</label>
+            <input type="file" name="fileUpload_${fileCount}" class="form-control" />
+            <label style="color: red;"></label>
+        </div>
+        <div class="col-md-6 col-12 mb-3">
+            <label class="form-label" style="font-weight: bold;">Drawing Remarks:</label>
+            <textarea class="form-control" name="fileRemarks_${fileCount}" placeholder="Enter Drawing Remark"></textarea>
+        </div>
+                                   `);
+        }
+    </script>
+    <style>
+        span.select2.select2-container.select2-container--default.select2-container--focus {
+            max-width: 100% !important;
+        }
+
+        .select2-container {
+            box-sizing: border-box;
+            display: inline-block;
+            margin: 0;
+            position: relative;
+            vertical-align: middle;
+            width: 100% !important;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <%--    <style>
+        .completionList {
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            z-index: 10000 !important; /* Ensure it's higher than the modal */
+            position: absolute; /* Ensure the list is positioned correctly */
+        }
+
+        .itemHighlighted {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .listItem {
+            padding: 5px;
+            cursor: pointer;
+        }
+    </style>--%>
     <style>
         .spancls {
             color: #5d5656 !important;
@@ -66,7 +126,7 @@
             text-align: center !important;
         }
 
-        .completionList {
+        /*.completionList {
             border: solid 1px Gray;
             border-radius: 5px;
             margin: 0px;
@@ -82,7 +142,7 @@
 
         .itemHighlighted {
             background-color: #ADD6FF;
-        }
+        }*/
 
         .reqcls {
             color: red;
@@ -220,10 +280,9 @@
             $(this).closest("tr").next().remove();
         });
     </script>
-
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <form id="form1" runat="server">
+    <form id="form1" runat="server" enctype="multipart/form-data">
         <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
         </asp:ToolkitScriptManager>
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -233,131 +292,108 @@
                     <br />
                     <br />
                     <br />
-                    <div class="row">
-                        <div class="col-9 col-md-10">
-                            <h4 class="mt-4 "><b>PAINTING LIST</b></h4>
-                        </div>
-                    </div>
-                    <hr />
-                    <div>
-                        <div id="divtable" runat="server">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <div class="table">
-                                            <br />
-                                            <asp:GridView ID="MainGridLoad" runat="server" CellPadding="4" DataKeyNames="ProjectCode" Width="100%"
-                                                OnRowDataBound="MainGridLoad_RowDataBound" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
-                                                <Columns>
-                                                    <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
-                                                        <ItemTemplate>
-                                                            <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
-                                                            <asp:Panel ID="pnlOrders" runat="server" Style="display: none">
-                                                                <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,JobNo,Remark,OutwardQTY" Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
-                                                                    OnRowCommand="GVPurchase_RowCommand" OnPageIndexChanging="GVPurchase_PageIndexChanging" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
-                                                                    <Columns>
-                                                                        <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Job No.">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="jobno" runat="server" Text='<%#Eval("JobNo")%>'></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Customer Name">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="CustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Delivery Date">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="Deliverydate" runat="server" Text='<%# Eval("Deliverydate", "{0:dd-MM-yyyy}") %>'></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Total Quantity">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="Total_Price" runat="server" Text='<%#Eval("TotalQTY")%>'></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
+                    <div id="divtable" runat="server">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-9 col-md-10">
+                                        <h4 class="mt-4 "><b>DRAWING LIST</b></h4>
+                                    </div>
+                                </div>
+                                <hr />
 
-                                                                        <asp:TemplateField HeaderText="In Qty" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="InwardQty" runat="server" Text='<%#Eval("InwardQTY")%>'></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Out Qty" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="OutwardQty" runat="server" Text='<%#Eval("OutwardQTY")%>'></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
+                                <%--OnRowCommand="GVPurchase_RowCommand"--%>
+                                <div class="table-responsive">
+                                    <div class="table">
+                                        <br />
 
-                                                                        <asp:TemplateField HeaderText="Revert Qty" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="RevertQty" runat="server" Text='<%#Eval("RevertQty")%>'></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Drawings" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Container.DataItemIndex %>'><i class="fas fa-folder-open"  style="font-size: 26px; color:black; "></i></i></asp:LinkButton>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center">
-                                                                            <ItemTemplate>
-                                                                                <asp:Label ID="Status" runat="server" Text='<%#Eval("Status")%>'></asp:Label>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="ACTION" HeaderStyle-Width="120">
-                                                                            <ItemTemplate>
-                                                                                <asp:LinkButton runat="server" ID="btnEdit" ToolTip="Add Quantity and Send" CausesValidation="false" CommandName="Edit" CommandArgument='<%# Container.DataItemIndex %>'><i class="fas fa-plus-square"  style="font-size: 26px; color:blue; "></i></i></asp:LinkButton>&nbsp;
-                                                       <%-- <asp:LinkButton ID="btnwarrehouse" runat="server" Height="27px" ToolTip="Metarial Request to Store" CausesValidation="false" CommandName="Rowwarehouse" CommandArgument='<%# Container.DataItemIndex %>'><i class='fas fa-cart-plus' style='font-size:24px;color: #212529;'></i></asp:LinkButton>--%>
-                                                                            </ItemTemplate>
-                                                                        </asp:TemplateField>
-                                                                    </Columns>
-                                                                </asp:GridView>
-                                                            </asp:Panel>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="Label8" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Project Code" HeaderStyle-CssClass="gvhead">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lblProjectCode" runat="server" Text='<%#Eval("ProjectCode")%>'></asp:Label>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Customer Name">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lblCustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Project Name" HeaderStyle-CssClass="gvhead">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lblProjectName" runat="server" Text='<%#Eval("ProjectName")%>'></asp:Label>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Drawing Sub Products" HeaderStyle-CssClass="gvhead">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lblSubProdCount" runat="server" Text='<%#Eval("TotalRecords")%>'></asp:Label>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Outward Qty" HeaderStyle-CssClass="gvhead">
-                                                        <ItemTemplate>
-                                                            <asp:Label ID="lblQtyCount" runat="server" Text='<%#Eval("OutwardQty")%>'></asp:Label>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                </Columns>
-                                            </asp:GridView>
-                                        </div>
+                                        <asp:GridView ID="MainGridLoad" runat="server" CellPadding="4" DataKeyNames="ProjectCode" Width="100%"
+                                            OnRowDataBound="MainGridLoad_RowDataBound" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
+                                            <Columns>
+                                                <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
+                                                    <ItemTemplate>
+                                                        <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
+                                                        <asp:Panel ID="pnlOrders" runat="server" Style="display: none">
+                                                            <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,JobNo,Remark,OutwardQTY" Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
+                                                                OnRowCommand="GVPurchase_RowCommand" OnPageIndexChanging="GVPurchase_PageIndexChanging" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
+                                                                <Columns>
+                                                                    <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Job No.">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="jobno" runat="server" Text='<%#Eval("JobNo")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Customer Name" Visible="false">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="CustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Product Name" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="Productname" runat="server" Text='<%#Eval("RowMaterial")%>' Enabled="false"></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Delivery Date">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="Deliverydate" runat="server" Text='<%# Eval("DeleveryDate", "{0:dd-MM-yyyy}") %>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Total Quantity">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="Total_Price" runat="server" Text='<%#Eval("TotalQty")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="ACTION" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="120">
+                                                                        <ItemTemplate>
+                                                                            <asp:LinkButton runat="server" ID="btnEdit" ToolTip="Add Quantity and Send" CausesValidation="false" CommandName="Edit" CommandArgument='<%# Eval("JobNo") %>'><i class="fas fa-plus-square"  style="font-size: 26px; color:blue; "></i></i></asp:LinkButton>&nbsp;
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                </Columns>
+                                                            </asp:GridView>
+                                                        </asp:Panel>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="Label8" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Project Code" HeaderStyle-CssClass="gvhead">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblProjectCode" runat="server" Text='<%#Eval("ProjectCode")%>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Customer Name">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblCustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Project Name" HeaderStyle-CssClass="gvhead">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblProjectName" runat="server" Text='<%#Eval("ProjectName")%>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Drawing Sub Products" HeaderStyle-CssClass="gvhead">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblSubProdCount" runat="server" Text='<%#Eval("TotalRecords")%>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Outward Qty" HeaderStyle-CssClass="gvhead">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblQtyCount" runat="server" Text='<%#Eval("OutwardQty")%>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
 
                     <asp:Button ID="btnhist" runat="server" Style="display: none" />
                     <asp:ModalPopupExtender ID="ModalPopupHistory" runat="server" TargetControlID="btnhist"
@@ -385,42 +421,46 @@
                                                 <asp:TextBox ID="txtcustomername" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
                                             </div>
                                             <div class="col-md-6 col-12 mb-3">
+                                                <asp:Label ID="Label12" runat="server" Font-Bold="true" CssClass="form-label">Product Name:</asp:Label>
+                                                <asp:TextBox ID="txtProductname" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                            </div>
+                                            <div class="col-md-6 col-12 mb-3">
                                                 <asp:Label ID="Label6" runat="server" Font-Bold="true" CssClass="form-label">Total Quantity:</asp:Label>
                                                 <asp:TextBox ID="txttotalqty" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
                                             </div>
-
-                                            <div class="col-md-6 col-12 mb-3">
-                                                <asp:Label ID="Label16" runat="server" Font-Bold="true" CssClass="form-label">Inward QTY:</asp:Label>
-                                                <asp:TextBox ID="txtinwardqty" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
-                                            </div>
-                                            <div class="col-md-6 col-12 mb-3">
-                                                <asp:Label ID="Label12" runat="server" Font-Bold="true" CssClass="form-label">Pending QTY:</asp:Label>
-                                                <asp:TextBox ID="txtpending" CssClass="form-control" placeholder="Enter Pending QTY" TextMode="Number" runat="server"></asp:TextBox>
-                                            </div>
                                             <div class="col-md-6 col-12 mb-3">
                                                 <asp:Label ID="Label2" runat="server" Font-Bold="true" CssClass="form-label">Outward QTY:</asp:Label>
-                                                <asp:TextBox ID="txtoutwardqty" CssClass="form-control" placeholder="Enter Outward QTY" TextMode="Number" runat="server"></asp:TextBox>
+                                                <asp:TextBox ID="txtoutwardqty" CssClass="form-control" ReadOnly="true" placeholder="Enter Outward QTY" TextMode="Number" runat="server"></asp:TextBox>
                                             </div>
+                                            <%--   <div class="col-md-6 mb-3" runat="server" visible="false">
+                                                <asp:HiddenField ID="HFfile1" runat="server" />
+                                                <asp:Label ID="lblCompanyPan" runat="server" Font-Bold="true" CssClass="form-label LblStyle">Drawing Attachment:</asp:Label>
+                                                <asp:FileUpload ID="fileUpload" CssClass="form-control" runat="server" />
+                                                <asp:Label ID="lblPath1" runat="server" Text="" ForeColor="Red"></asp:Label>
+                                            </div>--%>
 
+                                            <div id="container" class="row">
+                                                <!-- Existing divs will go here -->
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <asp:Button ID="btnAdd" runat="server" Text="Add Drawing" OnClientClick="addNewDiv(); return false;" CssClass="btn btn-primary" />
+                                            </div>
+                                            <div class="col-md-6 col-12 mb-3">
+                                            </div>
                                             <div class="col-md-6 col-12 mb-3">
                                                 <asp:Label ID="Label3" runat="server" Font-Bold="true" CssClass="form-label">Remarks:</asp:Label>
                                                 <asp:TextBox ID="txtRemarks" CssClass="form-control" placeholder="Enter Remark" TextMode="MultiLine" runat="server"></asp:TextBox>
                                             </div>
-
-                                            <div class="col-md-12" style="margin-top: 18px; text-align: center">
-
-                                                <asp:LinkButton runat="server" ID="btnsendtoback" class="btn btn-warning" OnClick="btnsendtoback_Click">
-                                                        <span class="btn-label">
-                                                            <i class="fa fa-arrow-left"></i>
-                                                        </span>
-                                                       Save & Back
-                                                </asp:LinkButton>
-                                                <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click">
+                                            <div class="col-md-12">
+                                                <div class="col-md-4"></div>
+                                                <div class="col-md-3" style="margin-top: 18px">
+                                                    <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click">
                                                         <span class="btn-label">
                                                             <i class="fa fa-check"></i>
                                                         </span>
                                                        Save & Next
-                                                </asp:LinkButton>
+                                                    </asp:LinkButton>
+                                                </div>
                                             </div>
 
                                         </div>
@@ -432,62 +472,9 @@
                         </div>
                     </asp:Panel>
 
-                    <%--    <asp:Button ID="Button1" runat="server" Style="display: none" />
-                    <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="Button1"
-                        PopupControlID="PopupHistoryDetail1" OkControlID="Closepophistory1" />
 
-                    <asp:Panel ID="PopupHistoryDetail1" runat="server" CssClass="modelprofile1" Style="display: none">
-                        <div class="row container">
-                            <div class="col-md-4"></div>
-                            <div class="col-md-8">
-                                <div class="profilemodel2">
-                                    <div class="headingcls">
-                                        <h4 class="modal-title">Warehouse Material Request Page
-                                    <button type="button" id="Closepophistory1" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button></h4>
-                                    </div>
 
-                                    <br />
-                                    <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">
-                                        <div class="row">
-                                            <div class="col-md-6 col-12 mb-3">
-                                                <asp:Label ID="Label1" runat="server" Font-Bold="true" CssClass="form-label">Stock/RM:</asp:Label>
 
-                                                <asp:TextBox ID="txtRM" CssClass="form-control" runat="server"></asp:TextBox>
-                                            </div>
-                                            <div class="col-md-6 col-12 mb-3">
-                                                <asp:Label ID="Label7" runat="server" Font-Bold="true" CssClass="form-label">Available Quantity:</asp:Label>
-
-                                                <asp:TextBox ID="txtAvilableqty" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
-                                            </div>
-                                            <div class="col-md-6 col-12 mb-3">
-                                                <asp:Label ID="Label8" runat="server" Font-Bold="true" CssClass="form-label">Size:</asp:Label>
-
-                                                <asp:TextBox ID="txtsize" CssClass="form-control" runat="server"></asp:TextBox>
-                                            </div>
-
-                                            <div class="col-md-6 col-12 mb-3">
-                                                <asp:Label ID="Label9" runat="server" Font-Bold="true" CssClass="form-label">Description:</asp:Label>
-
-                                                <asp:TextBox ID="txtDescription" CssClass="form-control" TextMode="MultiLine" runat="server"></asp:TextBox>
-                                            </div>
-                                            <div class="col-md-6 col-12 mb-3">
-                                                <asp:Label ID="Label10" runat="server" Font-Bold="true" CssClass="form-label">Need QTY:</asp:Label>
-
-                                                <asp:TextBox ID="txtneedqty" CssClass="form-control" TextMode="Number" runat="server"></asp:TextBox>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="col-md-3" style="margin-top: 18px">
-                                                    <asp:Button ID="Button2" OnClick="btnsave_Click" ToolTip="Save" CssClass="form-control btn btn-outline-primary m-2" runat="server" Text="Save" />
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </asp:Panel>--%>
 
                     <div class="row container" id="DivWarehouse" runat="server" visible="false">
                         <div class="col-md-12">
@@ -602,8 +589,8 @@
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="Status" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
                                                         <ItemTemplate>
-                                                            <asp:Label ID="Label4" runat="server" Visible='<%# Eval("Status").ToString() == "1" ? true : false %>' Font-Bold="true" ForeColor="orange" Text="Pending"></asp:Label>
-                                                            <asp:Label ID="Label5" runat="server" Visible='<%# Eval("Status").ToString() == "2" ? true : false %>' Font-Bold="true" ForeColor="Green" Text="Approved"></asp:Label>
+                                                            <asp:Label ID="Label14" runat="server" Visible='<%# Eval("Status").ToString() == "1" ? true : false %>' Font-Bold="true" ForeColor="orange" Text="Pending"></asp:Label>
+                                                            <asp:Label ID="Label15" runat="server" Visible='<%# Eval("Status").ToString() == "2" ? true : false %>' Font-Bold="true" ForeColor="Green" Text="Approved"></asp:Label>
                                                             <asp:Label ID="Label16" runat="server" Visible='<%# Eval("Status").ToString() == "3" ? true : false %>' Font-Bold="true" ForeColor="Green" Text="Rejected"></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
@@ -621,48 +608,13 @@
                             </div>
                         </div>
                     </div>
-
-                    <asp:Button ID="Button1" runat="server" Style="display: none" />
-                    <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="Button1"
-                        PopupControlID="PopupHistoryDetail1" OkControlID="Closepophistory1" />
-
-                    <asp:Panel ID="PopupHistoryDetail1" runat="server" CssClass="modelprofile1">
-                        <div class="row container">
-                            <div class="col-md-3"></div>
-                            <div class="col-md-6">
-                                <div class="profilemodel2">
-                                    <div class="headingcls">
-                                        <h4 class="modal-title">Drawing Files
-                     <button type="button" id="Closepophistory1" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button>
-                                        </h4>
-                                    </div>
-                                    <br />
-                                    <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">
-                                        <div class="row">
-
-                                            <asp:Repeater ID="rptImages" runat="server">
-                                                <ItemTemplate>
-                                                    <div class="col-md-6 col-12 mb-3">
-                                                        <div class="image-item">
-                                                            <!-- Display the image -->
-                                                            <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("ID") %>' ToolTip="Open File" />
-                                                            <asp:Label ID="Label14" runat="server" Font-Bold="true" Text="Drawing Name : " CssClass="form-label"></asp:Label>
-                                                            <asp:Label ID="Label4" runat="server" Font-Bold="true" Text='<%# Eval("Remark") %>' CssClass="form-label"></asp:Label>
-                                                        </div>
-                                                    </div>
-                                                </ItemTemplate>
-                                            </asp:Repeater>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="col-md-3"></div>
-                        </div>
-                    </asp:Panel>
             </ContentTemplate>
+            <Triggers>
+                <asp:PostBackTrigger ControlID="btnSendtopro" />
+
+            </Triggers>
         </asp:UpdatePanel>
     </form>
 
 </asp:Content>
+

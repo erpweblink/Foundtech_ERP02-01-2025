@@ -2,35 +2,35 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
-     <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
- <script>     
-     function SuccessResult(msg) {
-         swal("Success", msg, {
-             icon: "success",
-             buttons: {
-                 confirm: {
-                     className: "btn btn-success",
-                     TimeRanges: "5000",
-                 },
-             },
-         }).then(function () {
-             window.location.href = "Dispatch.aspx";
-         });
-     };
-     function DeleteResult(msg) {
-         swal("Delete!", msg, {
-             icon: "error",
-             buttons: {
-                 confirm: {
-                     className: "btn btn-danger",
-                     TimeRanges: "5000",
-                 },
-             },
-         }).then(function () {
-             window.location.href = "Dispatch.aspx";
-         });
-     };
- </script> 
+    <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script>     
+        function SuccessResult(msg) {
+            swal("Success", msg, {
+                icon: "success",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-success",
+                        TimeRanges: "5000",
+                    },
+                },
+            }).then(function () {
+                window.location.href = "Dispatch.aspx";
+            });
+        };
+        function DeleteResult(msg) {
+            swal("Delete!", msg, {
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-danger",
+                        TimeRanges: "5000",
+                    },
+                },
+            }).then(function () {
+                window.location.href = "Dispatch.aspx";
+            });
+        };
+    </script>
 
     <style>
         .spancls {
@@ -208,6 +208,20 @@
             }
         }
     </style>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $("[src*=plus]").live("click", function () {
+            $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>")
+            $(this).attr("src", "../Content1/img/minus.png");
+        });
+        $("[src*=minus]").live("click", function () {
+            $(this).attr("src", "../Content1/img/plus.png");
+            $(this).closest("tr").next().remove();
+        });
+    </script>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <form id="form1" runat="server">
@@ -233,65 +247,106 @@
                                 <div class="table-responsive">
                                     <div class="table">
                                         <br />
-
-                                        <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,JobNo,Remark,OutwardQTY" PageSize="10" AllowPaging="true" Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
-                                            OnRowCommand="GVPurchase_RowCommand" OnPageIndexChanging="GVPurchase_PageIndexChanging" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
+                                        <asp:GridView ID="MainGridLoad" runat="server" CellPadding="4" DataKeyNames="ProjectCode" Width="100%"
+                                            OnRowDataBound="MainGridLoad_RowDataBound" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
                                             <Columns>
-                                                <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center">
+                                                <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                        <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
+                                                        <asp:Panel ID="pnlOrders" runat="server" Style="display: none">
+                                                            <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,JobNo,Remark,OutwardQTY" Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
+                                                                OnRowCommand="GVPurchase_RowCommand" OnPageIndexChanging="GVPurchase_PageIndexChanging" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
+                                                                <Columns>
+                                                                    <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Job No.">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="jobno" runat="server" Text='<%#Eval("JobNo")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Customer Name">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="CustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Delivery Date">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="Deliverydate" runat="server" Text='<%# Eval("Deliverydate", "{0:dd-MM-yyyy}") %>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Total Quantity">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="Total_Price" runat="server" Text='<%#Eval("TotalQTY")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+
+                                                                    <asp:TemplateField HeaderText="In Qty" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="InwardQty" runat="server" Text='<%#Eval("InwardQTY")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Out Qty" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="OutwardQty" runat="server" Text='<%#Eval("OutwardQTY")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Revert Qty" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="RevertQty" runat="server" Text='<%#Eval("RevertQty")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Drawings" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Container.DataItemIndex %>'><i class="fas fa-folder-open"  style="font-size: 26px; color:black; "></i></i></asp:LinkButton>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="Status" runat="server" Text='<%#Eval("Status")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="ACTION" HeaderStyle-Width="120">
+                                                                        <ItemTemplate>
+                                                                            <asp:LinkButton runat="server" ID="btnEdit" ToolTip="Add Quantity and Send" CausesValidation="false" CommandName="Edit" CommandArgument='<%# Container.DataItemIndex %>'><i class="fas fa-plus-square"  style="font-size: 26px; color:blue; "></i></i></asp:LinkButton>&nbsp;
+                                                     <%--   <asp:LinkButton ID="btnwarrehouse" runat="server" Height="27px" ToolTip="Metarial Request to Store" CausesValidation="false" CommandName="Rowwarehouse" CommandArgument='<%# Container.DataItemIndex %>'><i class='fas fa-cart-plus' style='font-size:24px;color: #212529;'></i></asp:LinkButton>--%>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                </Columns>
+                                                            </asp:GridView>
+                                                        </asp:Panel>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Job No.">
+                                                <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="jobno" runat="server" Text='<%#Eval("JobNo")%>'></asp:Label>
+                                                        <asp:Label ID="Label8" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Project Code" HeaderStyle-CssClass="gvhead">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblProjectCode" runat="server" Text='<%#Eval("ProjectCode")%>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Customer Name">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="CustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
+                                                        <asp:Label ID="lblCustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Delivery Date">
+                                                <asp:TemplateField HeaderText="Project Name" HeaderStyle-CssClass="gvhead">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="Deliverydate" runat="server" Text='<%# Eval("Deliverydate", "{0:dd-MM-yyyy}") %>'></asp:Label>
+                                                        <asp:Label ID="lblProjectName" runat="server" Text='<%#Eval("ProjectName")%>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Total Quantity">
+                                                <asp:TemplateField HeaderText="Drawing Sub Products" HeaderStyle-CssClass="gvhead">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="Total_Price" runat="server" Text='<%#Eval("TotalQuantity")%>'></asp:Label>
+                                                        <asp:Label ID="lblSubProdCount" runat="server" Text='<%#Eval("TotalRecords")%>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-
-                                                <asp:TemplateField HeaderText="In Qty" ItemStyle-HorizontalAlign="Center">
+                                                <asp:TemplateField HeaderText="Outward Qty" HeaderStyle-CssClass="gvhead">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="InwardQty" runat="server" Text='<%#Eval("InwardQTY")%>'></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Out Qty" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <asp:Label ID="OutwardQty" runat="server" Text='<%#Eval("OutwardQTY")%>'></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Revert Qty" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <asp:Label ID="RevertQty" runat="server" Text='<%#Eval("RevertQty")%>'></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Drawings" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Container.DataItemIndex %>'><i class="fas fa-folder-open"  style="font-size: 26px; color:black; "></i></i></asp:LinkButton>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center">
-                                                    <ItemTemplate>
-                                                        <asp:Label ID="Status" runat="server" Text='<%#Eval("Status")%>'></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="ACTION" HeaderStyle-Width="120">
-                                                    <ItemTemplate>
-                                                        <asp:LinkButton runat="server" ID="btnEdit" ToolTip="Add Quantity and Send" CausesValidation="false" CommandName="Edit" CommandArgument='<%# Container.DataItemIndex %>'><i class="fas fa-plus-square"  style="font-size: 26px; color:blue; "></i></i></asp:LinkButton>&nbsp;
-                                                     <%--   <asp:LinkButton ID="btnwarrehouse" runat="server" Height="27px" ToolTip="Metarial Request to Store" CausesValidation="false" CommandName="Rowwarehouse" CommandArgument='<%# Container.DataItemIndex %>'><i class='fas fa-cart-plus' style='font-size:24px;color: #212529;'></i></asp:LinkButton>--%>
+                                                        <asp:Label ID="lblQtyCount" runat="server" Text='<%#Eval("OutwardQty")%>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
