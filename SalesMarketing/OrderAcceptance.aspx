@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/AdminMaster.master" EnableEventValidation="false" AutoEventWireup="true" CodeFile="OrderAcceptance.aspx.cs" Inherits="SalesMarketing_OrderAcceptance" %>
 
 
-  <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
@@ -191,7 +191,7 @@
 
                                         <asp:TextBox ID="txtserialno" runat="server" ForeColor="red" ValidationGroup="1" AutoComplete="off" CssClass="form-control"></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator5" ValidationGroup="1" runat="server" ControlToValidate="txtserialno"
-                                            ForeColor="Red" ErrorMessage="* Please Enter OA No" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                            ForeColor="Red" ErrorMessage="Please Enter OA No" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
 
                                     </div>
 
@@ -259,16 +259,18 @@
                                         <asp:TextBox ID="txtremark" CssClass="form-control" placeholder="Enter Remarks" TextMode="MultiLine" runat="server"></asp:TextBox>
                                     </div>
                                 </div>
-                                 <div class="row">
+                                <div class="row">
                                     <div class="col-md-6 col-12 mb-3">
-                                        <asp:Label ID="Label40" runat="server" Font-Bold="true" CssClass="form-label">Project Code:</asp:Label>
-
-                                        <asp:TextBox ID="txtprojectCode"  CssClass="form-control" placeholder="Enter Code" runat="server"></asp:TextBox>
+                                        <asp:Label ID="Label40" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Project Code:</asp:Label>
+                                        <asp:TextBox ID="txtprojectCode" CssClass="form-control" placeholder="Enter Code" runat="server"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator7" ValidationGroup="1" runat="server" ControlToValidate="txtprojectCode"
+                                            ForeColor="Red" ErrorMessage="Please Enter Project Code" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                     </div>
                                     <div class="col-md-6 col-12 mb-3">
-                                        <asp:Label ID="Label41" runat="server" Font-Bold="true" CssClass="form-label">Project Name:</asp:Label>
-
+                                        <asp:Label ID="Label41" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Project Name:</asp:Label>
                                         <asp:TextBox ID="txtprojectName" CssClass="form-control" placeholder="Enter Project" runat="server"></asp:TextBox>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator8" ValidationGroup="1" runat="server" ControlToValidate="txtprojectName"
+                                            ForeColor="Red" ErrorMessage="Please Enter Project Name" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                     </div>
                                 </div>
 
@@ -281,7 +283,7 @@
                                     </div>
                                     <div class="col-md-6 col-12 mb-3">
                                         <div class="col-md-2" style="margin-top: 18px">
-                                            <asp:Button ID="uploadfile" runat="server" CausesValidation="false" AutoPostBack="true" Text="Upload" CssClass="form-control btn btn-outline-primary m-2" OnClick="uploadfile_Click" Style="padding: 4px 11px 4px 11px !important"/>
+                                            <asp:Button ID="uploadfile" runat="server" CausesValidation="false" AutoPostBack="true" Text="Upload" CssClass="form-control btn btn-outline-primary m-2" OnClick="uploadfile_Click" Style="padding: 4px 11px 4px 11px !important" />
                                         </div>
                                     </div>
                                 </div>
@@ -300,7 +302,7 @@
                                         <h5>Products</h5>
                                     </div>
                                 </div>
-                                  <br />
+                                <br />
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="table-responsive">
@@ -337,119 +339,119 @@
                                                             <asp:TextBox ID="txtTotalWeight" CssClass="form-control" placeholder="Total Weight" runat="server" ReadOnly="true"></asp:TextBox>
                                                         </td>
                                                         <td>
-                                                            <asp:Button ID="btnAddMore" CausesValidation="false" OnClick="btnAddMore_Click" Style="padding: 4px 4px 4px 4px !important ;" CssClass="btn btn-primary btn-sm btncss" runat="server" Text="Add More" />
+                                                            <asp:Button ID="btnAddMore" CausesValidation="false" OnClick="btnAddMore_Click" Style="padding: 4px 4px 4px 4px !important;" CssClass="btn btn-primary btn-sm btncss" runat="server" Text="Add More" />
                                                         </td>
                                                     </tr>
                                                 </table>
                                             </div>
-                                        
-                                                <%--<div class="row" id="divdtls">--%>
-                                                <div class="table-responsive text-center">
-                                                    <asp:GridView ID="dgvMachineDetails" runat="server" CellPadding="4" DataKeyNames="id" Width="100%" CssClass="display table table-striped table-hover"
-                                                        OnRowEditing="dgvMachineDetails_RowEditing" OnRowDataBound="dgvMachineDetails_RowDataBound" AutoGenerateColumns="false">
-                                                        <Columns>
-                                                            <asp:TemplateField HeaderText="Sr.No" ItemStyle-Width="20" HeaderStyle-CssClass="gvhead">
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
-                                                                    <asp:Label ID="lblid" runat="Server" Text='<%# Eval("id") %>' Visible="false" />
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Product" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
-                                                                <EditItemTemplate>
-                                                                    <asp:TextBox Text='<%# Eval("Productname") %>' CssClass="form-control" Width="230px" ID="Product" runat="server"></asp:TextBox>
-                                                                </EditItemTemplate>
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblproduct" runat="Server" Text='<%# Eval("Productname") %>' />
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
 
-                                                            <asp:TemplateField HeaderText="Description" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
-                                                                <EditItemTemplate>
-                                                                    <asp:TextBox Text='<%# Eval("Description") %>' CssClass="form-control" ID="Description" Width="200px" runat="server"></asp:TextBox>
-                                                                </EditItemTemplate>
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblDescription" runat="Server" Text='<%# Eval("Description") %>' />
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Quantity" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
-                                                                <EditItemTemplate>
-                                                                    <asp:TextBox Text='<%# Eval("Quantity") %>' CssClass="form-control" ID="Quantity" OnTextChanged="txtQuantity_TextChanged" AutoPostBack="true" Width="100px" runat="server"></asp:TextBox>
-                                                                </EditItemTemplate>
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblQuantity" runat="Server" Text='<%# Eval("Quantity") %>' />
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Length" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
-                                                                <EditItemTemplate>
-                                                                    <asp:TextBox Text='<%# Eval("Length") %>' CssClass="form-control" ID="Length"  Width="100px" runat="server"></asp:TextBox>
-                                                                </EditItemTemplate>
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblLength" runat="Server" Text='<%# Eval("Length") %>' />
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Weight" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
-                                                                <EditItemTemplate>
-                                                                    <asp:TextBox Text='<%# Eval("Weight") %>' CssClass="form-control" OnTextChanged="txtQuantity_TextChanged" AutoPostBack="true" ID="Weight" Width="100px" runat="server"></asp:TextBox>
-                                                                </EditItemTemplate>
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblWeight" runat="Server" Text='<%# Eval("Weight") %>' />
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Total Weight" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
-                                                                <EditItemTemplate>
-                                                                    <asp:TextBox Text='<%# Eval("TotalWeight") %>' ReadOnly="true" CssClass="form-control" ID="TotalWeight" Width="100px" runat="server"></asp:TextBox>
-                                                                </EditItemTemplate>
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblTotalWeight" runat="Server" Text='<%# Eval("TotalWeight") %>' />
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
+                                            <%--<div class="row" id="divdtls">--%>
+                                            <div class="table-responsive text-center">
+                                                <asp:GridView ID="dgvMachineDetails" runat="server" CellPadding="4" DataKeyNames="id" Width="100%" CssClass="display table table-striped table-hover"
+                                                    OnRowEditing="dgvMachineDetails_RowEditing" OnRowDataBound="dgvMachineDetails_RowDataBound" AutoGenerateColumns="false">
+                                                    <Columns>
+                                                        <asp:TemplateField HeaderText="Sr.No" ItemStyle-Width="20" HeaderStyle-CssClass="gvhead">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                                <asp:Label ID="lblid" runat="Server" Text='<%# Eval("id") %>' Visible="false" />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Product" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                            <EditItemTemplate>
+                                                                <asp:TextBox Text='<%# Eval("Productname") %>' CssClass="form-control" Width="230px" ID="Product" runat="server"></asp:TextBox>
+                                                            </EditItemTemplate>
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblproduct" runat="Server" Text='<%# Eval("Productname") %>' />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
 
-                                                            <asp:TemplateField HeaderText="Action" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
-                                                                <ItemTemplate>
-                                                                    <%--<asp:LinkButton ID="btn_edit" runat="server" Height="27px" CausesValidation="false" CommandName="RowEdit" CommandArgument='<%#Eval("ID")%>'><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>--%>
+                                                        <asp:TemplateField HeaderText="Description" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                            <EditItemTemplate>
+                                                                <asp:TextBox Text='<%# Eval("Description") %>' CssClass="form-control" ID="Description" Width="200px" runat="server"></asp:TextBox>
+                                                            </EditItemTemplate>
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblDescription" runat="Server" Text='<%# Eval("Description") %>' />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Quantity" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                            <EditItemTemplate>
+                                                                <asp:TextBox Text='<%# Eval("Quantity") %>' CssClass="form-control" ID="Quantity" OnTextChanged="txtQuantity_TextChanged" AutoPostBack="true" Width="100px" runat="server"></asp:TextBox>
+                                                            </EditItemTemplate>
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblQuantity" runat="Server" Text='<%# Eval("Quantity") %>' />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Length" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                            <EditItemTemplate>
+                                                                <asp:TextBox Text='<%# Eval("Length") %>' CssClass="form-control" ID="Length" Width="100px" runat="server"></asp:TextBox>
+                                                            </EditItemTemplate>
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblLength" runat="Server" Text='<%# Eval("Length") %>' />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Weight" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                            <EditItemTemplate>
+                                                                <asp:TextBox Text='<%# Eval("Weight") %>' CssClass="form-control" OnTextChanged="txtQuantity_TextChanged" AutoPostBack="true" ID="Weight" Width="100px" runat="server"></asp:TextBox>
+                                                            </EditItemTemplate>
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblWeight" runat="Server" Text='<%# Eval("Weight") %>' />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Total Weight" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                            <EditItemTemplate>
+                                                                <asp:TextBox Text='<%# Eval("TotalWeight") %>' ReadOnly="true" CssClass="form-control" ID="TotalWeight" Width="100px" runat="server"></asp:TextBox>
+                                                            </EditItemTemplate>
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblTotalWeight" runat="Server" Text='<%# Eval("TotalWeight") %>' />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
 
-                                                                    <asp:LinkButton ID="btn_edit" CausesValidation="false" Text="Edit" runat="server" CommandName="Edit"><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>
+                                                        <asp:TemplateField HeaderText="Action" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                            <ItemTemplate>
+                                                                <%--<asp:LinkButton ID="btn_edit" runat="server" Height="27px" CausesValidation="false" CommandName="RowEdit" CommandArgument='<%#Eval("ID")%>'><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>--%>
 
-                                                                    <asp:LinkButton runat="server" ID="lnkbtnDelete" OnClick="lnkbtnDelete_Click" ToolTip="Delete" OnClientClick="Javascript:return confirm('Are you sure to Delete?')" CausesValidation="false"><i class="fa fa-trash" style="font-size:24px"></i></asp:LinkButton>
-                                                                </ItemTemplate>
-                                                                <EditItemTemplate>
-                                                                    <asp:LinkButton ID="gv_update" OnClick="gv_update_Click" Text="Update" CausesValidation="false" CssClass="btn btn-primary btn-sm" runat="server"></asp:LinkButton>&nbsp;
+                                                                <asp:LinkButton ID="btn_edit" CausesValidation="false" Text="Edit" runat="server" CommandName="Edit"><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>
+
+                                                                <asp:LinkButton runat="server" ID="lnkbtnDelete" OnClick="lnkbtnDelete_Click" ToolTip="Delete" OnClientClick="Javascript:return confirm('Are you sure to Delete?')" CausesValidation="false"><i class="fa fa-trash" style="font-size:24px"></i></asp:LinkButton>
+                                                            </ItemTemplate>
+                                                            <EditItemTemplate>
+                                                                <asp:LinkButton ID="gv_update" OnClick="gv_update_Click" Text="Update" CausesValidation="false" CssClass="btn btn-primary btn-sm" runat="server"></asp:LinkButton>&nbsp;
                                                         <asp:LinkButton ID="gv_cancel" OnClick="gv_cancel_Click" CausesValidation="false" Text="Cancel" CssClass="btn btn-primary btn-sm " runat="server"></asp:LinkButton>
-                                                                </EditItemTemplate>
-                                                            </asp:TemplateField>
-                                                        </Columns>
-                                                    </asp:GridView>
-                                                </div>
+                                                            </EditItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                </asp:GridView>
                                             </div>
-                                            <br />
                                         </div>
-                                    </div>
-                                    <%--Grid View End--%>
-
-
-                                    <br />
-                                    <div class="row">
-                                        <div class="col-md-4"></div>
-                                        <div class="col-6 col-md-2">
-                                            <asp:Button ID="btnsave" OnClick="btnsave_Click" ValidationGroup="1" CssClass="form-control btn btn-outline-primary m-2" runat="server" Text="Save" />
-                                        </div>
-                                        <div class="col-6 col-md-2">
-                                            <asp:Button ID="btncancel" OnClick="btncancel_Click" CssClass="form-control btn btn-outline-danger m-2" runat="server" Text="Cancel" />
-                                        </div>
-                                        <div class="col-md-4"></div>
-                                    </div>
-                                    <div>
-                                        <br />
-                                        <br />
                                         <br />
                                     </div>
-
                                 </div>
+                                <%--Grid View End--%>
+
+
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-6 col-md-2">
+                                        <asp:Button ID="btnsave" OnClick="btnsave_Click" ValidationGroup="1" CssClass="form-control btn btn-outline-primary m-2" runat="server" Text="Save" />
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <asp:Button ID="btncancel" OnClick="btncancel_Click" CssClass="form-control btn btn-outline-danger m-2" runat="server" Text="Cancel" />
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>
+                                <div>
+                                    <br />
+                                    <br />
+                                    <br />
+                                </div>
+
                             </div>
-                            <asp:HiddenField ID="hhd" runat="server" />
-                            <asp:HiddenField ID="hhdstate" runat="server" />
                         </div>
+                        <asp:HiddenField ID="hhd" runat="server" />
+                        <asp:HiddenField ID="hhdstate" runat="server" />
                     </div>
+                </div>
             </ContentTemplate>
             <Triggers>
                 <asp:PostBackTrigger ControlID="btnsave" />

@@ -131,9 +131,9 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <asp:Label ID="Label2" runat="server" Font-Bold="true" Text="Customer P.O. :"></asp:Label>
+                                <asp:Label ID="Label2" runat="server" Font-Bold="true" Text="Project Code:"></asp:Label>
                                 <div style="margin-top: 14px;">
-                                    <asp:TextBox ID="txtCpono" CssClass="form-control" placeholder="Search Customer P.O." runat="server" OnTextChanged="txtCpono_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                    <asp:TextBox ID="txtCpono" CssClass="form-control" placeholder="Search by Project Code" runat="server" OnTextChanged="txtCpono_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
                                     <asp:AutoCompleteExtender ID="AutoCompleteExtender2" runat="server" CompletionListCssClass="completionList"
                                         CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
                                         CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCponoList"
@@ -142,9 +142,9 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <asp:Label ID="Label3" runat="server" Font-Bold="true" Text="GST No. :"></asp:Label>
+                                <asp:Label ID="Label3" runat="server" Font-Bold="true" Text="Project Name:"></asp:Label>
                                 <div style="margin-top: 14px;">
-                                    <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search GSt No. " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                    <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search by Project Name " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please Enter GST No."
                                         ControlToValidate="txtGST" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                     <asp:AutoCompleteExtender ID="AutoCompleteExtender3" runat="server" CompletionListCssClass="completionList"
@@ -194,9 +194,10 @@
                                                 <asp:Label ID="Pono" runat="server" Text='<%#Eval("Pono")%>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Customer PO No." HeaderStyle-CssClass="gvhead">
+
+                                        <asp:TemplateField HeaderText="Project Code." HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
-                                                <asp:Label ID="SerialNo" runat="server" Text='<%#Eval("SerialNo")%>'></asp:Label>
+                                                <asp:Label ID="projectCode" runat="server" Text='<%#Eval("ProjectCode")%>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Customer Name" HeaderStyle-CssClass="gvhead">
@@ -204,19 +205,10 @@
                                                 <asp:Label ID="CustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="GST No." HeaderStyle-CssClass="gvhead">
+
+                                        <asp:TemplateField HeaderText="Project Name" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
-                                                <asp:Label ID="gstno" runat="server" Text='<%#Eval("GSTNo")%>'></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="OA Date" HeaderStyle-CssClass="gvhead">
-                                            <ItemTemplate>
-                                                <asp:Label ID="PoDate" runat="server" Text='<%# Eval("PoDate", "{0:dd-MM-yyyy}") %>'></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Total Price" HeaderStyle-CssClass="gvhead">
-                                            <ItemTemplate>
-                                                <asp:Label ID="Total_Price" runat="server" Text='<%#Eval("Total_Price")%>'></asp:Label>
+                                                <asp:Label ID="projectName" runat="server" Text='<%# Eval("ProjectName") %>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="User Name" HeaderStyle-CssClass="gvhead">
@@ -224,12 +216,12 @@
                                                 <asp:Label ID="username" runat="server" Text='<%#Eval("Username1")%>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="PO File" ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
+                                        <%--  <asp:TemplateField HeaderText="PO File" ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
                                                 <asp:ImageButton ID="ImageButtonfile5" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile5_Click" CommandArgument='<%# Eval("id") %>' ToolTip="Open File" />
 
                                             </ItemTemplate>
-                                        </asp:TemplateField>
+                                        </asp:TemplateField>--%>
                                         <%--     <asp:TemplateField HeaderText="Status" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
                                                 <asp:Label ID="username" runat="server" Text='<%#Eval("Username1")%>'></asp:Label>
@@ -241,8 +233,7 @@
 
 
                                                 <asp:LinkButton ID="btnDelete" runat="server" Height="27px" ToolTip="Delete" CausesValidation="false" CommandName="RowDelete" Visible='<%# Eval("Status").ToString() == "0" ? true : false %>' OnClientClick="Javascript:return confirm('Are you sure to Delete?')" CommandArgument='<%#Eval("ID")%>'><i class='fas fa-trash' style='font-size:24px;color: red;'></i></asp:LinkButton>
-                                                <asp:LinkButton runat="server" ID="btnpdfview" ToolTip="View Order Acceptance PDF" CommandName="RowView" CommandArgument='<%# Eval("Pono") %>'><i class="fas fa-file-pdf"  style="font-size: 26px; color:red; "></i></i></asp:LinkButton>
-
+                                                <asp:LinkButton runat="server" ID="btnpdfview" ToolTip="View Order Acceptance PDF" CommandName="RowView" CommandArgument='<%# Eval("Pono") %>'><i class="fa fa-table"  style="font-size: 26px; color:red; "></i></i></asp:LinkButton>
                                                 <asp:LinkButton runat="server" ID="btnSendtopro" ToolTip="Send to Production" CommandName="Sendtoproduction" Visible='<%# Eval("Status").ToString() == "0" ? true : false %>' OnClientClick="Javascript:return confirm('Are you sure to send order acceptance to production....?')" CommandArgument='<%# Eval("ID") %>'><i class="fa fa-arrow-circle-right"  style="font-size: 26px; color:green; "></i></i></asp:LinkButton>
                                             </ItemTemplate>
                                         </asp:TemplateField>
@@ -253,8 +244,15 @@
                         </div>
                     </div>
                 </div>
+
             </ContentTemplate>
+            <Triggers>
+                <asp:PostBackTrigger ControlID="GVPurchase" />
+            </Triggers>
+
         </asp:UpdatePanel>
+
     </form>
+
 </asp:Content>
 

@@ -108,11 +108,9 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
             DateTime ffff3 = Convert.ToDateTime(Dt.Rows[0]["Deliverydate"].ToString());
             txtreferquotation.Text = Dt.Rows[0]["Referquotation"].ToString();
             txtremark.Text = Dt.Rows[0]["Remarks"].ToString();
-            //txtagainstNumber.SelectedItem.Text = Dt.Rows[0]["AgainstNumber"].ToString();
-
-
-
-
+            txtemail.Text = Dt.Rows[0]["EmailId"].ToString();
+            txtprojectCode.Text = Dt.Rows[0]["ProjectCode"].ToString();
+            txtprojectName.Text = Dt.Rows[0]["ProjectName"].ToString();
         }
     }
 
@@ -134,7 +132,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
             for (int i = 0; i < DTCOMP.Rows.Count; i++)
             {
-                Dt_Product.Rows.Add(count, DTCOMP.Rows[i]["Productname"].ToString(), DTCOMP.Rows[i]["Description"].ToString(), DTCOMP.Rows[i]["HSN"].ToString(), DTCOMP.Rows[i]["Quantity"].ToString(), DTCOMP.Rows[i]["Units"].ToString(), DTCOMP.Rows[i]["Rate"].ToString(), DTCOMP.Rows[i]["Total"].ToString(), DTCOMP.Rows[i]["CGSTPer"].ToString(), DTCOMP.Rows[i]["CGSTAmt"].ToString(), DTCOMP.Rows[i]["SGSTPer"].ToString(), DTCOMP.Rows[i]["SGSTAmt"].ToString(), DTCOMP.Rows[i]["IGSTPer"].ToString(), DTCOMP.Rows[i]["IGSTAmt"].ToString(), DTCOMP.Rows[i]["Discountpercentage"].ToString(), DTCOMP.Rows[i]["DiscountAmount"].ToString(), DTCOMP.Rows[i]["Alltotal"].ToString(), DTCOMP.Rows[i]["Weight"].ToString());
+                Dt_Product.Rows.Add(count, DTCOMP.Rows[i]["Productname"].ToString(), DTCOMP.Rows[i]["Description"].ToString(), DTCOMP.Rows[i]["Quantity"].ToString(), DTCOMP.Rows[i]["Weight"].ToString(), DTCOMP.Rows[i]["Length"].ToString(), DTCOMP.Rows[i]["TotalWeight"].ToString());
                 count = count + 1;
             }
         }
@@ -710,7 +708,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         string Product = ((TextBox)row.FindControl("Product")).Text;
         string Description = ((TextBox)row.FindControl("Description")).Text;
         string Quantity = ((TextBox)row.FindControl("Quantity")).Text;
-        string Lenght = ((TextBox)row.FindControl("Lenght")).Text;
+        string Lenght = ((TextBox)row.FindControl("Length")).Text;
         string Weight = ((TextBox)row.FindControl("Weight")).Text;
         string TotalWeight = ((TextBox)row.FindControl("TotalWeight")).Text;
 
