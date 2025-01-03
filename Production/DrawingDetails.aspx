@@ -14,7 +14,7 @@
                     },
                 },
             }).then(function () {
-                window.location.href = "Drawing.aspx";
+                window.location.href = "DrawingDetails.aspx";
             });
         };
         function DeleteResult(msg) {
@@ -27,7 +27,7 @@
                     },
                 },
             }).then(function () {
-                window.location.href = "Drawing.aspx";
+                window.location.href = "DrawingDetails.aspx";
             });
         };
     </script>
