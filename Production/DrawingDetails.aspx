@@ -264,10 +264,10 @@
                                 <div class="table-responsive">
                                     <div class="row">
                                         <div class="col-md-3">
-                                            <asp:Label ID="Label17" runat="server" Font-Bold="true" Text="Customer Name :"></asp:Label>
+                                            <asp:Label ID="Label19" runat="server" Font-Bold="true" Text="Customer Name :"></asp:Label>
                                             <div style="margin-top: 14px;">
-                                                <asp:TextBox ID="txtCustName" CssClass="form-control" placeholder="Search Company" runat="server" OnTextChanged="txtCustomerName_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
-                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="Dynamic" ErrorMessage="Please Enter Company Name"
+                                                <asp:TextBox ID="txtCustName" CssClass="form-control" placeholder="Search Customer" runat="server" OnTextChanged="txtCustomerName_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="Dynamic" ErrorMessage="Please Enter Customer"
                                                     ControlToValidate="txtCustomerName" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                                 <asp:AutoCompleteExtender ID="AutoCompleteExtender3" runat="server" CompletionListCssClass="completionList"
                                                     CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
@@ -277,9 +277,9 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <asp:Label ID="Label18" runat="server" Font-Bold="true" Text="Project Code :"></asp:Label>
+                                            <asp:Label ID="Label20" runat="server" Font-Bold="true" Text="Project Code :"></asp:Label>
                                             <div style="margin-top: 14px;">
-                                                <asp:TextBox ID="txtProjCode" CssClass="form-control" placeholder="Search OA Number" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                                <asp:TextBox ID="txtProjCode" CssClass="form-control" placeholder="Search Project Code" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
                                                 <asp:AutoCompleteExtender ID="AutoCompleteExtender4" runat="server" CompletionListCssClass="completionList"
                                                     CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
                                                     CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCponoList"
@@ -288,10 +288,10 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <asp:Label ID="Label19" runat="server" Font-Bold="true" Text="Project Name:"></asp:Label>
+                                            <asp:Label ID="Label21" runat="server" Font-Bold="true" Text="Project Name:"></asp:Label>
                                             <div style="margin-top: 14px;">
-                                                <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search Job Number " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
-                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" Display="Dynamic" ErrorMessage="Please Enter Job Number."
+                                                <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search Project Name " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator9" runat="server" Display="Dynamic" ErrorMessage="Please Enter Job Number."
                                                     ControlToValidate="txtGST" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                                 <asp:AutoCompleteExtender ID="AutoCompleteExtender5" runat="server" CompletionListCssClass="completionList"
                                                     CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"

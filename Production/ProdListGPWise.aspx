@@ -247,7 +247,7 @@
                             <div class="col-md-3">
                                 <asp:Label ID="Label1" runat="server" Font-Bold="true" Text="Customer Name :"></asp:Label>
                                 <div style="margin-top: 14px;">
-                                    <asp:TextBox ID="txtCustomerName" CssClass="form-control" placeholder="Search Company" runat="server" OnTextChanged="txtCustomerName_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                    <asp:TextBox ID="txtCustomerName" CssClass="form-control" placeholder="Search Customer" runat="server" OnTextChanged="txtCustomerName_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="Dynamic" ErrorMessage="Please Enter Company Name"
                                         ControlToValidate="txtCustomerName" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                     <asp:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" CompletionListCssClass="completionList"
@@ -260,7 +260,7 @@
                             <div class="col-md-3">
                                 <asp:Label ID="Label2" runat="server" Font-Bold="true" Text="Project Code :"></asp:Label>
                                 <div style="margin-top: 14px;">
-                                    <asp:TextBox ID="txtjobno" CssClass="form-control" placeholder="Search OA Number" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                    <asp:TextBox ID="txtjobno" CssClass="form-control" placeholder="Search Project Code" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
                                     <asp:AutoCompleteExtender ID="AutoCompleteExtender2" runat="server" CompletionListCssClass="completionList"
                                         CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
                                         CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCponoList"
@@ -271,7 +271,7 @@
                             <div class="col-md-3">
                                 <asp:Label ID="Label3" runat="server" Font-Bold="true" Text="Project Name:"></asp:Label>
                                 <div style="margin-top: 14px;">
-                                    <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search Job Number " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                    <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search Project Name " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please Enter Job Number."
                                         ControlToValidate="txtGST" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                     <asp:AutoCompleteExtender ID="AutoCompleteExtender3" runat="server" CompletionListCssClass="completionList"
