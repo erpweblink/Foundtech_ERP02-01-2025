@@ -482,6 +482,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             SqlCommand cmd = new SqlCommand("SP_ProductionDept", Cls_Main.Conn);
             cmd.CommandType = CommandType.StoredProcedure; 
             cmd.Parameters.AddWithValue("@ID", PID);
+            cmd.Parameters.AddWithValue("@MainId", ID);
             cmd.Parameters.AddWithValue("@Createdby", Session["UserCode"].ToString());
             cmd.Parameters.AddWithValue("@Mode", "InseartOAinProduction");
             cmd.ExecuteNonQuery();
