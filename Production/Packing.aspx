@@ -242,48 +242,48 @@
                     </div>
                     <hr />
                     <div class="row">
-      <div class="col-md-3">
-          <asp:Label ID="Label19" runat="server" Font-Bold="true" Text="Customer Name :"></asp:Label>
-          <div style="margin-top: 14px;">
-              <asp:TextBox ID="txtCustName" CssClass="form-control" placeholder="Search Customer" runat="server" OnTextChanged="txtCustomerName_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
-              <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="Dynamic" ErrorMessage="Please Enter Customer"
-                  ControlToValidate="txtCustomerName" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-              <asp:AutoCompleteExtender ID="AutoCompleteExtender3" runat="server" CompletionListCssClass="completionList"
-                  CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
-                  CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCustomerList"
-                  TargetControlID="txtCustName">
-              </asp:AutoCompleteExtender>
-          </div>
-      </div>
-      <div class="col-md-3">
-          <asp:Label ID="Label20" runat="server" Font-Bold="true" Text="Project Code :"></asp:Label>
-          <div style="margin-top: 14px;">
-              <asp:TextBox ID="txtProjCode" CssClass="form-control" placeholder="Search Project Code" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
-              <asp:AutoCompleteExtender ID="AutoCompleteExtender4" runat="server" CompletionListCssClass="completionList"
-                  CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
-                  CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCponoList"
-                  TargetControlID="txtProjCode">
-              </asp:AutoCompleteExtender>
-          </div>
-      </div>
-      <div class="col-md-3">
-          <asp:Label ID="Label21" runat="server" Font-Bold="true" Text="Project Name:"></asp:Label>
-          <div style="margin-top: 14px;">
-              <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search Project Name " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
-              <asp:RequiredFieldValidator ID="RequiredFieldValidator9" runat="server" Display="Dynamic" ErrorMessage="Please Enter Job Number."
-                  ControlToValidate="txtGST" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-              <asp:AutoCompleteExtender ID="AutoCompleteExtender5" runat="server" CompletionListCssClass="completionList"
-                  CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
-                  CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetGSTList"
-                  TargetControlID="txtGST">
-              </asp:AutoCompleteExtender>
-          </div>
-      </div>
+                        <div class="col-md-3">
+                            <asp:Label ID="Label19" runat="server" Font-Bold="true" Text="Customer Name :"></asp:Label>
+                            <div style="margin-top: 14px;">
+                                <asp:TextBox ID="txtCustName" CssClass="form-control" placeholder="Search Customer" runat="server" OnTextChanged="txtCustomerName_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="Dynamic" ErrorMessage="Please Enter Customer"
+                                    ControlToValidate="txtCustomerName" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                <asp:AutoCompleteExtender ID="AutoCompleteExtender3" runat="server" CompletionListCssClass="completionList"
+                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCustomerList"
+                                    TargetControlID="txtCustName">
+                                </asp:AutoCompleteExtender>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <asp:Label ID="Label20" runat="server" Font-Bold="true" Text="Project Code :"></asp:Label>
+                            <div style="margin-top: 14px;">
+                                <asp:TextBox ID="txtProjCode" CssClass="form-control" placeholder="Search Project Code" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                <asp:AutoCompleteExtender ID="AutoCompleteExtender4" runat="server" CompletionListCssClass="completionList"
+                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCponoList"
+                                    TargetControlID="txtProjCode">
+                                </asp:AutoCompleteExtender>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <asp:Label ID="Label21" runat="server" Font-Bold="true" Text="Project Name:"></asp:Label>
+                            <div style="margin-top: 14px;">
+                                <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search Project Name " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator9" runat="server" Display="Dynamic" ErrorMessage="Please Enter Job Number."
+                                    ControlToValidate="txtGST" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                <asp:AutoCompleteExtender ID="AutoCompleteExtender5" runat="server" CompletionListCssClass="completionList"
+                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetGSTList"
+                                    TargetControlID="txtGST">
+                                </asp:AutoCompleteExtender>
+                            </div>
+                        </div>
 
-      <div class="col-md-1" style="margin-top: 36px">
-          <asp:LinkButton ID="btnrefresh" runat="server" OnClick="btnrefresh_Click" Width="100%" CssClass="form-control btn btn-warning"><i style="color:white" class="fa">&#xf021;</i> </asp:LinkButton>
-      </div>
-      <br />
+                        <div class="col-md-1" style="margin-top: 36px">
+                            <asp:LinkButton ID="btnrefresh" runat="server" OnClick="btnrefresh_Click" Width="100%" CssClass="form-control btn btn-warning"><i style="color:white" class="fa">&#xf021;</i> </asp:LinkButton>
+                        </div>
+                        <br />
                         <div id="divtable" runat="server">
                             <div class="card">
                                 <div class="card-body">
@@ -383,9 +383,19 @@
                                                             <asp:Label ID="lblProjectName" runat="server" Text='<%#Eval("ProjectName")%>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Drawing Sub Products" HeaderStyle-CssClass="gvhead">
+                                                    <asp:TemplateField HeaderText="Packaging Sub Products" HeaderStyle-CssClass="gvhead">
                                                         <ItemTemplate>
                                                             <asp:Label ID="lblSubProdCount" runat="server" Text='<%#Eval("TotalRecords")%>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="TotalQty Sub Products" HeaderStyle-CssClass="gvhead">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblTotalQty" runat="server" Text='<%#Eval("TotalQTY")%>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Inward Qty" HeaderStyle-CssClass="gvhead">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblInwardQTY" runat="server" Text='<%#Eval("InwardQTY")%>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="Outward Qty" HeaderStyle-CssClass="gvhead">

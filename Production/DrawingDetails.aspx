@@ -385,9 +385,14 @@
                                                         <asp:Label ID="lblSubProdCount" runat="server" Text='<%#Eval("TotalRecords")%>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Outward Qty" HeaderStyle-CssClass="gvhead">
+                                                <asp:TemplateField HeaderText="TotalQty Sub Products" HeaderStyle-CssClass="gvhead">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="lblQtyCount" runat="server" Text='<%#Eval("OutwardQty")%>'></asp:Label>
+                                                        <asp:Label ID="lblTotalQty" runat="server" Text='<%#Eval("TotalQTY")%>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Inward Qty" HeaderStyle-CssClass="gvhead">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblInwardQTY" runat="server" Text='<%#Eval("InwardQTY")%>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                             </Columns>
