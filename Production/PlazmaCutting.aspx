@@ -227,6 +227,38 @@
             }
         }
     </style>
+
+
+
+     <script type="text/javascript">
+         function downloadDWGFile(base64File, fileName) {
+             debugger;
+
+             if (!base64File || !fileName) {
+                 console.error("File data or file name is missing.");
+                 return;
+             }
+
+             var byteCharacters = atob(base64File); 
+             var byteArray = new Uint8Array(byteCharacters.length);
+
+            
+             for (var i = 0; i < byteCharacters.length; i++) {
+                 byteArray[i] = byteCharacters.charCodeAt(i);
+             }
+
+             var blob = new Blob([byteArray], { type: "application/octet-stream" });
+
+             var link = document.createElement('a');
+             link.href = URL.createObjectURL(blob); 
+             link.download = fileName; 
+
+             document.body.appendChild(link);
+             link.click();
+             document.body.removeChild(link);
+         }
+    </script>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <form id="form1" runat="server">
@@ -498,7 +530,7 @@
                     <asp:Panel ID="PopupHistoryDetail1" runat="server" CssClass="modelprofile1">
                         <div class="row container">
                             <div class="col-md-3"></div>
-                            <div class="col-md-6">
+                            <div class="col-md-6" style="display: flex; margin-left: 33%; margin-top: 10%;">
                                 <div class="profilemodel2">
                                     <div class="headingcls">
                                         <h4 class="modal-title">Drawing Files
@@ -507,8 +539,14 @@
                                     </div>
                                     <br />
                                     <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">
+                                        <asp:Label ID="lblJobNo" runat="server" Font-Bold="true" Text="Job No : "></asp:Label>
+                                        <asp:Label ID="lblJobNumb" runat="server"></asp:Label>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <asp:Label ID="lblProductName" runat="server" Font-Bold="true" Text="Product Name : "></asp:Label>
+                                        <asp:Label ID="lblProdName" runat="server"></asp:Label>
+                                        <br />
+                                        <br />
                                         <div class="row">
-
                                             <asp:Repeater ID="rptImages" runat="server">
                                                 <ItemTemplate>
                                                     <div class="col-md-6 col-12 mb-3">
@@ -521,7 +559,6 @@
                                                     </div>
                                                 </ItemTemplate>
                                             </asp:Repeater>
-
                                         </div>
                                     </div>
 

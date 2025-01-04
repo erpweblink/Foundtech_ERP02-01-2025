@@ -109,11 +109,14 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
             GridView gvPurchase = (GridView)row.FindControl("GVPurchase");
 
             string JobNo = ((Label)row.FindControl("jobno")).Text;
+            string ProdName = ((Label)row.FindControl("ProductName")).Text;
             DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_DrawingDetails AS PD where JobNo='" + JobNo + "'");
             if (Dt.Rows.Count > 0)
             {
                 rptImages.DataSource = Dt;
                 rptImages.DataBind();
+                lblJobNumb.Text = JobNo;
+                lblProdName.Text = ProdName;
                 this.ModalPopupExtender1.Show();
             }
             else
@@ -197,10 +200,27 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
                 ad.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
-                    //Response.Write(dt.Rows[0]["Path"].ToString());
-                    if (!string.IsNullOrEmpty(dt.Rows[0]["FileName"].ToString()))
-                    {
-                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
+                    string fileName = dt.Rows[0]["FileName"].ToString();
+
+                    if (!string.IsNullOrEmpty(fileName))
+                    {    // Old Code 
+                         // Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
+                         // End
+
+
+                        //New Code by Nikhil 04-01-2025
+                        string filePath = Server.MapPath("~/Drawings/" + fileName);
+
+                        if (File.Exists(filePath))
+                        {
+                            byte[] fileBytes = File.ReadAllBytes(filePath);
+                            string base64File = Convert.ToBase64String(fileBytes);
+                            string safeBase64File = base64File.Replace("'", @"\'");
+                            string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
+
+                        }
+
                     }
                     else
                     {
@@ -211,6 +231,47 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
                 {
                     //lblnotfound.Text = "File Not Found or Not Available !!";
                 }
+
+                // To convert the dwg file in .png by Nikhil 04-01-2025
+
+                //string filePath = Server.MapPath("~/Drawings/" + fileName);
+
+                //// Path where the converted PNG image will be stored
+                //string imagePath = "~/Images/" + Path.GetFileNameWithoutExtension(fileName) + ".png";
+                //string fullImagePath = Server.MapPath(imagePath);
+
+                //// Check if the image already exists to avoid re-conversion
+                //if (!File.Exists(fullImagePath))
+                //{
+                //    string convertCommand = "convert \"" + filePath + "\" \"" + fullImagePath + "\""; // Concatenate file paths correctly
+
+                //    // Setup the process to run ImageMagick
+                //    System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                //    startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                //    startInfo.FileName = "convert"; // ImageMagick command
+                //    startInfo.Arguments = "\"" + filePath + "\" \"" + fullImagePath + "\"";
+
+                //    try
+                //    {
+                //        // Start the process to convert the file
+                //        System.Diagnostics.Process.Start(startInfo);
+
+                //        // Optionally, wait for the process to finish before redirecting (if required)
+                //        System.Threading.Thread.Sleep(2000); // Sleep for 2 seconds to ensure the image is created before redirecting
+
+
+                //        string iframeSrc = "~/Images/" + Path.GetFileNameWithoutExtension(fileName) + ".png";
+                //        ClientScript.RegisterStartupScript(this.GetType(), "setIframeSrc", "document.getElementById('yourIframeID').src = '" + iframeSrc + "';", true);
+
+                //        this.ModalPopupExtender1.Show();
+
+                //        Response.Redirect(imagePath);
+                //    }
+                //    catch (Exception ex)
+                //    {
+
+                //    }
+                // End Code 
 
             }
         }
