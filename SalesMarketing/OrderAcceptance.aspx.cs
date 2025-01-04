@@ -281,24 +281,9 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             cmd.Parameters.AddWithValue("@UserName", ddlUser.SelectedValue);
                         }
 
-                        if (ViewState["attachment"] != null)
-                        {
-                            byte[] fileContent = (byte[])ViewState["attachment"];
-                            cmd.Parameters.AddWithValue("@fileName", lblfile1.Text);
-                            string[] pdffilename = lblfile1.Text.Split('.');
-                            string pdffilename1 = pdffilename[0];
-                            string filenameExt = pdffilename[1];
 
-                            string filePath = Server.MapPath("~/PDF_Files/") + pdffilename1 + "." + filenameExt;
+                        cmd.Parameters.AddWithValue("@fileName", DBNull.Value);
 
-                            // Save the file to the specified path
-                            System.IO.File.WriteAllBytes(filePath, fileContent);
-
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@fileName", DBNull.Value);
-                        }
                         cmd.Parameters.AddWithValue("@BillingAddress", txtaddress.Text);
                         if (ddlShippingaddress.SelectedItem.Text == "-Select Shipping Address-")
                         {
@@ -311,13 +296,15 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@Deliverydate", txtdeliverydate.Text);
                         cmd.Parameters.AddWithValue("@Referquotation", txtreferquotation.Text);
                         cmd.Parameters.AddWithValue("@Remarks", txtremark.Text);
-                        //cmd.Parameters.AddWithValue("@CGST_Amt", txt_cgstamt.Text);
-                        //cmd.Parameters.AddWithValue("@SGST_Amt", txt_sgstamt.Text);
-                        //cmd.Parameters.AddWithValue("@IGST_Amt", txt_igstamt.Text);
-                        //cmd.Parameters.AddWithValue("@Total_Price", txt_grandTotal.Text);
-                        //cmd.Parameters.AddWithValue("@Paymentterm", txtpaymentterm.Text);
-                        //cmd.Parameters.AddWithValue("@Totalinword", lbl_total_amt_Value.Text);
+                        cmd.Parameters.AddWithValue("@CGST_Amt","0");
+                        cmd.Parameters.AddWithValue("@SGST_Amt", "0.00");
+                        cmd.Parameters.AddWithValue("@IGST_Amt", "0.00");
+                        cmd.Parameters.AddWithValue("@Total_Price", "0.00");
+                        cmd.Parameters.AddWithValue("@Paymentterm", txtpaymentterm.Text);
+                        cmd.Parameters.AddWithValue("@Totalinword", "0.00");
                         cmd.Parameters.AddWithValue("@IsDeleted", '0');
+                        cmd.Parameters.AddWithValue("@ProjectCode", txtprojectCode.Text);
+                        cmd.Parameters.AddWithValue("@ProjectName", txtprojectName.Text);
                         cmd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
                         cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
                         cmd.Parameters.AddWithValue("@Action", "Save");
@@ -330,43 +317,34 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         {
                             string lblproduct = (grd1.FindControl("lblproduct") as Label).Text;
                             string lblDescription = (grd1.FindControl("lblDescription") as Label).Text;
-                            string lblhsn = (grd1.FindControl("lblhsn") as Label).Text;
                             string lblQuantity = (grd1.FindControl("lblQuantity") as Label).Text;
-                            string lblUnit = (grd1.FindControl("lblUnit") as Label).Text;
-                            string lblRate = (grd1.FindControl("lblRate") as Label).Text;
-                            string lblTotal = (grd1.FindControl("lblTotal") as Label).Text;
-                            string lblCGSTPer = (grd1.FindControl("lblCGSTPer") as Label).Text;
-                            string lblCGST = (grd1.FindControl("lblCGST") as Label).Text;
-                            string lblSGSTPer = (grd1.FindControl("lblSGSTPer") as Label).Text;
-                            string lblSGST = (grd1.FindControl("lblSGST") as Label).Text;
-                            string lblIGSTPer = (grd1.FindControl("lblIGSTPer") as Label).Text;
-                            string lblIGST = (grd1.FindControl("lblIGST") as Label).Text;
-                            string lblDiscount = (grd1.FindControl("lblDiscount") as Label).Text;
-                            string lblDiscountAmount = (grd1.FindControl("lblDiscountAmount") as Label).Text;
-                            string lblAlltotal = (grd1.FindControl("lblAlltotal") as Label).Text;
                             string lblWeight = (grd1.FindControl("lblWeight") as Label).Text;
+                            string lblLength = (grd1.FindControl("lblLength") as Label).Text;
+                            string lblTotWeight = (grd1.FindControl("lblTotalWeight") as Label).Text;
 
 
                             Cls_Main.Conn_Open();
-                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description,HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage,DiscountAmount,Alltotal,Weight,CreatedOn) VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@CreatedOn)", Cls_Main.Conn);
+                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description,HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage,DiscountAmount,Alltotal,Weight,Length,TotalWeight,CreatedOn) VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@lblLength,lblTotWeight,@CreatedOn)", Cls_Main.Conn);
                             cmdd.Parameters.AddWithValue("@Pono", txtpono.Text);
                             cmdd.Parameters.AddWithValue("@Productname", lblproduct);
                             cmdd.Parameters.AddWithValue("@Description", lblDescription);
-                            cmdd.Parameters.AddWithValue("@HSN", lblhsn);
+                            cmdd.Parameters.AddWithValue("@HSN", "0.00");
                             cmdd.Parameters.AddWithValue("@Quantity", lblQuantity);
-                            cmdd.Parameters.AddWithValue("@Units", lblUnit);
-                            cmdd.Parameters.AddWithValue("@Rate", lblRate);
-                            cmdd.Parameters.AddWithValue("@CGSTPer", lblCGSTPer);
-                            cmdd.Parameters.AddWithValue("@CGSTAmt", lblCGST);
-                            cmdd.Parameters.AddWithValue("@SGSTPer", lblSGSTPer);
-                            cmdd.Parameters.AddWithValue("@SGSTAmt", lblSGST);
-                            cmdd.Parameters.AddWithValue("@IGSTPer", lblIGSTPer);
-                            cmdd.Parameters.AddWithValue("@IGSTAmt", lblIGST);
-                            cmdd.Parameters.AddWithValue("@Total", lblTotal);
-                            cmdd.Parameters.AddWithValue("@Discountpercentage", lblDiscount);
-                            cmdd.Parameters.AddWithValue("@DiscountAmount", lblDiscountAmount);
-                            cmdd.Parameters.AddWithValue("@Alltotal", lblAlltotal);
+                            cmdd.Parameters.AddWithValue("@Units", "0.00");
+                            cmdd.Parameters.AddWithValue("@Rate", "0.00");
+                            cmdd.Parameters.AddWithValue("@CGSTPer", "0.00");
+                            cmdd.Parameters.AddWithValue("@CGSTAmt", "0.00");
+                            cmdd.Parameters.AddWithValue("@SGSTPer", "0.00");
+                            cmdd.Parameters.AddWithValue("@SGSTAmt", "0.00");
+                            cmdd.Parameters.AddWithValue("@IGSTPer", "0.00");
+                            cmdd.Parameters.AddWithValue("@IGSTAmt", "0.00");
+                            cmdd.Parameters.AddWithValue("@Total", "0.00");
+                            cmdd.Parameters.AddWithValue("@Discountpercentage", "0.00");
+                            cmdd.Parameters.AddWithValue("@DiscountAmount", "0.00");
+                            cmdd.Parameters.AddWithValue("@Alltotal", "0.00");
                             cmdd.Parameters.AddWithValue("@lblWeight", lblWeight);
+                            cmdd.Parameters.AddWithValue("@lblLength", lblLength);
+                            cmdd.Parameters.AddWithValue("@lblTotWeight", lblTotWeight);
                             cmdd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
                             cmdd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
                             cmdd.ExecuteNonQuery();
@@ -395,11 +373,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@Deliverydate", txtdeliverydate.Text);
                         cmd.Parameters.AddWithValue("@Referquotation", txtreferquotation.Text);
                         cmd.Parameters.AddWithValue("@Remarks", txtremark.Text);
-                        //cmd.Parameters.AddWithValue("@CGST_Amt", txt_cgstamt.Text);
-                        //cmd.Parameters.AddWithValue("@SGST_Amt", txt_sgstamt.Text);
-                        //cmd.Parameters.AddWithValue("@IGST_Amt", txt_igstamt.Text);
-                        //cmd.Parameters.AddWithValue("@Total_Price", txt_grandTotal.Text);
-                        //cmd.Parameters.AddWithValue("@Totalinword", lbl_total_amt_Value.Text);
+
                         cmd.Parameters.AddWithValue("@Paymentterm", txtpaymentterm.Text);
                         if (ddlUser.SelectedValue == "-- Select User Name--")
                         {
@@ -410,26 +384,18 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             cmd.Parameters.AddWithValue("@UserName", ddlUser.SelectedValue);
                         }
                         cmd.Parameters.AddWithValue("@IsDeleted", '0');
-                        if (ViewState["attachment"] != null)
-                        {
-                            byte[] fileContent = (byte[])ViewState["attachment"];
-                            cmd.Parameters.AddWithValue("@fileName", lblfile1.Text);
-                            string[] pdffilename = lblfile1.Text.Split('.');
-                            string pdffilename1 = pdffilename[0];
-                            string filenameExt = pdffilename[1];
-
-                            string filePath = Server.MapPath("~/PDF_Files/") + pdffilename1 + "." + filenameExt;
-
-                            // Save the file to the specified path
-                            System.IO.File.WriteAllBytes(filePath, fileContent);
-
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@fileName", lblfile1.Text);
-                        }
+                        cmd.Parameters.AddWithValue("@fileName", DBNull.Value);
                         cmd.Parameters.AddWithValue("@UpdatedBy", Session["UserCode"].ToString());
                         cmd.Parameters.AddWithValue("@UpdatedOn", DateTime.Now);
+                        cmd.Parameters.AddWithValue("@CGST_Amt", "0");
+                        cmd.Parameters.AddWithValue("@SGST_Amt", "0.00");
+                        cmd.Parameters.AddWithValue("@IGST_Amt", "0.00");
+                        cmd.Parameters.AddWithValue("@Total_Price", "0.00");
+                        cmd.Parameters.AddWithValue("@Paymentterm", txtpaymentterm.Text);
+                        cmd.Parameters.AddWithValue("@Totalinword", "0.00");
+                        cmd.Parameters.AddWithValue("@IsDeleted", '0');
+                        cmd.Parameters.AddWithValue("@ProjectCode", txtprojectCode.Text);
+                        cmd.Parameters.AddWithValue("@ProjectName", txtprojectName.Text);
                         cmd.Parameters.AddWithValue("@Action", "Update");
                         cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
@@ -444,46 +410,37 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         //Save Product Details 
                         foreach (GridViewRow grd1 in dgvMachineDetails.Rows)
                         {
+                            
                             string lblproduct = (grd1.FindControl("lblproduct") as Label).Text;
                             string lblDescription = (grd1.FindControl("lblDescription") as Label).Text;
-                            string lblhsn = (grd1.FindControl("lblhsn") as Label).Text;
                             string lblQuantity = (grd1.FindControl("lblQuantity") as Label).Text;
-                            string lblUnit = (grd1.FindControl("lblUnit") as Label).Text;
-                            string lblRate = (grd1.FindControl("lblRate") as Label).Text;
-                            string lblTotal = (grd1.FindControl("lblTotal") as Label).Text;
-                            string lblCGSTPer = (grd1.FindControl("lblCGSTPer") as Label).Text;
-                            string lblCGST = (grd1.FindControl("lblCGST") as Label).Text;
-                            string lblSGSTPer = (grd1.FindControl("lblSGSTPer") as Label).Text;
-                            string lblSGST = (grd1.FindControl("lblSGST") as Label).Text;
-                            string lblIGSTPer = (grd1.FindControl("lblIGSTPer") as Label).Text;
-                            string lblIGST = (grd1.FindControl("lblIGST") as Label).Text;
-                            string lblDiscount = (grd1.FindControl("lblDiscount") as Label).Text;
-                            string lblDiscountAmount = (grd1.FindControl("lblDiscountAmount") as Label).Text;
-                            string lblAlltotal = (grd1.FindControl("lblAlltotal") as Label).Text;
                             string lblWeight = (grd1.FindControl("lblWeight") as Label).Text;
-
+                            string lblLength = (grd1.FindControl("lblLength") as Label).Text;
+                            string lblTotWeight = (grd1.FindControl("lblTotalWeight") as Label).Text;
 
 
                             Cls_Main.Conn_Open();
-                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description,HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage,DiscountAmount,Alltotal,Weight,CreatedOn) VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@CreatedOn)", Cls_Main.Conn);
+                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description,HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage,DiscountAmount,Alltotal,Weight,Length,TotalWeight,CreatedOn) VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@lblLength,lblTotWeight,@CreatedOn)", Cls_Main.Conn);
                             cmdd.Parameters.AddWithValue("@Pono", txtpono.Text);
                             cmdd.Parameters.AddWithValue("@Productname", lblproduct);
                             cmdd.Parameters.AddWithValue("@Description", lblDescription);
-                            cmdd.Parameters.AddWithValue("@HSN", lblhsn);
+                            cmdd.Parameters.AddWithValue("@HSN", "0.00");
                             cmdd.Parameters.AddWithValue("@Quantity", lblQuantity);
-                            cmdd.Parameters.AddWithValue("@Units", lblUnit);
-                            cmdd.Parameters.AddWithValue("@Rate", lblRate);
-                            cmdd.Parameters.AddWithValue("@CGSTPer", lblCGSTPer);
-                            cmdd.Parameters.AddWithValue("@CGSTAmt", lblCGST);
-                            cmdd.Parameters.AddWithValue("@SGSTPer", lblSGSTPer);
-                            cmdd.Parameters.AddWithValue("@SGSTAmt", lblSGST);
-                            cmdd.Parameters.AddWithValue("@IGSTPer", lblIGSTPer);
-                            cmdd.Parameters.AddWithValue("@IGSTAmt", lblIGST);
-                            cmdd.Parameters.AddWithValue("@Total", lblTotal);
-                            cmdd.Parameters.AddWithValue("@Discountpercentage", lblDiscount);
-                            cmdd.Parameters.AddWithValue("@DiscountAmount", lblDiscountAmount);
-                            cmdd.Parameters.AddWithValue("@Alltotal", lblAlltotal);
+                            cmdd.Parameters.AddWithValue("@Units", "0.00");
+                            cmdd.Parameters.AddWithValue("@Rate", "0.00");
+                            cmdd.Parameters.AddWithValue("@CGSTPer", "0.00");
+                            cmdd.Parameters.AddWithValue("@CGSTAmt", "0.00");
+                            cmdd.Parameters.AddWithValue("@SGSTPer", "0.00");
+                            cmdd.Parameters.AddWithValue("@SGSTAmt", "0.00");
+                            cmdd.Parameters.AddWithValue("@IGSTPer", "0.00");
+                            cmdd.Parameters.AddWithValue("@IGSTAmt", "0.00");
+                            cmdd.Parameters.AddWithValue("@Total", "0.00");
+                            cmdd.Parameters.AddWithValue("@Discountpercentage", "0.00");
+                            cmdd.Parameters.AddWithValue("@DiscountAmount", "0.00");
+                            cmdd.Parameters.AddWithValue("@Alltotal", "0.00");
                             cmdd.Parameters.AddWithValue("@lblWeight", lblWeight);
+                            cmdd.Parameters.AddWithValue("@lblLength", lblLength);
+                            cmdd.Parameters.AddWithValue("@lblTotWeight", lblTotWeight);
                             cmdd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
                             cmdd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
                             cmdd.ExecuteNonQuery();
@@ -1071,36 +1028,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         }
     }
 
-    //protected void txtRate_TextChanged(object sender, EventArgs e)
-    //{
-    //    GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
-    //    Calculations(row);
-    //}
-
-    //protected void txtCGSTPer_TextChanged(object sender, EventArgs e)
-    //{
-    //    GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
-    //    Calculations(row);
-    //}
-
-    //protected void txtSGSTPer_TextChanged(object sender, EventArgs e)
-    //{
-    //    GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
-    //    Calculations(row);
-    //}
-
-    //protected void txtIGSTPer_TextChanged(object sender, EventArgs e)
-    //{
-    //    GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
-    //    Calculations(row);
-    //}
-
-    //protected void txtDiscount_TextChanged(object sender, EventArgs e)
-    //{
-    //    GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
-    //    Calculations(row);
-    //}
-
+   
     protected void btncancel_Click(object sender, EventArgs e)
     {
         Response.Redirect("OAList.aspx");
@@ -1132,48 +1060,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         Response.Redirect("OAList.aspx");
     }
 
-    //protected void txtOquantity_TextChanged(object sender, EventArgs e)
-    //{
-    //    GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
-    //    Calculations(row);
-    //}
-
-    //protected void txtSQuantity_TextChanged(object sender, EventArgs e)
-    //{
-    //    GridViewRow row = (sender as TextBox).NamingContainer as GridViewRow;
-    //    Calculations(row);
-    //}
-
-
-    //protected void txtrate_TextChanged(object sender, EventArgs e)
-    //{
-    //    var TotalAmt = Convert.ToDecimal(txtquantity.Text.Trim()) * Convert.ToDecimal(txtrate.Text.Trim());
-    //    txttotal.Text = Convert.ToString(TotalAmt);
-    //    decimal total;
-    //    decimal Percentage;
-    //    if (txtIGST.Text == null || txtIGST.Text == "" || txtIGST.Text == "0")
-    //    {
-    //        Percentage = Convert.ToDecimal(txtCGST.Text);
-    //        total = (TotalAmt * Percentage / 100);
-
-    //        txtCGSTamt.Text = total.ToString();
-
-    //        txtSGSTamt.Text = txtCGSTamt.Text;
-
-    //        txtSGST.Text = txtCGST.Text;
-    //        var GrandTotal = Convert.ToDecimal(txttotal.Text.Trim()) + Convert.ToDecimal(txtCGSTamt.Text.Trim()) + Convert.ToDecimal(txtSGSTamt.Text.Trim());
-    //        txtgrandtotal.Text = GrandTotal.ToString();
-    //    }
-    //    else
-    //    {
-    //        Percentage = Convert.ToDecimal(txtIGST.Text);
-    //        total = (TotalAmt * Percentage / 100);
-
-    //        txtIGSTamt.Text = total.ToString();
-    //        var GrandTotal = Convert.ToDecimal(txttotal.Text.Trim()) + Convert.ToDecimal(txtIGSTamt.Text.Trim());
-    //        txtgrandtotal.Text = GrandTotal.ToString();
-    //    }
-    //}
+   
 
     protected void uploadfile_Click(object sender, EventArgs e)
     {
@@ -1194,14 +1081,14 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
             using (var package = new OfficeOpenXml.ExcelPackage(new MemoryStream(fileContent)))
             {
-                var worksheet = package.Workbook.Worksheets[0]; 
+                var worksheet = package.Workbook.Worksheets[0];
                 var rowCount = worksheet.Dimension.End.Row;
                 var colCount = worksheet.Dimension.End.Column;
 
-               
+
                 DataTable Dt = (DataTable)ViewState["PurchaseOrderProduct"];
                 int Count = 1;
-                for (int row = 2; row <= rowCount; row++) 
+                for (int row = 2; row <= rowCount; row++)
                 {
                     DataRow dataRow = Dt.NewRow();
                     dataRow["id"] = Count;
