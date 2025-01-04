@@ -324,7 +324,12 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                             Cls_Main.Conn_Open();
-                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description,HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage,DiscountAmount,Alltotal,Weight,Length,TotalWeight,CreatedOn) VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@lblLength,lblTotWeight,@CreatedOn)", Cls_Main.Conn);
+                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description,HSN," +
+                                "Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage," +
+                                "DiscountAmount,Alltotal,Weight,Length,TotalWeight,CreatedOn) " +
+                                "VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt," +
+                                "@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@lblLength,@lblTotWeight," +
+                                "@CreatedOn)", Cls_Main.Conn);
                             cmdd.Parameters.AddWithValue("@Pono", txtpono.Text);
                             cmdd.Parameters.AddWithValue("@Productname", lblproduct);
                             cmdd.Parameters.AddWithValue("@Description", lblDescription);
@@ -383,7 +388,6 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         {
                             cmd.Parameters.AddWithValue("@UserName", ddlUser.SelectedValue);
                         }
-                        cmd.Parameters.AddWithValue("@IsDeleted", '0');
                         cmd.Parameters.AddWithValue("@fileName", DBNull.Value);
                         cmd.Parameters.AddWithValue("@UpdatedBy", Session["UserCode"].ToString());
                         cmd.Parameters.AddWithValue("@UpdatedOn", DateTime.Now);
@@ -391,7 +395,6 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@SGST_Amt", "0.00");
                         cmd.Parameters.AddWithValue("@IGST_Amt", "0.00");
                         cmd.Parameters.AddWithValue("@Total_Price", "0.00");
-                        cmd.Parameters.AddWithValue("@Paymentterm", txtpaymentterm.Text);
                         cmd.Parameters.AddWithValue("@Totalinword", "0.00");
                         cmd.Parameters.AddWithValue("@IsDeleted", '0');
                         cmd.Parameters.AddWithValue("@ProjectCode", txtprojectCode.Text);
@@ -420,7 +423,12 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                             Cls_Main.Conn_Open();
-                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description,HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage,DiscountAmount,Alltotal,Weight,Length,TotalWeight,CreatedOn) VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@lblLength,lblTotWeight,@CreatedOn)", Cls_Main.Conn);
+                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description," +
+                                "HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage," +
+                                "DiscountAmount,Alltotal,Weight,Length,TotalWeight,CreatedOn)" +
+                                " VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units," +
+                                "@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total," +
+                                "@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@lblLength,@lblTotWeight,@CreatedOn)", Cls_Main.Conn);
                             cmdd.Parameters.AddWithValue("@Pono", txtpono.Text);
                             cmdd.Parameters.AddWithValue("@Productname", lblproduct);
                             cmdd.Parameters.AddWithValue("@Description", lblDescription);
