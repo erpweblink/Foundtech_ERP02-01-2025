@@ -33,9 +33,9 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
     //Fill GridView
     private void FillGrid()
     {
-        DataTable Dts = Cls_Main.Read_Table("SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords," +
-            " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum " +
-            "FROM tbl_ProductionHDR GROUP BY ProjectCode, CustomerName,  ProjectName " +
+        DataTable Dts = Cls_Main.Read_Table(" SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
+            " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum, " +
+            " MAX(CAST(Stage AS INT)) AS MaxStage FROM tbl_ProductionHDR GROUP BY ProjectCode, CustomerName,  ProjectName " +
             " ORDER BY ProjectCode desc; ");
 
         MainGridLoad.DataSource = Dts;
@@ -303,6 +303,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
     {
         DataTable Dt = Cls_Main.Read_Table("select JobNo AS PID FROM [tbl_ProductionHDR]  WHERE ProjectCode = '" + ViewState["ID"].ToString() + "'");
         int count = Dt.Rows.Count;
+        int StageCount = 0;
         foreach (DataRow row in Dt.Rows)
         {
             ViewState["JobNo"] = row["PID"].ToString();
@@ -310,36 +311,44 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             if (Drawing.Checked == true)
             {
                 InseartData("Drawing", 0);
+                StageCount = 1;
             }
             if (PlazmaCutting.Checked == true)
             {
                 InseartData("PlazmaCutting", 1);
+                StageCount += 1;
             }
             if (Fabrication.Checked == true)
             {
                 InseartData("Fabrication", 2);
+                StageCount += 1;
             }
             if (Bending.Checked == true)
             {
                 InseartData("Bending", 3);
+                StageCount += 1;
             }
             if (Painting.Checked == true)
             {
                 InseartData("Painting", 4);
+                StageCount += 1;
             }
             if (Packaging.Checked == true)
             {
                 InseartData("Packaging", 5);
+                StageCount += 1;
             }
             if (Dispatch.Checked == true)
             {
                 InseartData("Dispatch", 6);
+                StageCount += 1;
             }
             Cls_Main.Conn_Open();
             SqlCommand cmd = new SqlCommand("SP_ProductionDept", Cls_Main.Conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@JobNo", ViewState["JobNo"].ToString());
             cmd.Parameters.AddWithValue("@Createdby", Session["UserCode"].ToString());
+            cmd.Parameters.AddWithValue("@StageCount", StageCount);
             cmd.Parameters.AddWithValue("@Mode", "InseartInwardQTY");
             cmd.ExecuteNonQuery();
             Cls_Main.Conn_Close();
@@ -369,6 +378,16 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
+                int maxStage = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "MaxStage"));
+
+                LinkButton btnSendtopro = (LinkButton)e.Row.FindControl("btnSendtopro");
+
+                // Check if the MaxStage is 7 and hide the button
+                if (maxStage == 7)
+                {
+                    btnSendtopro.Visible = false;
+                }
+
                 Label ProjectCode = e.Row.FindControl("lblProjectCode") as Label;
                 GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
 
