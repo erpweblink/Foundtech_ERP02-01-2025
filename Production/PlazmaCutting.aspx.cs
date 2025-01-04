@@ -1,4 +1,5 @@
 ﻿
+using DocumentFormat.OpenXml.Math;
 using System;
 using System.Activities.Expressions;
 using System.Collections.Generic;
@@ -220,7 +221,6 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
 
                         }
-
                     }
                     else
                     {
@@ -684,7 +684,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter("SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
-            " SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty  FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
             " Where PD.Stage = 'PlazmaCutting' AND PD.Status < 2 AND PH.CustomerName = '" + company + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
@@ -742,7 +742,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
-            " SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty  FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
             " Where PD.Stage = 'PlazmaCutting' AND PD.Status < 2 AND PH.ProjectCode = '" + Cpono + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
@@ -796,7 +796,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
-            " SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
             " Where PD.Stage = 'PlazmaCutting' AND PD.Status < 2 AND PH.ProjectName = '" + GST + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc ", Cls_Main.Conn);
