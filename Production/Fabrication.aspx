@@ -209,18 +209,18 @@
         }
     </style>
 
-       <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
-   <script type="text/javascript">
-       $("[src*=plus]").live("click", function () {
-           $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>")
-           $(this).attr("src", "../Content1/img/minus.png");
-       });
-       $("[src*=minus]").live("click", function () {
-           $(this).attr("src", "../Content1/img/plus.png");
-           $(this).closest("tr").next().remove();
-       });
-   </script>
+    <script type="text/javascript">
+        $("[src*=plus]").live("click", function () {
+            $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>")
+            $(this).attr("src", "../Content1/img/minus.png");
+        });
+        $("[src*=minus]").live("click", function () {
+            $(this).attr("src", "../Content1/img/plus.png");
+            $(this).closest("tr").next().remove();
+        });
+    </script>
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
@@ -241,7 +241,49 @@
                         </div>
                     </div>
                     <hr />
-                    <div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <asp:Label ID="Label19" runat="server" Font-Bold="true" Text="Customer Name :"></asp:Label>
+                            <div style="margin-top: 14px;">
+                                <asp:TextBox ID="txtCustName" CssClass="form-control" placeholder="Search Company" runat="server" OnTextChanged="txtCustomerName_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="Dynamic" ErrorMessage="Please Enter Company Name"
+                                    ControlToValidate="txtCustomerName" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                <asp:AutoCompleteExtender ID="AutoCompleteExtender3" runat="server" CompletionListCssClass="completionList"
+                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCustomerList"
+                                    TargetControlID="txtCustName">
+                                </asp:AutoCompleteExtender>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <asp:Label ID="Label20" runat="server" Font-Bold="true" Text="Project Code :"></asp:Label>
+                            <div style="margin-top: 14px;">
+                                <asp:TextBox ID="txtProjCode" CssClass="form-control" placeholder="Search OA Number" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                <asp:AutoCompleteExtender ID="AutoCompleteExtender4" runat="server" CompletionListCssClass="completionList"
+                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCponoList"
+                                    TargetControlID="txtProjCode">
+                                </asp:AutoCompleteExtender>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <asp:Label ID="Label21" runat="server" Font-Bold="true" Text="Project Name:"></asp:Label>
+                            <div style="margin-top: 14px;">
+                                <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search Job Number " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator9" runat="server" Display="Dynamic" ErrorMessage="Please Enter Job Number."
+                                    ControlToValidate="txtGST" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                <asp:AutoCompleteExtender ID="AutoCompleteExtender5" runat="server" CompletionListCssClass="completionList"
+                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetGSTList"
+                                    TargetControlID="txtGST">
+                                </asp:AutoCompleteExtender>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1" style="margin-top: 36px">
+                            <asp:LinkButton ID="btnrefresh" runat="server" OnClick="btnrefresh_Click" Width="100%" CssClass="form-control btn btn-warning"><i style="color:white" class="fa">&#xf021;</i> </asp:LinkButton>
+                        </div>
+                        <br />
                         <div id="divtable" runat="server">
                             <div class="card">
                                 <div class="card-body">
@@ -255,7 +297,7 @@
                                                         <ItemTemplate>
                                                             <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
                                                             <asp:Panel ID="pnlOrders" runat="server" Style="display: none">
-                                                                <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,JobNo,Remark,OutwardQTY"  Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
+                                                                <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,JobNo,Remark,OutwardQTY" Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
                                                                     OnRowCommand="GVPurchase_RowCommand" OnPageIndexChanging="GVPurchase_PageIndexChanging" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
                                                                     <Columns>
                                                                         <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center">
@@ -268,7 +310,7 @@
                                                                                 <asp:Label ID="jobno" runat="server" Text='<%#Eval("JobNo")%>'></asp:Label>
                                                                             </ItemTemplate>
                                                                         </asp:TemplateField>
-                                                                        <asp:TemplateField HeaderText="Customer Name">
+                                                                        <asp:TemplateField HeaderText="Customer Name" Visible="false">
                                                                             <ItemTemplate>
                                                                                 <asp:Label ID="CustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
                                                                             </ItemTemplate>

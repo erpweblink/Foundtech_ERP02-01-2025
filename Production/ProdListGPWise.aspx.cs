@@ -109,7 +109,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT DISTINCT [ID],[Companyname] FROM [tbl_CompanyMaster] where " + "Companyname like '%'+ @Search + '%' and IsDeleted=0";
+                com.CommandText = "SELECT DISTINCT [ID],[Companyname] FROM [tbl_CompanyMaster] where Companyname like  @Search + '%' and IsDeleted=0";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -135,17 +135,21 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             string company = txtCustomerName.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_ProductionHDR] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.Createdby WHERE  CustomerName='" + txtCustomerName.Text + "' ORDER BY CP.ID DESC", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
+                " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum " +
+                " FROM tbl_ProductionHDR WHERE  CustomerName='" + txtCustomerName.Text + "' " +
+                " GROUP BY ProjectCode, CustomerName,  ProjectName " +
+                " ORDER BY ProjectCode desc; ", Cls_Main.Conn);
             sad.Fill(dt);
-            //GVPurchase.EmptyDataText = "Not Records Found";
-            //GVPurchase.DataSource = dt;
-            //GVPurchase.DataBind();
+            MainGridLoad.EmptyDataText = "Not Records Found";
+            MainGridLoad.DataSource = dt;
+            MainGridLoad.DataBind();
         }
     }
 
     protected void btnrefresh_Click(object sender, EventArgs e)
     {
-        Response.Redirect("ProductionList.aspx");
+        Response.Redirect("ProdListGPWise.aspx");
     }
 
     //Search OA.  Search methods
@@ -164,7 +168,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT * FROM [tbl_ProductionHDR] where " + "OANumber like  '%'+ @Search + '%' ";
+                com.CommandText = "SELECT Distinct(ProjectCode) AS Code FROM [tbl_ProductionHDR] where ProjectCode like @Search +'%' ";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -174,7 +178,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                 {
                     while (sdr.Read())
                     {
-                        countryNames.Add(sdr["OANumber"].ToString());
+                        countryNames.Add(sdr["Code"].ToString());
                     }
                 }
                 con.Close();
@@ -189,76 +193,15 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             string Cpono = txtjobno.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_ProductionHDR] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.Createdby WHERE OANumber='" + Cpono + "' ORDER BY CP.ID DESC", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
+               " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum " +
+               " FROM tbl_ProductionHDR WHERE  ProjectCode='" + Cpono + "' " +
+               " GROUP BY ProjectCode, CustomerName,  ProjectName " +
+               " ORDER BY ProjectCode desc; ", Cls_Main.Conn);
             sad.Fill(dt);
-            //GVPurchase.EmptyDataText = "Not Records Found";
-            //GVPurchase.DataSource = dt;
-            //GVPurchase.DataBind();
-        }
-    }
-
-    protected void btnSearch_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            if (string.IsNullOrEmpty(txtCustomerName.Text) && string.IsNullOrEmpty(txtjobno.Text) && string.IsNullOrEmpty(txtfromdate.Text) && string.IsNullOrEmpty(txttodate.Text))
-            {
-                FillGrid();
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Please Search Record');", true);
-            }
-            else
-            {
-                if (txtjobno.Text != "")
-                {
-                    string Quono = txtjobno.Text;
-                    DataTable dt = new DataTable();
-                    SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_ProductionHDR] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.Createdby where OANumber = '" + Quono + "' ", Cls_Main.Conn);
-                    sad.Fill(dt);
-                    //GVPurchase.EmptyDataText = "Not Records Found";
-                    //GVPurchase.DataSource = dt;
-                    //GVPurchase.DataBind();
-                }
-                if (txtGST.Text != "")
-                {
-                    string JOBno = txtGST.Text;
-                    DataTable dt = new DataTable();
-                    SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_ProductionHDR] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.Createdby where JobNo = '" + JOBno + "' ", Cls_Main.Conn);
-                    sad.Fill(dt);
-                    //GVPurchase.EmptyDataText = "Not Records Found";
-                    //GVPurchase.DataSource = dt;
-                    //GVPurchase.DataBind();
-                }
-                if (txtCustomerName.Text != "")
-                {
-                    string company = txtCustomerName.Text;
-
-                    DataTable dt = new DataTable();
-                    SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_ProductionHDR] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.Createdby where CustomerName = '" + company + "' ", Cls_Main.Conn);
-                    sad.Fill(dt);
-                    //GVPurchase.EmptyDataText = "Not Records Found";
-                    //GVPurchase.DataSource = dt;
-                    //GVPurchase.DataBind();
-                }
-
-                if (!string.IsNullOrEmpty(txtfromdate.Text) && !string.IsNullOrEmpty(txttodate.Text))
-                {
-                    DataTable dt = new DataTable();
-
-                    //SqlDataAdapter sad = new SqlDataAdapter(" select [Id],[JobNo],[DateIn],[CustName],[Subcustomer],[Branch],[MateName],[SrNo],[MateStatus],FinalStatus,[TestBy],[ModelNo],[otherinfo],[Imagepath],[CreatedBy],[CreatedDate],[UpdateBy],[UpdateDate] ,ProductFault,RepeatedNo,DATEDIFF(DAY, CreatedDate, getdate()) AS days FROM [tblInwardEntry] Where DateIn between'" + txtfromdate.Text + "' AND '" + txttodate.Text + "' ", Cls_Main.Conn);
-                    SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_ProductionHDR] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.Createdby WHERE  CP.Createdon between'" + txtfromdate.Text + "' AND '" + txttodate.Text + "' ", Cls_Main.Conn);
-                    sad.Fill(dt);
-
-                    //GVPurchase.EmptyDataText = "Not Records Found";
-                    //GVPurchase.DataSource = dt;
-                    //GVPurchase.DataBind();
-                }
-
-
-            }
-        }
-        catch (Exception ex)
-        {
-            throw ex;
+            MainGridLoad.EmptyDataText = "Not Records Found";
+            MainGridLoad.DataSource = dt;
+            MainGridLoad.DataBind();
         }
     }
 
@@ -278,7 +221,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT DISTINCT JobNo FROM [tbl_ProductionHDR] where " + "JobNo like '%'+ @Search + '%' ";
+                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_ProductionHDR] where ProjectName like @Search +'%' ";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -288,7 +231,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                 {
                     while (sdr.Read())
                     {
-                        countryNames.Add(sdr["JobNo"].ToString());
+                        countryNames.Add(sdr["ProjectName"].ToString());
                     }
                 }
                 con.Close();
@@ -304,11 +247,15 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             string GST = txtGST.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_ProductionHDR] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.Createdby where JobNo = '" + GST + "'", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
+               " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum " +
+               " FROM tbl_ProductionHDR WHERE  ProjectName='" + GST + "' " +
+               " GROUP BY ProjectCode, CustomerName,  ProjectName " +
+               " ORDER BY ProjectCode desc; ", Cls_Main.Conn);
             sad.Fill(dt);
-            //GVPurchase.EmptyDataText = "Not Records Found";
-            //GVPurchase.DataSource = dt;
-            //GVPurchase.DataBind();
+            MainGridLoad.EmptyDataText = "Not Records Found";
+            MainGridLoad.DataSource = dt;
+            MainGridLoad.DataBind();
         }
     }
 

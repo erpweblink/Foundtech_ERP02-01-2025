@@ -258,7 +258,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <asp:Label ID="Label2" runat="server" Font-Bold="true" Text="OA Number :"></asp:Label>
+                                <asp:Label ID="Label2" runat="server" Font-Bold="true" Text="Project Code :"></asp:Label>
                                 <div style="margin-top: 14px;">
                                     <asp:TextBox ID="txtjobno" CssClass="form-control" placeholder="Search OA Number" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
                                     <asp:AutoCompleteExtender ID="AutoCompleteExtender2" runat="server" CompletionListCssClass="completionList"
@@ -269,7 +269,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <asp:Label ID="Label3" runat="server" Font-Bold="true" Text="Job Number :"></asp:Label>
+                                <asp:Label ID="Label3" runat="server" Font-Bold="true" Text="Project Name:"></asp:Label>
                                 <div style="margin-top: 14px;">
                                     <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search Job Number " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please Enter Job Number."
@@ -281,21 +281,7 @@
                                     </asp:AutoCompleteExtender>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <asp:Label ID="lblfromdate" runat="server" Font-Bold="true" Text="From Date :"></asp:Label>
-                                <div style="margin-top: 14px;">
-                                    <asp:TextBox ID="txtfromdate" Placeholder="Enter From Date" runat="server" TextMode="Date" AutoComplete="off" CssClass="form-control"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <asp:Label ID="lbltodate" runat="server" Font-Bold="true" Text="To Date :"></asp:Label>
-                                <div style="margin-top: 14px;">
-                                    <asp:TextBox ID="txttodate" Placeholder="Enter To Date" runat="server" TextMode="Date" AutoComplete="off" CssClass="form-control"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="col-md-1 col-2" style="margin-top: 36px">
-                                <asp:LinkButton ID="btnSearch" OnClick="btnSearch_Click" runat="server" Width="100%" CssClass="form-control btn btn-info"><i style="color:white" class="fa">&#xf002;</i> </asp:LinkButton>
-                            </div>
+                           
                             <div class="col-md-1" style="margin-top: 36px">
                                 <asp:LinkButton ID="btnrefresh" runat="server" OnClick="btnrefresh_Click" Width="100%" CssClass="form-control btn btn-warning"><i style="color:white" class="fa">&#xf021;</i> </asp:LinkButton>
                             </div>

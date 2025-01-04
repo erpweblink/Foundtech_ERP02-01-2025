@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.ExtendedProperties;
+using System;
+using System.Activities.Expressions;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -285,70 +287,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
     }
 
-    protected void GVPurchase_RowEditing(object sender, GridViewEditEventArgs e)
-    {
-        //int rowIndex = e.NewEditIndex;
-        //GridViewRow row = GVPurchase.Rows[rowIndex];
-        //string data = row.Cells[0].Text;
-        //LinkButton btnwarrehouse = row.FindControl("btnwarrehouse") as LinkButton;
-        //LinkButton btnEdit = row.FindControl("btnEdit") as LinkButton;
-        //Label JobNo = (Label)row.FindControl("JobNo");
-        //Label TotalQuantity = (Label)row.FindControl("Total_Price");
-        //Label CustomerName = (Label)row.FindControl("CustomerName");
-
-        //if (btnwarrehouse != null && btnwarrehouse.CommandName == "Rowwarehouse")
-        //{
-        //    // this.ModalPopupExtender1.Show();
-        //}
-        //if (btnEdit != null && btnEdit.CommandName == "Edit")
-        //{
-        //    txtcustomername.Text = CustomerName.Text;
-        //    txtinwardqty.Text = TotalQuantity.Text;
-        //    txttotalqty.Text = TotalQuantity.Text;
-        //    txtjobno.Text = JobNo.Text;
-        //    //this.ModalPopupHistory.Show();
-        //}
-
-
-
-
-    }
-
-    //Search RMC Search methods
-    [System.Web.Script.Services.ScriptMethod()]
-    [System.Web.Services.WebMethod]
-    public static List<string> GetRMCList(string prefixText, int count)
-    {
-        return AutoFillCustomerName(prefixText);
-    }
-
-    public static List<string> AutoFillCustomerName(string prefixText)
-    {
-        using (SqlConnection con = new SqlConnection())
-        {
-            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
-
-            using (SqlCommand com = new SqlCommand())
-            {
-                com.CommandText = "select DISTINCT RowMaterial from tbl_InwardData where IsDeleted=0  AND " + "RowMaterial like '%'+ @Search + '%'";
-
-                com.Parameters.AddWithValue("@Search", prefixText);
-                com.Connection = con;
-                con.Open();
-                List<string> countryNames = new List<string>();
-                using (SqlDataReader sdr = com.ExecuteReader())
-                {
-                    while (sdr.Read())
-                    {
-                        countryNames.Add(sdr["RowMaterial"].ToString());
-                    }
-                }
-                con.Close();
-                return countryNames;
-            }
-        }
-    }
-
+  
     protected void btnWarehousedata_Click(object sender, EventArgs e)
     {
         Cls_Main.Conn_Open();
@@ -371,40 +310,6 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully..!!');window.location='Drawing.aspx';", true);
     }
 
-    //Search Size Search methods
-    [System.Web.Script.Services.ScriptMethod()]
-    [System.Web.Services.WebMethod]
-    public static List<string> GetAvailablesizeList(string prefixText, int count)
-    {
-        return AutoFillGetAvailablesizeList(prefixText);
-    }
-
-    public static List<string> AutoFillGetAvailablesizeList(string prefixText)
-    {
-        using (SqlConnection con = new SqlConnection())
-        {
-            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
-
-            using (SqlCommand com = new SqlCommand())
-            {
-                com.CommandText = "select Size from tbl_InwardData where IsDeleted=0  AND " + "Size like '%'+ @Search + '%'";
-
-                com.Parameters.AddWithValue("@Search", prefixText);
-                com.Connection = con;
-                con.Open();
-                List<string> countryNames = new List<string>();
-                using (SqlDataReader sdr = com.ExecuteReader())
-                {
-                    while (sdr.Read())
-                    {
-                        countryNames.Add(sdr["Size"].ToString());
-                    }
-                }
-                con.Close();
-                return countryNames;
-            }
-        }
-    }
 
     protected void txtAvailablesize_TextChanged(object sender, EventArgs e)
     {
@@ -505,5 +410,180 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
     }
 
-  
+
+
+    // Search Filters added by Nikhil 04-01-2025
+
+    //Search Company Search methods
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetCustomerList(string prefixText, int count)
+    {
+        return AutoFillCustomerName(prefixText);
+    }
+
+    public static List<string> AutoFillCustomerName(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "SELECT DISTINCT [ID],[Companyname] FROM [tbl_CompanyMaster] where Companyname like  @Search + '%' and IsDeleted=0";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> countryNames = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        countryNames.Add(sdr["Companyname"].ToString());
+                    }
+                }
+                con.Close();
+                return countryNames;
+            }
+        }
+    }
+
+    protected void txtCustomerName_TextChanged(object sender, EventArgs e)
+    {
+        if (txtCustName.Text != "" || txtCustName.Text != null)
+        {
+            string company = txtCustName.Text;
+
+            DataTable dt = new DataTable();
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            " SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " Where PD.Stage = 'Drawing' AND PH.CustomerName = '" + company + "' " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+            " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
+            sad.Fill(dt);
+            MainGridLoad.EmptyDataText = "Not Records Found";
+            MainGridLoad.DataSource = dt;
+            MainGridLoad.DataBind();
+        }
+    }
+
+    protected void btnrefresh_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("DrawingDetails.aspx");
+    }
+
+    //Search OA.  Search methods
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetCponoList(string prefixText, int count)
+    {
+        return AutoFillCponoName(prefixText);
+    }
+
+    public static List<string> AutoFillCponoName(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "SELECT Distinct(ProjectCode) AS Code FROM [tbl_ProductionHDR] where ProjectCode like @Search +'%' ";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> countryNames = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        countryNames.Add(sdr["Code"].ToString());
+                    }
+                }
+                con.Close();
+                return countryNames;
+            }
+        }
+    }
+    protected void txtjobno_TextChanged(object sender, EventArgs e)
+    {
+        if (txtProjCode.Text != "" || txtProjCode.Text != null)
+        {
+            string Cpono = txtProjCode.Text;
+
+            DataTable dt = new DataTable();
+            SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            " SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " Where PD.Stage = 'Drawing' AND PH.ProjectCode = '" + Cpono + "' " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+            " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
+            sad.Fill(dt);
+            MainGridLoad.EmptyDataText = "Not Records Found";
+            MainGridLoad.DataSource = dt;
+            MainGridLoad.DataBind();
+        }
+    }
+
+    //Search GST WIse Company methods
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetGSTList(string prefixText, int count)
+    {
+        return AutoFillGSTName(prefixText);
+    }
+
+    public static List<string> AutoFillGSTName(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_ProductionHDR] where ProjectName like @Search +'%' ";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> countryNames = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        countryNames.Add(sdr["ProjectName"].ToString());
+                    }
+                }
+                con.Close();
+                return countryNames;
+            }
+        }
+    }
+
+    protected void txtGST_TextChanged(object sender, EventArgs e)
+    {
+        if (txtGST.Text != "" || txtGST.Text != null)
+        {
+            string GST = txtGST.Text;
+
+            DataTable dt = new DataTable();
+            SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            " SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " Where PD.Stage = 'Drawing' AND PH.ProjectName = '" + GST + "' " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+            " ORDER BY PD.ProjectCode desc ", Cls_Main.Conn);
+            sad.Fill(dt);
+            MainGridLoad.EmptyDataText = "Not Records Found";
+            MainGridLoad.DataSource = dt;
+            MainGridLoad.DataBind();
+        }
+    }
+
+
+
+    protected void GVPurchase_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+
+    }
 }

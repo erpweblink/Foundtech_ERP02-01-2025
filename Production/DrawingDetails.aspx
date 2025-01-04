@@ -74,24 +74,6 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <%--    <style>
-        .completionList {
-            background-color: #f1f1f1;
-            border: 1px solid #ccc;
-            z-index: 10000 !important; /* Ensure it's higher than the modal */
-            position: absolute; /* Ensure the list is positioned correctly */
-        }
-
-        .itemHighlighted {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .listItem {
-            padding: 5px;
-            cursor: pointer;
-        }
-    </style>--%>
     <style>
         .spancls {
             color: #5d5656 !important;
@@ -125,24 +107,6 @@
         .currentlbl {
             text-align: center !important;
         }
-
-        /*.completionList {
-            border: solid 1px Gray;
-            border-radius: 5px;
-            margin: 0px;
-            padding: 3px;
-            height: 120px;
-            overflow: auto;
-            background-color: #FFFFFF;
-        }
-
-        .listItem {
-            color: #191919;
-        }
-
-        .itemHighlighted {
-            background-color: #ADD6FF;
-        }*/
 
         .reqcls {
             color: red;
@@ -210,12 +174,6 @@
             padding: 4px;
         }
 
-        /*hr {
-            margin-top: 5px !important;
-            margin-bottom: 15px !important;
-            border: 1px solid #eae6e6 !important;
-            width: 100%;
-        }*/
         hr.new1 {
             border-top: 1px dashed green !important;
             border: 0;
@@ -304,6 +262,51 @@
 
                                 <%--OnRowCommand="GVPurchase_RowCommand"--%>
                                 <div class="table-responsive">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <asp:Label ID="Label17" runat="server" Font-Bold="true" Text="Customer Name :"></asp:Label>
+                                            <div style="margin-top: 14px;">
+                                                <asp:TextBox ID="txtCustName" CssClass="form-control" placeholder="Search Company" runat="server" OnTextChanged="txtCustomerName_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" Display="Dynamic" ErrorMessage="Please Enter Company Name"
+                                                    ControlToValidate="txtCustomerName" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                                <asp:AutoCompleteExtender ID="AutoCompleteExtender3" runat="server" CompletionListCssClass="completionList"
+                                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCustomerList"
+                                                    TargetControlID="txtCustName">
+                                                </asp:AutoCompleteExtender>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <asp:Label ID="Label18" runat="server" Font-Bold="true" Text="Project Code :"></asp:Label>
+                                            <div style="margin-top: 14px;">
+                                                <asp:TextBox ID="txtProjCode" CssClass="form-control" placeholder="Search OA Number" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                                <asp:AutoCompleteExtender ID="AutoCompleteExtender4" runat="server" CompletionListCssClass="completionList"
+                                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCponoList"
+                                                    TargetControlID="txtProjCode">
+                                                </asp:AutoCompleteExtender>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <asp:Label ID="Label19" runat="server" Font-Bold="true" Text="Project Name:"></asp:Label>
+                                            <div style="margin-top: 14px;">
+                                                <asp:TextBox ID="txtGST" CssClass="form-control" placeholder="Search Job Number " runat="server" OnTextChanged="txtGST_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" Display="Dynamic" ErrorMessage="Please Enter Job Number."
+                                                    ControlToValidate="txtGST" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                                <asp:AutoCompleteExtender ID="AutoCompleteExtender5" runat="server" CompletionListCssClass="completionList"
+                                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetGSTList"
+                                                    TargetControlID="txtGST">
+                                                </asp:AutoCompleteExtender>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-1" style="margin-top: 36px">
+                                            <asp:LinkButton ID="btnrefresh" runat="server" OnClick="btnrefresh_Click" Width="100%" CssClass="form-control btn btn-warning"><i style="color:white" class="fa">&#xf021;</i> </asp:LinkButton>
+                                        </div>
+                                    </div>
+                                    <br />
+
                                     <div class="table">
                                         <br />
 

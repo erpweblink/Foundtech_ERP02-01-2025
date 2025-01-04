@@ -315,43 +315,6 @@ public partial class Production_Painting : System.Web.UI.Page
         }
     }
 
-
-
-    //Search Size Search methods
-    [System.Web.Script.Services.ScriptMethod()]
-    [System.Web.Services.WebMethod]
-    public static List<string> GetAvailablesizeList(string prefixText, int count)
-    {
-        return AutoFillGetAvailablesizeList(prefixText);
-    }
-
-    public static List<string> AutoFillGetAvailablesizeList(string prefixText)
-    {
-        using (SqlConnection con = new SqlConnection())
-        {
-            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
-
-            using (SqlCommand com = new SqlCommand())
-            {
-                com.CommandText = "select Size from tbl_InwardData where IsDeleted=0  AND " + "Size like '%'+ @Search + '%'";
-
-                com.Parameters.AddWithValue("@Search", prefixText);
-                com.Connection = con;
-                con.Open();
-                List<string> countryNames = new List<string>();
-                using (SqlDataReader sdr = com.ExecuteReader())
-                {
-                    while (sdr.Read())
-                    {
-                        countryNames.Add(sdr["Size"].ToString());
-                    }
-                }
-                con.Close();
-                return countryNames;
-            }
-        }
-    }
-
     protected void txtAvailablesize_TextChanged(object sender, EventArgs e)
     {
         SqlDataAdapter adpt = new SqlDataAdapter("select * from tbl_InwardData WHERE RowMaterial='" + txtRMC.Text.Trim() + "' AND Size='" + txtAvailablesize.Text.Trim() + "' AND IsDeleted=0", Cls_Main.Conn);
@@ -435,41 +398,6 @@ public partial class Production_Painting : System.Web.UI.Page
     }
 
 
-    //Search RMC Search methods
-    [System.Web.Script.Services.ScriptMethod()]
-    [System.Web.Services.WebMethod]
-    public static List<string> GetRMCList(string prefixText, int count)
-    {
-        return AutoFillCustomerName(prefixText);
-    }
-
-    public static List<string> AutoFillCustomerName(string prefixText)
-    {
-        using (SqlConnection con = new SqlConnection())
-        {
-            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
-
-            using (SqlCommand com = new SqlCommand())
-            {
-                com.CommandText = "select DISTINCT RowMaterial from tbl_InwardData where IsDeleted=0  AND " + "RowMaterial like '%'+ @Search + '%'";
-
-                com.Parameters.AddWithValue("@Search", prefixText);
-                com.Connection = con;
-                con.Open();
-                List<string> countryNames = new List<string>();
-                using (SqlDataReader sdr = com.ExecuteReader())
-                {
-                    while (sdr.Read())
-                    {
-                        countryNames.Add(sdr["RowMaterial"].ToString());
-                    }
-                }
-                con.Close();
-                return countryNames;
-            }
-        }
-    }
-
     private static DataTable GetData(string query)
     {
         string strConnString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
@@ -531,6 +459,176 @@ public partial class Production_Painting : System.Web.UI.Page
             throw;
         }
 
+    }
+
+
+
+    // Search Filters added by Nikhil 04-01-2025
+
+    //Search Company Search methods
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetCustomerList(string prefixText, int count)
+    {
+        return AutoFillCustomerName(prefixText);
+    }
+
+    public static List<string> AutoFillCustomerName(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "SELECT DISTINCT [ID],[Companyname] FROM [tbl_CompanyMaster] where Companyname like  @Search + '%' and IsDeleted=0";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> countryNames = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        countryNames.Add(sdr["Companyname"].ToString());
+                    }
+                }
+                con.Close();
+                return countryNames;
+            }
+        }
+    }
+
+    protected void txtCustomerName_TextChanged(object sender, EventArgs e)
+    {
+        if (txtCustName.Text != "" || txtCustName.Text != null)
+        {
+            string company = txtCustName.Text;
+
+            DataTable dt = new DataTable();
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            " SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " Where PD.Stage = 'Painting' AND PD.Status < 2 AND PH.CustomerName = '" + company + "' " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+            " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
+            sad.Fill(dt);
+            MainGridLoad.EmptyDataText = "Not Records Found";
+            MainGridLoad.DataSource = dt;
+            MainGridLoad.DataBind();
+        }
+    }
+
+    protected void btnrefresh_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("Painting.aspx");
+    }
+
+    //Search OA.  Search methods
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetCponoList(string prefixText, int count)
+    {
+        return AutoFillCponoName(prefixText);
+    }
+
+    public static List<string> AutoFillCponoName(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "SELECT Distinct(ProjectCode) AS Code FROM [tbl_ProductionHDR] where ProjectCode like @Search +'%' ";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> countryNames = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        countryNames.Add(sdr["Code"].ToString());
+                    }
+                }
+                con.Close();
+                return countryNames;
+            }
+        }
+    }
+    protected void txtjobno_TextChanged(object sender, EventArgs e)
+    {
+        if (txtProjCode.Text != "" || txtProjCode.Text != null)
+        {
+            string Cpono = txtProjCode.Text;
+
+            DataTable dt = new DataTable();
+            SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            " SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " Where PD.Stage = 'Painting' AND PD.Status < 2 AND PH.ProjectCode = '" + Cpono + "' " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+            " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
+            sad.Fill(dt);
+            MainGridLoad.EmptyDataText = "Not Records Found";
+            MainGridLoad.DataSource = dt;
+            MainGridLoad.DataBind();
+        }
+    }
+
+    //Search GST WIse Company methods
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetGSTList(string prefixText, int count)
+    {
+        return AutoFillGSTName(prefixText);
+    }
+
+    public static List<string> AutoFillGSTName(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_ProductionHDR] where ProjectName like @Search +'%' ";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> countryNames = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        countryNames.Add(sdr["ProjectName"].ToString());
+                    }
+                }
+                con.Close();
+                return countryNames;
+            }
+        }
+    }
+
+    protected void txtGST_TextChanged(object sender, EventArgs e)
+    {
+        if (txtGST.Text != "" || txtGST.Text != null)
+        {
+            string GST = txtGST.Text;
+
+            DataTable dt = new DataTable();
+            SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            " SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " Where PD.Stage = 'Painting' AND PD.Status < 2 AND PH.ProjectName = '" + GST + "' " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+            " ORDER BY PD.ProjectCode desc ", Cls_Main.Conn);
+            sad.Fill(dt);
+            MainGridLoad.EmptyDataText = "Not Records Found";
+            MainGridLoad.DataSource = dt;
+            MainGridLoad.DataBind();
+        }
     }
 
 }
