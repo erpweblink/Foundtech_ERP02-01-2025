@@ -167,10 +167,9 @@
                                 <div class="row">
                                     <div class="col-md-6 col-12 mb-3">
                                         <asp:Label ID="Label19" runat="server" Font-Bold="true" CssClass="form-label">User Name:</asp:Label>
-
-                                        <asp:DropDownList runat="server" ID="ddlUser" ValidationGroup="1" CssClass="form-control">
-                                        </asp:DropDownList>
-
+                                        <asp:TextBox ID="txtUserName" runat="server" ReadOnly="true" ValidationGroup="1" ForeColor="Red" AutoComplete="off" CssClass="form-control"></asp:TextBox>
+                                       <%--<asp:DropDownList runat="server" ID="ddlUser" ValidationGroup="1" CssClass="form-control">
+                                        </asp:DropDownList>--%>
                                     </div>
                                     <div class="col-md-6 col-12 mb-3">
                                         <asp:Label ID="Label20" runat="server" Font-Bold="true" CssClass="form-label">Email ID.  :</asp:Label>
@@ -262,14 +261,14 @@
                                 <div class="row">
                                     <div class="col-md-6 col-12 mb-3">
                                         <asp:Label ID="Label40" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Project Code:</asp:Label>
-                                        <asp:TextBox ID="txtprojectCode" CssClass="form-control" placeholder="Enter Code" runat="server" OnTextChanged="txtprojectCode_TextChanged" AutoPostBack="true"></asp:TextBox>
+                                        <asp:TextBox ID="txtprojectCode" CssClass="form-control"  ForeColor="Red" runat="server" OnTextChanged="txtprojectCode_TextChanged" AutoPostBack="true" autocomplete="off"></asp:TextBox>
                                         <asp:Label ID="lblProjCodeValidate" runat="server" Text="Project Code Already Exist.." Visible="false" ForeColor="Red" Font-Size="Large" Font-Italic="true"></asp:Label>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator7" ValidationGroup="1" runat="server" ControlToValidate="txtprojectCode"
                                             ForeColor="Red" ErrorMessage="Please Enter Project Code" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                     </div>
                                     <div class="col-md-6 col-12 mb-3">
                                         <asp:Label ID="Label41" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Project Name:</asp:Label>
-                                        <asp:TextBox ID="txtprojectName" CssClass="form-control" placeholder="Enter Project" runat="server"></asp:TextBox>
+                                        <asp:TextBox ID="txtprojectName" CssClass="form-control" ForeColor="Red" runat="server"  autocomplete="off"></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator8" ValidationGroup="1" runat="server" ControlToValidate="txtprojectName"
                                             ForeColor="Red" ErrorMessage="Please Enter Project Name" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                     </div>

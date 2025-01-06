@@ -95,10 +95,10 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
             ddlContacts.SelectedItem.Text = Dt.Rows[0]["KindAtt"].ToString();
             FillddlUsers();
-            if (Dt.Rows[0]["UserCode"] != null && Dt.Rows[0]["UserCode"] != DBNull.Value)
-            {
-                ddlUser.SelectedValue = Dt.Rows[0]["UserCode"].ToString();
-            }
+            //if (Dt.Rows[0]["UserCode"] != null && Dt.Rows[0]["UserCode"] != DBNull.Value)
+            //{
+            //    ddlUser.SelectedValue = Dt.Rows[0]["UserCode"].ToString();
+            //}
             DateTime ffff2 = Convert.ToDateTime(Dt.Rows[0]["PoDate"].ToString());
             txtmobileno.Text = Dt.Rows[0]["Mobileno"].ToString();
             txtgstno.Text = Dt.Rows[0]["GSTNo"].ToString();
@@ -112,6 +112,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
             txtemail.Text = Dt.Rows[0]["EmailId"].ToString();
             txtprojectCode.Text = Dt.Rows[0]["ProjectCode"].ToString();
             txtprojectName.Text = Dt.Rows[0]["ProjectName"].ToString();
+            txtUserName.Text = Dt.Rows[0]["UserCode"].ToString();
         }
     }
 
@@ -164,16 +165,19 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
     private void FillddlUsers()
     {
-        SqlDataAdapter ad = new SqlDataAdapter("select Username,UserCode from tbl_UserMaster where  Status=1 and IsDeleted=0", Cls_Main.Conn);
+        string name = Session["UserCode"].ToString();
+
+        SqlDataAdapter ad = new SqlDataAdapter("select Username from tbl_UserMaster where UserCode = '"+name+"' and Status=1 and IsDeleted=0", Cls_Main.Conn);
         DataTable dt = new DataTable();
         ad.Fill(dt);
         if (dt.Rows.Count > 0)
         {
-            ddlUser.DataSource = dt;
-            ddlUser.DataValueField = "UserCode";
-            ddlUser.DataTextField = "Username";
-            ddlUser.DataBind();
-            ddlUser.Items.Insert(0, "-- Select User Name--");
+            //ddlUser.DataSource = dt;
+            //ddlUser.DataValueField = "UserCode";
+            //ddlUser.DataTextField = "Username";
+            //ddlUser.DataBind();
+            //ddlUser.Items.Insert(0, "-- Select User Name--");
+            txtUserName.Text = dt.Rows[0]["Username"].ToString();
         }
     }
     private void FillKittens()
@@ -273,14 +277,15 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
                         cmd.Parameters.AddWithValue("@GSTNo", txtgstno.Text);
                         cmd.Parameters.AddWithValue("@PANNo", txtpanno.Text);
-                        if (ddlUser.SelectedValue == "-- Select User Name--")
-                        {
-                            cmd.Parameters.AddWithValue("@UserName", Session["UserCode"].ToString());
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@UserName", ddlUser.SelectedValue);
-                        }
+                        cmd.Parameters.AddWithValue("@UserName", txtUserName.Text);
+                        //if (ddlUser.SelectedValue == "-- Select User Name--")
+                        //{
+                        //    cmd.Parameters.AddWithValue("@UserName", Session["UserCode"].ToString());
+                        //}
+                        //else
+                        //{
+                        //    cmd.Parameters.AddWithValue("@UserName", ddlUser.SelectedValue);
+                        //}
 
 
                         cmd.Parameters.AddWithValue("@fileName", DBNull.Value);
@@ -381,14 +386,15 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@Remarks", txtremark.Text);
 
                         cmd.Parameters.AddWithValue("@Paymentterm", txtpaymentterm.Text);
-                        if (ddlUser.SelectedValue == "-- Select User Name--")
-                        {
-                            cmd.Parameters.AddWithValue("@UserName", Session["UserCode"].ToString());
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@UserName", ddlUser.SelectedValue);
-                        }
+                        cmd.Parameters.AddWithValue("@UserName", txtUserName.Text);
+                        //if (ddlUser.SelectedValue == "-- Select User Name--")
+                        //{
+                        //    cmd.Parameters.AddWithValue("@UserName", Session["UserCode"].ToString());
+                        //}
+                        //else
+                        //{
+                        //    cmd.Parameters.AddWithValue("@UserName", ddlUser.SelectedValue);
+                        //}
                         cmd.Parameters.AddWithValue("@fileName", DBNull.Value);
                         cmd.Parameters.AddWithValue("@UpdatedBy", Session["UserCode"].ToString());
                         cmd.Parameters.AddWithValue("@UpdatedOn", DateTime.Now);
