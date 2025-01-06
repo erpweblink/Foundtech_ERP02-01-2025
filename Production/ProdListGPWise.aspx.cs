@@ -318,14 +318,14 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                 InseartData("PlazmaCutting", 1);
                 StageCount += 1;
             }
-            if (Fabrication.Checked == true)
-            {
-                InseartData("Fabrication", 2);
-                StageCount += 1;
-            }
             if (Bending.Checked == true)
             {
-                InseartData("Bending", 3);
+                InseartData("Bending", 2);
+                StageCount += 1;
+            }
+            if (Fabrication.Checked == true)
+            {
+                InseartData("Fabrication", 3);
                 StageCount += 1;
             }
             if (Painting.Checked == true)

@@ -246,7 +246,7 @@ public partial class Production_Fabrication : System.Web.UI.Page
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", "UpdateSendToNext");
                     cmd.Parameters.AddWithValue("@JobNo", txtjobno.Text);
-                    cmd.Parameters.AddWithValue("@StageNumber", 2);
+                    cmd.Parameters.AddWithValue("@StageNumber", 3);
                     cmd.Parameters.AddWithValue("@InwardQty", Convert.ToDouble(txtinwardqty.Text));
                     cmd.Parameters.AddWithValue("@OutwardQty", Convert.ToDouble(txtoutwardqty.Text));
                     cmd.Parameters.AddWithValue("@PendingQty", Convert.ToDouble(txtpending.Text));
@@ -289,7 +289,7 @@ public partial class Production_Fabrication : System.Web.UI.Page
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Mode", "UpdateSendToBack");
                     cmd.Parameters.AddWithValue("@JobNo", txtjobno.Text);
-                    cmd.Parameters.AddWithValue("@StageNumber", 2);
+                    cmd.Parameters.AddWithValue("@StageNumber", 3);
                     cmd.Parameters.AddWithValue("@InwardQty", Convert.ToDouble(txtinwardqty.Text));
                     cmd.Parameters.AddWithValue("@OutwardQty", Convert.ToDouble(txtoutwardqty.Text));
                     cmd.Parameters.AddWithValue("@PendingQty", Convert.ToDouble(txtpending.Text));
