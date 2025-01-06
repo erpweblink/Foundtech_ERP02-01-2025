@@ -262,7 +262,8 @@
                                 <div class="row">
                                     <div class="col-md-6 col-12 mb-3">
                                         <asp:Label ID="Label40" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Project Code:</asp:Label>
-                                        <asp:TextBox ID="txtprojectCode" CssClass="form-control" placeholder="Enter Code" runat="server"></asp:TextBox>
+                                        <asp:TextBox ID="txtprojectCode" CssClass="form-control" placeholder="Enter Code" runat="server" OnTextChanged="txtprojectCode_TextChanged" AutoPostBack="true"></asp:TextBox>
+                                        <asp:Label ID="lblProjCodeValidate" runat="server" Text="Project Code Already Exist.." Visible="false" ForeColor="Red" Font-Size="Large" Font-Italic="true"></asp:Label>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator7" ValidationGroup="1" runat="server" ControlToValidate="txtprojectCode"
                                             ForeColor="Red" ErrorMessage="Please Enter Project Code" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                     </div>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -1068,7 +1069,6 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         Response.Redirect("OAList.aspx");
     }
 
-   
 
     protected void uploadfile_Click(object sender, EventArgs e)
     {
@@ -1118,4 +1118,27 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
     }
 
 
+    protected void txtprojectCode_TextChanged(object sender, EventArgs e)
+    {
+        string code = txtprojectCode.Text;
+        //code = code.Replace(" ", "").Trim();
+        if (code != "")
+        {
+            con.Open();
+            SqlCommand getHdrDetails = new SqlCommand("SELECT * from tbl_OrderAcceptanceHdr WHERE ProjectCode='" + code + "'", con);
+            using (SqlDataReader reader = getHdrDetails.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    txtprojectCode.Text = "";
+                    lblProjCodeValidate.Visible = true;
+                }
+                else
+                {
+                    lblProjCodeValidate.Visible = false;
+                }
+            }
+            con.Close();
+        }
+    }
 }
