@@ -314,6 +314,16 @@
                                                                             <asp:Label ID="CustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
                                                                         </ItemTemplate>
                                                                     </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Product Name" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="Productname" runat="server" Text='<%#Eval("RowMaterial")%>' Enabled="false"></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Product Discription" HeaderStyle-CssClass="gvhead">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="ProdDiscript" runat="server" Text='<%#Eval("Discription")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
                                                                     <asp:TemplateField HeaderText="Delivery Date">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="Deliverydate" runat="server" Text='<%# Eval("Deliverydate", "{0:dd-MM-yyyy}") %>'></asp:Label>
@@ -342,7 +352,7 @@
                                                                     </asp:TemplateField>
                                                                     <asp:TemplateField HeaderText="Drawings" ItemStyle-HorizontalAlign="Center">
                                                                         <ItemTemplate>
-                                                                            <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Container.DataItemIndex %>'><i class="fas fa-folder-open"  style="font-size: 26px; color:black; "></i></i></asp:LinkButton>
+                                                                            <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Container.DataItemIndex %>'><i class="fas fa-folder-open"  style="font-size: 26px; "></i></i></asp:LinkButton>
                                                                         </ItemTemplate>
                                                                     </asp:TemplateField>
                                                                     <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center">

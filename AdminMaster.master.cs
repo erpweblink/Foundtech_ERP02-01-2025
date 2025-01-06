@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -7,546 +8,339 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Windows.Threading;
 
 public partial class AdminMaster : System.Web.UI.MasterPage
 {
     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["constr"].ConnectionString);
     protected void Page_Load(object sender, EventArgs e)
     {
-        if(!IsPostBack)
+        if (!IsPostBack)
         {
-         
-            //if (Session["Username"] == null)
-            //{
-            //    Response.Redirect("../Login.aspx");
-            //}
-            //else
-            //{
-               
-            //    PageAuthorization();
+
+            if (Session["Username"] == null)
+            {
+                Response.Redirect("../Login.aspx");
+            }
+            else
+            {
+
+                PageAuthorization();
                 lblname.Text = Session["Username"].ToString();
-           // }
+            }
         }
 
     }
-    //protected void PageAuthorization()
-    //{
-    //    string username = Session["ID"].ToString();
-    //    DataTable dt = new DataTable();
-    //    SqlCommand cmd1 = new SqlCommand("SELECT * FROM [tblUserRoleAuthorization] where UserID='" + username + "'", con);
-    //    SqlDataAdapter sad = new SqlDataAdapter(cmd1);
-    //    sad.Fill(dt);
-    //    if (dt.Rows.Count > 0)
-    //    {
+    protected void PageAuthorization()
+    {
+        string username = Session["ID"].ToString();
+        DataTable dt = new DataTable();
+        SqlCommand cmd1 = new SqlCommand("SELECT * FROM [tblUserRoleAuthorization] where UserID='" + username + "'", con);
+        SqlDataAdapter sad = new SqlDataAdapter(cmd1);
+        sad.Fill(dt);
+        if (dt.Rows.Count > 0)
+        {
 
-    //        foreach (DataRow row in dt.Rows)
-    //        {
-    //            string MenuName = row["PageName"].ToString();
-    //            //Masters
-    //            if (MenuName == "UserMasterList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                UserListid.Visible = page1 == "True" ? true : false;
-    //            }
-    //            if (MenuName == "CompanyMasterList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    CompanyListid.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    CompanyListid.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "ComponentList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    ComponentID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    ComponentID.Visible = true;
-    //                }
+            foreach (DataRow row in dt.Rows)
+            {
+                string MenuName = row["PageName"].ToString();
+                //Masters
+                if (MenuName == "UserMaster.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    Li1.Visible = page1 == "True" ? true : false;
+                }
+                if (MenuName == "RoleList.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        Li2.Visible = false;
+                    }
+                    else
+                    {
+                        Li2.Visible = true;
+                    }
+                }
+                if (MenuName == "CompanyMasterList.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        companymasterid.Visible = false;
+                    }
+                    else
+                    {
+                        companymasterid.Visible = true;
+                    }
+                }
+                if (MenuName == "ComponentList.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        componentmasterid.Visible = false;
+                    }
+                    else
+                    {
+                        componentmasterid.Visible = true;
+                    }
+                }
+                if (MenuName == "SupplierMasterList.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        suppliermasterid.Visible = false;
+                    }
+                    else
+                    {
+                        suppliermasterid.Visible = true;
+                    }
+                }
+                if (MenuName == "TransporterList.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        transportmastereID.Visible = false;
+                    }
+                    else
+                    {
+                        transportmastereID.Visible = true;
+                    }
+                }
+                if (MenuName == "QuatationList.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        Quotationlsit.Visible = false;
+                    }
+                    else
+                    {
+                        Quotationlsit.Visible = true;
+                    }
+                }
 
-    //            }
-    //            if (MenuName == "RoleList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    RolelistID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    RolelistID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "ProductMasterList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    ProductMasterListID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    ProductMasterListID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "VendorMasterList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    VendorMasterListid.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    VendorMasterListid.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "TransporterList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    TrasnportermasterID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    TrasnportermasterID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "TargetList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    TargetMasterID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    TargetMasterID.Visible = true;
-    //                }
-    //            }
+                //Sales section
+                if (MenuName == "OAList.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        oaid.Visible = false;
+                    }
+                    else
+                    {
+                        oaid.Visible = true;
+                    }
+                }
+                if (MenuName == "ProdListGPWise.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        ProdListId.Visible = false;
+                    }
+                    else
+                    {
+                        ProdListId.Visible = true;
+                    }
+                }
+                if (MenuName == "DrawingDetails.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        DrawingId.Visible = false;
+                    }
+                    else
+                    {
+                        DrawingId.Visible = true;
+                    }
+                }
+                if (MenuName == "PlazmaCutting.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        PlazmaCuttingId.Visible = false;
+                    }
+                    else
+                    {
+                        PlazmaCuttingId.Visible = true;
+                    }
+                }
+                if (MenuName == "Fabrication.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        FabricationId.Visible = false;
+                    }
+                    else
+                    {
+                        FabricationId.Visible = true;
+                    }
+                }
+                if (MenuName == "Bending.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        BendingId.Visible = false;
+                    }
+                    else
+                    {
+                        BendingId.Visible = true;
+                    }
+                }
+                //Account section
+                if (MenuName == "Painting.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        PaintingId.Visible = false;
+                    }
+                    else
+                    {
+                        PaintingId.Visible = true;
+                    }
+                }
+                if (MenuName == "Packing.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        PackingId.Visible = false;
+                    }
+                    else
+                    {
+                        PackingId.Visible = true;
+                    }
+                }
+                if (MenuName == "Dispatch.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        DispatchId.Visible = false;
+                    }
+                    else
+                    {
+                        DispatchId.Visible = true;
+                    }
+                }
 
-    //            //Sales section
-    //            if (MenuName == "EnquiryList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    EnquiryID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    EnquiryID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "QuatationList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    GeneralQuotationListID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    GeneralQuotationListID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "CustomerPurchaseOrderList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    POCustomerID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    POCustomerID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "ProformaInvoiceList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    ProfarmaID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    ProfarmaID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "CallandMettingReport.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    CallandMeetingListID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    CallandMeetingListID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "DSRReports.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    DSRReports.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    DSRReports.Visible = true;
-    //                }
-    //            }
-    //            //Account section
-    //            if (MenuName == "TaxInvoiceList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    TaxInvoiceListid.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    TaxInvoiceListid.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "ApprovedInvoiceList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    ApprovedInvoiceListID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    ApprovedInvoiceListID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "ReceiptList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    ReceiptVoucherID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    ReceiptVoucherID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "CreditDebitNoteSaleList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    CreditDebitNoteSaleID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    CreditDebitNoteSaleID.Visible = true;
-    //                }
-    //            }
+                if (MenuName == "InwardEntry.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        InwardEntryId.Visible = false;
+                    }
+                    else
+                    {
+                        InwardEntryId.Visible = true;
+                    }
+                }
 
-    //            //Purchase Section
-    //            if (MenuName == "PurchaseOrderList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    PurchaseOrderID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    PurchaseOrderID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "PurchaseBillList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    PurchaseBillID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    PurchaseBillID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "PaymentList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    PaymentVoucherID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    PaymentVoucherID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "CreditDebitNoteList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    CreditDebitNotePurchaseID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    CreditDebitNotePurchaseID.Visible = true;
-    //                }
-    //            }
-    //            //Stock Panel
-    //            if (MenuName == "InventoryList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    InventryID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    InventryID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "InwardEntryList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    EnwardEntryID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    EnwardEntryID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "OutwardEntryList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    OutwardEntryID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    OutwardEntryID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "WarehouseInvoiceList.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    WarehouseInvoiceListID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    WarehouseInvoiceListID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "OAListForWarehouse.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    oaforwarehouseID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    oaforwarehouseID.Visible = true;
-    //                }
-    //            }
-    //            //Reports
-    //            if (MenuName == "SalesReport.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    SalesReportID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    SalesReportID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "PurchaseReport.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    PurchaseReportID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    PurchaseReportID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "BalanceQuantityReport.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    BalanceQuantityReportID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    BalanceQuantityReportID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "PartyLedgerReport.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    PartyLedgerReportID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    PartyLedgerReportID.Visible = true;
-    //                }
-    //            }
-    //            if (MenuName == "OutstandingReport.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    OutstandingReportID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    OutstandingReportID.Visible = true;
-    //                }
-    //            }
-    //            //Authorization
-    //            if (MenuName == "UserAuthorization.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    UserAuthorizationid.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    UserAuthorizationid.Visible = true;
-    //                }
-    //            }
-
-    //            //Audit log
-    //            if (MenuName == "AuditLogDashboard.aspx")
-    //            {
-    //                string page1 = row["Pages"].ToString();
-    //                string pageView = row["PagesView"].ToString();
-    //                if (page1 == "False" && pageView == "False")
-    //                {
-    //                    AuditlogID.Visible = false;
-    //                }
-    //                else
-    //                {
-    //                    AuditlogID.Visible = true;
-    //                }
-    //            }
-
-    //            //condition
-
-    //            if (UserListid.Visible == false && CompanyListid.Visible == false && ComponentID.Visible == false && RolelistID.Visible == false && ProductMasterListID.Visible == false && VendorMasterListid.Visible == false && TrasnportermasterID.Visible == false)
-    //            {
-    //                Mastersid.Visible = false;
-    //            }
-    //            if (EnquiryID.Visible == false && GeneralQuotationListID.Visible == false && POCustomerID.Visible == false && ProfarmaID.Visible == false && DSRReports.Visible == false && CallandMeetingListID.Visible == false)
-    //            {
-    //                Salesmarketing.Visible = false;
-    //            }
-    //            if (TaxInvoiceListid.Visible == false && ApprovedInvoiceListID.Visible == false && ReceiptVoucherID.Visible == false && CreditDebitNoteSaleID.Visible == false)
-    //            {
-    //                Accounts.Visible = false;
-    //            }
-    //            if (InventryID.Visible == false && EnwardEntryID.Visible == false && OutwardEntryID.Visible == false && WarehouseInvoiceListID.Visible == false)
-    //            {
-    //                Stock.Visible = false;
-    //            }
-
-    //            if (SalesReportID.Visible == false && PurchaseReportID.Visible == false && SalesReportID.Visible == false)
-    //            {
-    //                Reports.Visible = false;
-    //            }
-    //            if (PurchaseOrderID.Visible == false && PurchaseBillID.Visible == false && PaymentVoucherID.Visible == false && CreditDebitNotePurchaseID.Visible == false)
-    //            {
-    //                Purchase.Visible = false;
-    //            }
+                //Purchase Section
+                if (MenuName == "Inventory.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        InventoryId.Visible = false;
+                    }
+                    else
+                    {
+                        InventoryId.Visible = true;
+                    }
+                }
+                if (MenuName == "StoreList.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        StoreListId.Visible = false;
+                    }
+                    else
+                    {
+                        StoreListId.Visible = true;
+                    }
+                }
+                if (MenuName == "ReturnInventory.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        ReturnInventoryId.Visible = false;
+                    }
+                    else
+                    {
+                        ReturnInventoryId.Visible = true;
+                    }
+                }
+                if (MenuName == "UserAuthorization.aspx")
+                {
+                    string page1 = row["Pages"].ToString();
+                    string pageView = row["PagesView"].ToString();
+                    if (page1 == "False" && pageView == "False")
+                    {
+                        UserAuthorizationId.Visible = false;
+                    }
+                    else
+                    {
+                        UserAuthorizationId.Visible = true;
+                    }
+                }
 
 
-    //        }
-    //    }
-    //    else
-    //    {
+                if (Li1.Visible == false && Li2.Visible == false && companymasterid.Visible == false && componentmasterid.Visible == false && suppliermasterid.Visible == false && transportmastereID.Visible == false)
+                {
+                    MasterId.Visible = false;
+                }
+                if (Quotationlsit.Visible == false && oaid.Visible == false)
+                {
+                    SalesId.Visible = false;
+                }
+                if (DrawingId.Visible == false &&  ProdListId.Visible == false && PlazmaCuttingId.Visible == false && FabricationId.Visible == false && BendingId.Visible == false && PaintingId.Visible == false && PackingId.Visible == false && DispatchId.Visible == false)
+                {
+                    ProductionId.Visible = false;
+                }
+                if (InwardEntryId.Visible == false && InventoryId.Visible == false && StoreListId.Visible == false && ReturnInventoryId.Visible == false)
+                {
+                    StoreId.Visible = false;
+                }
+            }
+        }
+        else
+        {
+            Response.Redirect("~/Login.aspx");
+            Page.ClientScript.RegisterStartupScript(this.GetType(), "AlertScript", "alert('MyButton clicked!');", true);
 
-    //        //entry.Visible = false;
-    //        //entryhr.Visible = false;
-    //        //master.Visible = false;
-    //        //masterhr.Visible = false;
-    //        //saleshr.Visible = false;
-    //        //sales.Visible = false;
-    //        //evalhr.Visible = false;
-    //        //evalutionlist.Visible = false;
-    //        //popup.Visible = true;
-    //        //reporthr.Visible = false;
-    //        //report.Visible = false;
-
-    //        //string Role = Session["RoleName"].ToString();
-    //        //if (Role=="Admin")
-    //        //{
-    //        //    Response.Redirect("~/Admin/AdminDashboard.aspx");
-    //        //}
-    //        //else
-    //        //{
-    //        //    Response.Redirect("~/Login.aspx");
-    //        //}
-    //        Response.Redirect("~/Login.aspx");
-    //        Page.ClientScript.RegisterStartupScript(this.GetType(), "AlertScript", "alert('MyButton clicked!');", true);
-
-    //    }
-    //}
+        }
+    }
 }

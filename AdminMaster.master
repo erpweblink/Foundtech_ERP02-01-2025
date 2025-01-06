@@ -78,7 +78,7 @@
                                 href="../Dashboard.aspx">
                                 <i class="fas fa-home"></i>
                                 <p>Dashboard</p>
-                                <span class="caret"></span>
+                                <%--<span class="caret"></span>--%>
                             </a>
 
                         </li>
@@ -88,7 +88,7 @@
                             </span>
                             <h4 class="text-section">Components</h4>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" id="MasterId" runat="server">
                             <a data-bs-toggle="collapse" href="#base">
                                 <i class="fas fa-layer-group"></i>
                                 <p>Masters</p>
@@ -134,7 +134,7 @@
                                 </ul>
                             </div>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" id="SalesId" runat="server">
                             <a data-bs-toggle="collapse" href="#sidebarLayouts">
                                 <i class="fas fa-th-list"></i>
                                 <p>Sales Marketing</p>
@@ -172,7 +172,7 @@
                                 </ul>
                             </div>
                         </li>--%>
-                        <li class="nav-item">
+                        <li class="nav-item" id="ProductionId" runat="server">
                             <a data-bs-toggle="collapse" href="#maps">
                                 <i class="fas fa-map-marker-alt"></i>
                                 <p>Production</p>
@@ -180,42 +180,42 @@
                             </a>
                             <div class="collapse" id="maps">
                                 <ul class="nav nav-collapse">
-                                    <li>
+                                    <li id="ProdListId" runat="server">
                                         <a href="../Production/ProdListGPWise.aspx">
                                             <span class="sub-item">Production List</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li id="DrawingId" runat="server">
                                         <a href="../Production/DrawingDetails.aspx">
                                             <span class="sub-item">Drawing</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li id="PlazmaCuttingId" runat="server">
                                         <a href="../Production/PlazmaCutting.aspx">
                                             <span class="sub-item">Plazma Cutting</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li id="FabricationId" runat="server">
                                         <a href="../Production/Fabrication.aspx">
                                             <span class="sub-item">Fabrication</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li id="BendingId" runat="server">
                                         <a href="../Production/Bending.aspx">
                                             <span class="sub-item">Bending</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li id="PaintingId" runat="server">
                                         <a href="../Production/Painting.aspx">
                                             <span class="sub-item">Painting</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li id="PackingId" runat="server">
                                         <a href="../Production/Packing.aspx">
                                             <span class="sub-item">Packing</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li id="DispatchId" runat="server">
                                         <a href="../Production/Dispatch.aspx">
                                             <span class="sub-item">Dispatch</span>
                                         </a>
@@ -224,7 +224,7 @@
                                 </ul>
                             </div>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" id="StoreId" runat="server">
                             <a data-bs-toggle="collapse" href="#forms">
                                 <i class="fas fa-warehouse"></i>
                                 <p>Store</p>
@@ -232,22 +232,22 @@
                             </a>
                             <div class="collapse" id="forms">
                                 <ul class="nav nav-collapse">
-                                    <li>
+                                    <li id="InwardEntryId" runat="server">
                                         <a href="../Store/InwardEntry.aspx">
                                             <span class="sub-item">Inward Entry</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li id="InventoryId" runat="server">
                                         <a href="../Store/Inventory.aspx">
                                             <span class="sub-item">Inventory List</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li id="StoreListId" runat="server">
                                         <a href="../Store/StoreList.aspx">
                                             <span class="sub-item">Production Request List</span>
                                         </a>
                                     </li>
-                                    <li>
+                                    <li id="ReturnInventoryId" runat="server">
                                         <a href="../Store/ReturnInventory.aspx">
                                             <span class="sub-item">Return Inventory List</span>
                                         </a>
@@ -276,7 +276,7 @@
                                 </ul>
                             </div>
                         </li>--%>
-                        <li class="nav-item">
+                        <li class="nav-item" id="UserAuthorizationId" runat="server">
                             <a href="../Masters/UserAuthorization.aspx">
                                 <i class="fas fa-user"></i>
                                 <p>User Authorization</p>

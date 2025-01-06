@@ -151,7 +151,27 @@ public partial class Production_Dispatch : System.Web.UI.Page
                             break;
                     }
                 }
+                Label JobNo = e.Row.FindControl("JobNo") as Label;
 
+                if (JobNo != null)
+                {
+                    DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_DrawingDetails AS PD where JobNo='" + JobNo.Text + "'");
+
+                    LinkButton btndrawings = e.Row.FindControl("btndrawings") as LinkButton;
+
+                    if (btndrawings != null)
+                    {
+
+                        if (Dt.Rows.Count > 0)
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Green;
+                        }
+                        else
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Black;
+                        }
+                    }
+                }
             }
         }
         catch

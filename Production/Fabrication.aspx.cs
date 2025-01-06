@@ -162,6 +162,27 @@ public partial class Production_Fabrication : System.Web.UI.Page
                     }
                 }
 
+                Label JobNo = e.Row.FindControl("JobNo") as Label;
+
+                if (JobNo != null)
+                {
+                    DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_DrawingDetails AS PD where JobNo='" + JobNo.Text + "'");
+
+                    LinkButton btndrawings = e.Row.FindControl("btndrawings") as LinkButton;
+
+                    if (btndrawings != null)
+                    {
+                       
+                        if (Dt.Rows.Count > 0)
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Green;
+                        }
+                        else
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Black;
+                        }
+                    }
+                }
             }
         }
         catch
@@ -439,7 +460,7 @@ public partial class Production_Fabrication : System.Web.UI.Page
                 {
                     var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
                         " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
-                        " WHERE Pd.Stage = 'PlazmaCutting' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
+                        " WHERE Pd.Stage = 'Fabrication' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
                     if (data != null && data.Rows.Count > 0)
                     {
                         GVPurchase.DataSource = data;

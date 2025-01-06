@@ -646,7 +646,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         string Product = ((TextBox)row.FindControl("Product")).Text;
         string Description = ((TextBox)row.FindControl("Description")).Text;
         string Quantity = ((TextBox)row.FindControl("Quantity")).Text;
-        string Lenght = ((TextBox)row.FindControl("Lenght")).Text;
+        string Lenght = ((TextBox)row.FindControl("Length")).Text;
         string Weight = ((TextBox)row.FindControl("Weight")).Text;
         string TotalWeight = ((TextBox)row.FindControl("TotalWeight")).Text;
 

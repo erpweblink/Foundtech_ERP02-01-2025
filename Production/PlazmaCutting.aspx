@@ -230,33 +230,33 @@
 
 
 
-     <script type="text/javascript">
-         function downloadDWGFile(base64File, fileName) {
-             debugger;
+    <script type="text/javascript">
+        function downloadDWGFile(base64File, fileName) {
+            debugger;
 
-             if (!base64File || !fileName) {
-                 console.error("File data or file name is missing.");
-                 return;
-             }
+            if (!base64File || !fileName) {
+                console.error("File data or file name is missing.");
+                return;
+            }
 
-             var byteCharacters = atob(base64File); 
-             var byteArray = new Uint8Array(byteCharacters.length);
+            var byteCharacters = atob(base64File);
+            var byteArray = new Uint8Array(byteCharacters.length);
 
-            
-             for (var i = 0; i < byteCharacters.length; i++) {
-                 byteArray[i] = byteCharacters.charCodeAt(i);
-             }
 
-             var blob = new Blob([byteArray], { type: "application/octet-stream" });
+            for (var i = 0; i < byteCharacters.length; i++) {
+                byteArray[i] = byteCharacters.charCodeAt(i);
+            }
 
-             var link = document.createElement('a');
-             link.href = URL.createObjectURL(blob); 
-             link.download = fileName; 
+            var blob = new Blob([byteArray], { type: "application/octet-stream" });
 
-             document.body.appendChild(link);
-             link.click();
-             document.body.removeChild(link);
-         }
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
     </script>
 
 </asp:Content>
@@ -356,6 +356,11 @@
                                                                                 <asp:Label ID="Productname" runat="server" Text='<%#Eval("RowMaterial")%>' Enabled="false"></asp:Label>
                                                                             </ItemTemplate>
                                                                         </asp:TemplateField>
+                                                                        <asp:TemplateField HeaderText="Product Discription" HeaderStyle-CssClass="gvhead">
+                                                                            <ItemTemplate>
+                                                                                <asp:Label ID="ProdDiscript" runat="server" Text='<%#Eval("Discription")%>'></asp:Label>
+                                                                            </ItemTemplate>
+                                                                        </asp:TemplateField>
                                                                         <asp:TemplateField HeaderText="Delivery Date">
                                                                             <ItemTemplate>
                                                                                 <asp:Label ID="Deliverydate" runat="server" Text='<%# Eval("Deliverydate", "{0:dd-MM-yyyy}") %>'></asp:Label>
@@ -384,7 +389,7 @@
                                                                         </asp:TemplateField>
                                                                         <asp:TemplateField HeaderText="Drawings" ItemStyle-HorizontalAlign="Center">
                                                                             <ItemTemplate>
-                                                                                <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Container.DataItemIndex %>'><i class="fas fa-folder-open"  style="font-size: 26px; color:black; "></i></i></asp:LinkButton>
+                                                                                <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Container.DataItemIndex %>'><i class="fas fa-folder-open"  style="font-size: 26px;"></i></i></asp:LinkButton>
                                                                             </ItemTemplate>
                                                                         </asp:TemplateField>
                                                                         <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center">

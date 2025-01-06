@@ -340,6 +340,11 @@
                                                                             <asp:Label ID="Productname" runat="server" Text='<%#Eval("RowMaterial")%>' Enabled="false"></asp:Label>
                                                                         </ItemTemplate>
                                                                     </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Product Discription" HeaderStyle-CssClass="gvhead">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="ProdDiscript" runat="server" Text='<%#Eval("Discription")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
                                                                     <asp:TemplateField HeaderText="Delivery Date">
                                                                         <ItemTemplate>
                                                                             <asp:Label ID="Deliverydate" runat="server" Text='<%# Eval("DeleveryDate", "{0:dd-MM-yyyy}") %>'></asp:Label>
