@@ -450,11 +450,11 @@
                                         <asp:CheckBox ID="PlazmaCutting" Checked="true" runat="server" CssClass="form-check-input" />
                                         <label style="font-weight: bold">Plazma Cutting</label>&nbsp;&nbsp;&nbsp;
                                        
-                                        <asp:CheckBox ID="Fabrication" Checked="true" runat="server" CssClass="form-check-input" />
-                                        <label style="font-weight: bold">Fabrication</label>&nbsp;&nbsp;&nbsp;
-                                       
                                         <asp:CheckBox ID="Bending" Checked="true" runat="server" CssClass="form-check-input" />
                                         <label style="font-weight: bold">Bending</label>&nbsp;&nbsp;&nbsp;
+                                       
+                                        <asp:CheckBox ID="Fabrication" Checked="true" runat="server" CssClass="form-check-input" />
+                                        <label style="font-weight: bold">Fabrication</label>&nbsp;&nbsp;&nbsp;
                                        
                                         <asp:CheckBox ID="Painting" Checked="true" runat="server" CssClass="form-check-input" />
                                         <label style="font-weight: bold">Painting</label>&nbsp;&nbsp;&nbsp;

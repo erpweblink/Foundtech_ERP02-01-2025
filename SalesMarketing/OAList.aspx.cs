@@ -1,4 +1,5 @@
 ﻿
+using DocumentFormat.OpenXml.Office2010.Excel;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -71,15 +72,41 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
         if (e.CommandName == "RowDelete")
         {
             Cls_Main.Conn_Open();
-            SqlCommand Cmd = new SqlCommand("UPDATE [tbl_OrderAcceptanceHdr] SET IsDeleted=@IsDeleted,DeletedBy=@DeletedBy,DeletedOn=@DeletedOn WHERE ID=@ID", Cls_Main.Conn);
-            Cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(e.CommandArgument.ToString()));
-            Cmd.Parameters.AddWithValue("@IsDeleted", '1');
-            Cmd.Parameters.AddWithValue("@DeletedBy", Session["UserCode"].ToString());
-            Cmd.Parameters.AddWithValue("@DeletedOn", DateTime.Now);
-            Cmd.ExecuteNonQuery();
+
+            DataTable Dtt = new DataTable();
+            SqlDataAdapter Sdd = new SqlDataAdapter("SELECT * FROM tbl_ProductionDTLS WHERE Oanumber='" + e.CommandArgument.ToString() + "'", con);
+            Sdd.Fill(Dtt);
+            if (Dtt.Rows.Count == 0)
+            {
+
+                SqlCommand Cmd = new SqlCommand("DELETE [tbl_OrderAcceptanceHdr] WHERE pono=@ID", Cls_Main.Conn);
+                Cmd.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
+                Cmd.ExecuteNonQuery();
+
+                SqlCommand Cmd1 = new SqlCommand("DELETE [tbl_OrderAcceptancedtls] WHERE pono=@ID", Cls_Main.Conn);
+                Cmd1.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
+                Cmd1.ExecuteNonQuery();
+
+                SqlCommand Cmd2 = new SqlCommand("DELETE [tbl_ProductionHDR] WHERE oanumber=@ID", Cls_Main.Conn);
+                Cmd2.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
+                Cmd2.ExecuteNonQuery();
+
+                //SqlCommand Cmd = new SqlCommand("UPDATE [tbl_OrderAcceptanceHdr] SET IsDeleted=@IsDeleted,DeletedBy=@DeletedBy,DeletedOn=@DeletedOn WHERE ID=@ID", Cls_Main.Conn);
+                //Cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(e.CommandArgument.ToString()));
+                //Cmd.Parameters.AddWithValue("@IsDeleted", '1');
+                //Cmd.Parameters.AddWithValue("@DeletedBy", Session["UserCode"].ToString());
+                //Cmd.Parameters.AddWithValue("@DeletedOn", DateTime.Now);
+                //  Cmd.ExecuteNonQuery();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Order Acceptance Deleted Successfully..!!')", true);
+                FillGrid();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('You cannot delete the records it is already in production..!!')", true);
+            }
+
             Cls_Main.Conn_Close();
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Order Acceptance Deleted Successfully..!!')", true);
-            FillGrid();
         }
         if (e.CommandName == "RowView")
         {
@@ -104,7 +131,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
                         Response.Clear();
                         DateTime now = DateTime.Today;
-                        string filename = "ProjectDetails_" + now.ToString("dd-MM-yyyy"); 
+                        string filename = "ProjectDetails_" + now.ToString("dd-MM-yyyy");
                         Response.AddHeader("content-disposition", "attachment; filename=" + filename + ".xls");
                         Response.ContentType = "application/vnd.ms-excel";
 
@@ -176,7 +203,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                     btnCreate.Visible = false;
                     //GVQuotation.Columns[15].Visible = false;
                     btnEdit.Visible = false;
-                    btnDelete.Visible = false;
+                    //btnDelete.Visible = false;
                 }
             }
         }
@@ -477,10 +504,10 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
         foreach (DataRow row in Dt.Rows)
         {
             string PID = null;
-             PID = row["PID"].ToString();
+            PID = row["PID"].ToString();
             Cls_Main.Conn_Open();
             SqlCommand cmd = new SqlCommand("SP_ProductionDept", Cls_Main.Conn);
-            cmd.CommandType = CommandType.StoredProcedure; 
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@ID", PID);
             cmd.Parameters.AddWithValue("@MainId", ID);
             cmd.Parameters.AddWithValue("@Createdby", Session["UserCode"].ToString());
@@ -488,7 +515,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             cmd.ExecuteNonQuery();
             Cls_Main.Conn_Close();
             Cls_Main.Conn_Dispose();
-           
+
         }
         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('OA Send to Production Successfully..!!');window.location='OAList.aspx'; ", true);
 

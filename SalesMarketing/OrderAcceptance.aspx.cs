@@ -65,17 +65,48 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
     }
     protected void POCode()
     {
-        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([ID]) as maxid FROM [tbl_OrderAcceptanceHdr]", Cls_Main.Conn);
+        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([pono]) as maxid FROM [tbl_OrderAcceptanceHdr]", Cls_Main.Conn);
         DataTable dt = new DataTable();
         ad.Fill(dt);
         if (dt.Rows.Count > 0)
         {
-            int maxid = dt.Rows[0]["maxid"].ToString() == "" ? 0 : Convert.ToInt32(dt.Rows[0]["maxid"].ToString());
-            txtpono.Text = "FTECH/OA-" + (maxid + 1).ToString();
+
+            //int maxid = dt.Rows[0]["maxid"].ToString() == "" ? 0 : Convert.ToInt32(dt.Rows[0]["maxid"].ToString());
+            //txtpono.Text = "FTECH/OA-" + (maxid + 1).ToString();
+
+            string maxPONo = dt.Rows[0]["maxid"].ToString();
+            if (!string.IsNullOrEmpty(maxPONo))
+            {
+
+                string[] parts = maxPONo.Split('-');
+                if (parts.Length == 2)
+                {
+                    int maxid;
+                    if (int.TryParse(parts[1], out maxid))
+                    {
+                        txtpono.Text = "FTECH/OA-" + (maxid + 1).ToString();
+                    }
+                    else
+                    {
+
+                        txtpono.Text = "FTECH/OA-1";
+                    }
+                }
+                else
+                {
+
+                    txtpono.Text = "FTECH/OA-1";
+                }
+
+            }
+            else
+            {
+                txtpono.Text = "FTECH/OA-1";
+            }
         }
         else
         {
-            txtpono.Text = string.Empty;
+            txtpono.Text = "FTECH/OA-1";
         }
     }
     //Data Fetch
@@ -277,7 +308,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
                         cmd.Parameters.AddWithValue("@GSTNo", txtgstno.Text);
                         cmd.Parameters.AddWithValue("@PANNo", txtpanno.Text);
-                        cmd.Parameters.AddWithValue("@UserName", txtUserName.Text);
+                        cmd.Parameters.AddWithValue("@UserName", Session["usercode"].ToString());
                         //if (ddlUser.SelectedValue == "-- Select User Name--")
                         //{
                         //    cmd.Parameters.AddWithValue("@UserName", Session["UserCode"].ToString());
@@ -386,7 +417,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@Remarks", txtremark.Text);
 
                         cmd.Parameters.AddWithValue("@Paymentterm", txtpaymentterm.Text);
-                        cmd.Parameters.AddWithValue("@UserName", txtUserName.Text);
+                        cmd.Parameters.AddWithValue("@UserName", Session["usercode"].ToString());
                         //if (ddlUser.SelectedValue == "-- Select User Name--")
                         //{
                         //    cmd.Parameters.AddWithValue("@UserName", Session["UserCode"].ToString());
