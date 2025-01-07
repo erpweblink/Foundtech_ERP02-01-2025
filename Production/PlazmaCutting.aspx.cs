@@ -1,5 +1,6 @@
 ﻿
 using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Activities.Expressions;
 using System.Collections.Generic;
@@ -190,8 +191,6 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
                         }
                     }
                 }
-
-
             }
         }
         catch
@@ -222,13 +221,10 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
                 if (dt.Rows.Count > 0)
                 {
                     string fileName = dt.Rows[0]["FileName"].ToString();
+                    string fileExtension = Path.GetExtension(fileName);
 
-                    if (!string.IsNullOrEmpty(fileName))
-                    {    // Old Code 
-                         // Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
-                         // End
-
-
+                    if (fileExtension == ".dwg")
+                    {
                         //New Code by Nikhil 04-01-2025
                         string filePath = Server.MapPath("~/Drawings/" + fileName);
 
@@ -244,7 +240,8 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
                     }
                     else
                     {
-                        //lblnotfound.Text = "File Not Found or Not Available !!";
+                        //Old Code 
+                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
                     }
                 }
                 else

@@ -1,4 +1,5 @@
 ﻿
+using DocumentFormat.OpenXml.Office.Word;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -50,7 +51,7 @@ public partial class Production_Packing : System.Web.UI.Page
 
     protected void GVPurchase_RowCommand(object sender, GridViewCommandEventArgs e)
     {
- 
+
         if (e.CommandName == "Rowwarehouse")
         {
             //this.ModalPopupExtender1.Show();
@@ -211,14 +212,27 @@ public partial class Production_Packing : System.Web.UI.Page
                 ad.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
-                    //Response.Write(dt.Rows[0]["Path"].ToString());
-                    if (!string.IsNullOrEmpty(dt.Rows[0]["FileName"].ToString()))
+                    string fileName = dt.Rows[0]["FileName"].ToString();
+                    string fileExtension = Path.GetExtension(fileName);
+
+                    if (fileExtension == ".dwg")
                     {
-                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
+                        //New Code by Nikhil 04-01-2025
+                        string filePath = Server.MapPath("~/Drawings/" + fileName);
+
+                        if (File.Exists(filePath))
+                        {
+                            byte[] fileBytes = File.ReadAllBytes(filePath);
+                            string base64File = Convert.ToBase64String(fileBytes);
+                            string safeBase64File = base64File.Replace("'", @"\'");
+                            string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
+
+                        }
                     }
                     else
                     {
-                        //lblnotfound.Text = "File Not Found or Not Available !!";
+                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
                     }
                 }
                 else
@@ -236,6 +250,41 @@ public partial class Production_Packing : System.Web.UI.Page
     {
         try
         {
+            if (AttachmentUpload.HasFile)
+            {
+                string fileName = Path.GetFileName(AttachmentUpload.PostedFile.FileName);
+                byte[] fileContent;
+                using (Stream fs = AttachmentUpload.PostedFile.InputStream)
+                {
+                    using (BinaryReader br = new BinaryReader(fs))
+                    {
+                        fileContent = br.ReadBytes((int)fs.Length);
+                    }
+                }
+
+                lblfile1.Text = fileName;
+                string[] pdffilename = lblfile1.Text.Split('.');
+                string pdffilename1 = pdffilename[0];
+                string filenameExt = pdffilename[1];
+
+                string filePath = Server.MapPath("~/Drawings/") + pdffilename1 + "." + filenameExt;
+
+                // Save the file to the specified path
+                System.IO.File.WriteAllBytes(filePath, fileContent);
+
+
+                con.Open();
+                SqlCommand cmd = new SqlCommand(" UPDATE tbl_ProductionHDR SET FilePath = @filePath,FileAddedBy = @createdby," +
+                    " FileAddedDate = @createdon WHERE JobNo = @jobNo ", con);
+                    cmd.Parameters.AddWithValue("@jobNo", txtjobno.Text);
+                    cmd.Parameters.AddWithValue("@filePath", fileName);
+                    cmd.Parameters.AddWithValue("@createdby", Session["usercode"].ToString());
+                    cmd.Parameters.AddWithValue("@createdon", DateTime.Now);
+                cmd.ExecuteNonQuery();
+                con.Close();
+            }
+          
+
             if (txtoutwardqty.Text != null && txtoutwardqty.Text != "" && txtpending.Text != "")
             {
                 if (Convert.ToDouble(txtpending.Text) + 1 > Convert.ToDouble(txtoutwardqty.Text))
@@ -251,7 +300,7 @@ public partial class Production_Packing : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@PendingQty", Convert.ToDouble(txtpending.Text));
                     cmd.Parameters.AddWithValue("@Remark", txtRemarks.Text);
                     cmd.Parameters.AddWithValue("@UserCode", Session["UserCode"].ToString());
-                    cmd.ExecuteNonQuery();
+                   // cmd.ExecuteNonQuery();
                     Cls_Main.Conn_Close();
                     Cls_Main.Conn_Dispose();
 

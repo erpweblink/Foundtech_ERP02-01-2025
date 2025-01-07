@@ -220,6 +220,32 @@
             $(this).closest("tr").next().remove();
         });
     </script>
+    <script type="text/javascript">
+        function downloadDWGFile(base64File, fileName) {
+            if (!base64File || !fileName) {
+                console.error("File data or file name is missing.");
+                return;
+            }
+
+            var byteCharacters = atob(base64File);
+            var byteArray = new Uint8Array(byteCharacters.length);
+
+
+            for (var i = 0; i < byteCharacters.length; i++) {
+                byteArray[i] = byteCharacters.charCodeAt(i);
+            }
+
+            var blob = new Blob([byteArray], { type: "application/octet-stream" });
+
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+  </script>
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">

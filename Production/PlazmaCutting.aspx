@@ -232,8 +232,6 @@
 
     <script type="text/javascript">
         function downloadDWGFile(base64File, fileName) {
-            debugger;
-
             if (!base64File || !fileName) {
                 console.error("File data or file name is missing.");
                 return;

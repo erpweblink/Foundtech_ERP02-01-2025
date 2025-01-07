@@ -200,14 +200,27 @@ public partial class Production_Dispatch : System.Web.UI.Page
                 ad.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
-                    //Response.Write(dt.Rows[0]["Path"].ToString());
-                    if (!string.IsNullOrEmpty(dt.Rows[0]["FileName"].ToString()))
+                    string fileName = dt.Rows[0]["FileName"].ToString();
+
+                    string fileExtension = Path.GetExtension(fileName);
+
+                    if (fileExtension == ".dwg")
                     {
-                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
+                        //New Code by Nikhil 04-01-2025
+                        string filePath = Server.MapPath("~/Drawings/" + fileName);
+
+                        if (File.Exists(filePath))
+                        {
+                            byte[] fileBytes = File.ReadAllBytes(filePath);
+                            string base64File = Convert.ToBase64String(fileBytes);
+                            string safeBase64File = base64File.Replace("'", @"\'");
+                            string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
+                        }
                     }
                     else
                     {
-                        //lblnotfound.Text = "File Not Found or Not Available !!";
+                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
                     }
                 }
                 else

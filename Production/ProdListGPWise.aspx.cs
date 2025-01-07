@@ -78,13 +78,41 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {               
-                Label jobno = e.Row.FindControl("jobno") as Label;
+                Label JobNo = e.Row.FindControl("jobno") as Label;
+
+                if (JobNo != null)
+                {
+                    DataTable Dt = Cls_Main.Read_Table("SELECT FilePath FROM tbl_ProductionHDR  where JobNo ='" + JobNo.Text + "'");
+
+                    LinkButton btndrawings = e.Row.FindControl("btndrawings") as LinkButton;
+
+                    if (btndrawings != null)
+                    {
+
+                        if (Dt.Rows.Count > 0)
+                        {
+                            string fileName = Dt.Rows[0]["FilePath"].ToString();
+
+                            if (fileName != "")
+                            {
+                                btndrawings.ForeColor = System.Drawing.Color.Green;
+                            }
+                            else
+                            {
+                                btndrawings.ForeColor = System.Drawing.Color.Black;
+                            }
+                        }
+                        else
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Black;
+                        }
+                    }
+                }
+
 
                 GridView gvDetails = e.Row.FindControl("gvDetails") as GridView;
-                gvDetails.DataSource = GetData(string.Format("select *,CONVERT(bigint,InwardQTY)-CONVERT(bigint,OutwardQTY) AS Pending from tbl_ProductionDTLS where JobNo='{0}'", jobno.Text));
+                gvDetails.DataSource = GetData(string.Format("select *,CONVERT(bigint,InwardQTY)-CONVERT(bigint,OutwardQTY) AS Pending from tbl_ProductionDTLS where JobNo='{0}'", JobNo.Text));
                 gvDetails.DataBind();
-
-
             }
         }
         catch (Exception ex)
@@ -93,6 +121,15 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
         }
     }
 
+
+    protected void GVPurchase_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if(e.CommandName == "DrawingFiles")
+        {
+            Response.Redirect("~/Drawings/" + e.CommandArgument.ToString());
+        }
+
+    }
     //Search Company Search methods
     [System.Web.Script.Services.ScriptMethod()]
     [System.Web.Services.WebMethod]
@@ -428,4 +465,6 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
         }
     }
+
+   
 }

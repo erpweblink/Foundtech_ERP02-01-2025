@@ -53,7 +53,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
             DivWarehouse.Visible = true;
             divtable.Visible = false;
 
-           string rowIndex = e.CommandArgument.ToString();
+            string rowIndex = e.CommandArgument.ToString();
 
             GridViewRow row = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
             GridView gvPurchase = (GridView)row.FindControl("GVPurchase");
@@ -75,6 +75,12 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
             string JobNo = ((Label)row.FindControl("jobno")).Text;
             string Productname = ((Label)row.FindControl("Productname")).Text;
 
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_DrawingDetails where JobNo='" + JobNo + "'");
+            if (Dt.Rows.Count > 0)
+            {
+                rptImages.DataSource = Dt;
+                rptImages.DataBind();
+            }
             txtcustomername.Text = CustomerName;
             txtProductname.Text = Productname;
             txttotalqty.Text = Total_Price;
@@ -86,7 +92,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
     protected void GVPurchase_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
-       // GVPurchase.PageIndex = e.NewPageIndex;
+        // GVPurchase.PageIndex = e.NewPageIndex;
         FillGrid();
     }
 
@@ -146,21 +152,35 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
         {
             using (SqlCommand cmd = new SqlCommand())
             {
-                string CmdText = "select filePath from tbl_ProductionDTLS where JobNo='" + id + "' AND StageNumber='0'";
+                string CmdText = "select FileName from tbl_DrawingDetails where Id='" + id + "'";
 
                 SqlDataAdapter ad = new SqlDataAdapter(CmdText, con);
                 DataTable dt = new DataTable();
                 ad.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
-                    //Response.Write(dt.Rows[0]["Path"].ToString());
-                    if (!string.IsNullOrEmpty(dt.Rows[0]["filePath"].ToString()))
+                    string fileName = dt.Rows[0]["FileName"].ToString();
+                    string fileExtension = Path.GetExtension(fileName);
+
+                    if (fileExtension == ".dwg")
                     {
-                        Response.Redirect("~/Drawings/" + dt.Rows[0]["filePath"].ToString());
+                        //New Code by Nikhil 04-01-2025
+                        string filePath = Server.MapPath("~/Drawings/" + fileName);
+
+                        if (File.Exists(filePath))
+                        {
+                            byte[] fileBytes = File.ReadAllBytes(filePath);
+                            string base64File = Convert.ToBase64String(fileBytes);
+                            string safeBase64File = base64File.Replace("'", @"\'");
+                            string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
+
+                        }
                     }
                     else
                     {
-                        //lblnotfound.Text = "File Not Found or Not Available !!";
+                        //Old Code 
+                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
                     }
                 }
                 else
@@ -288,7 +308,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
     }
 
-  
+
     protected void btnWarehousedata_Click(object sender, EventArgs e)
     {
         Cls_Main.Conn_Open();
@@ -587,4 +607,5 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
     {
 
     }
+
 }

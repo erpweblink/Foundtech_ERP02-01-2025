@@ -213,7 +213,7 @@
                                     </li>
                                     <li id="PackingId" runat="server">
                                         <a href="../Production/Packing.aspx">
-                                            <span class="sub-item">Packing</span>
+                                            <span class="sub-item">Quality</span>
                                         </a>
                                     </li>
                                     <li id="DispatchId" runat="server">

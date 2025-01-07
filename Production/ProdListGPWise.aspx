@@ -281,7 +281,7 @@
                                     </asp:AutoCompleteExtender>
                                 </div>
                             </div>
-                           
+
                             <div class="col-md-1" style="margin-top: 36px">
                                 <asp:LinkButton ID="btnrefresh" runat="server" OnClick="btnrefresh_Click" Width="100%" CssClass="form-control btn btn-warning"><i style="color:white" class="fa">&#xf021;</i> </asp:LinkButton>
                             </div>
@@ -299,7 +299,7 @@
                                                 <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
                                                 <asp:Panel ID="pnlOrders" runat="server" Style="display: none">
                                                     <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="id,JobNo" Width="100%" OnRowDataBound="GVPurchase_RowDataBound"
-                                                        CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
+                                                        OnRowCommand="GVPurchase_RowCommand" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
                                                         <Columns>
                                                             <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
                                                                 <ItemTemplate>
@@ -349,7 +349,7 @@
                                                                 </ItemTemplate>
                                                             </asp:TemplateField>
 
-                                                             <asp:TemplateField HeaderText="Product Discription" HeaderStyle-CssClass="gvhead">
+                                                            <asp:TemplateField HeaderText="Product Discription" HeaderStyle-CssClass="gvhead">
                                                                 <ItemTemplate>
                                                                     <asp:Label ID="ProdDiscript" runat="server" Text='<%#Eval("Discription")%>'></asp:Label>
                                                                 </ItemTemplate>
@@ -363,6 +363,11 @@
                                                             <asp:TemplateField HeaderText="Total Quantity" HeaderStyle-CssClass="gvhead">
                                                                 <ItemTemplate>
                                                                     <asp:Label ID="Total_Price" runat="server" Text='<%#Eval("TotalQuantity")%>'></asp:Label>
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Quality File" ItemStyle-HorizontalAlign="Center">
+                                                                <ItemTemplate>
+                                                                    <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Eval("FilePath") %>'><i class="fas fa-folder-open"  style="font-size: 26px;"></i></i></asp:LinkButton>
                                                                 </ItemTemplate>
                                                             </asp:TemplateField>
                                                         </Columns>

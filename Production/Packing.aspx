@@ -221,10 +221,36 @@
             $(this).closest("tr").next().remove();
         });
     </script>
+    <script type="text/javascript">
+        function downloadDWGFile(base64File, fileName) {
+            if (!base64File || !fileName) {
+                console.error("File data or file name is missing.");
+                return;
+            }
+
+            var byteCharacters = atob(base64File);
+            var byteArray = new Uint8Array(byteCharacters.length);
+
+
+            for (var i = 0; i < byteCharacters.length; i++) {
+                byteArray[i] = byteCharacters.charCodeAt(i);
+            }
+
+            var blob = new Blob([byteArray], { type: "application/octet-stream" });
+
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+  </script>
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
-    <form id="form1" runat="server">
+    <form id="form1" runat="server" enctype="multipart/form-data">
         <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
         </asp:ToolkitScriptManager>
 
@@ -237,7 +263,7 @@
                     <br />
                     <div class="row">
                         <div class="col-9 col-md-10">
-                            <h4 class="mt-4 "><b>PACKING LIST</b></h4>
+                            <h4 class="mt-4 "><b>QUALITY LIST</b></h4>
                         </div>
                     </div>
                     <hr />
@@ -297,7 +323,7 @@
                                                         <ItemTemplate>
                                                             <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
                                                             <asp:Panel ID="pnlOrders" runat="server" Style="display: none">
-                                                                <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,JobNo,Remark,OutwardQTY" PageSize="10" AllowPaging="true" Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
+                                                                <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,JobNo,Remark,OutwardQTY"  Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
                                                                     OnRowCommand="GVPurchase_RowCommand" OnPageIndexChanging="GVPurchase_PageIndexChanging" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
                                                                     <Columns>
                                                                         <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center">
@@ -464,9 +490,12 @@
                                                 <asp:Label ID="Label2" runat="server" Font-Bold="true" CssClass="form-label">Outward QTY:</asp:Label>
                                                 <asp:TextBox ID="txtoutwardqty" CssClass="form-control" placeholder="Enter Outward QTY" TextMode="Number" runat="server"></asp:TextBox>
                                             </div>
+                                            <div class="col-md-6 col-12 mb-3">
+                                                <asp:Label ID="Label18" runat="server" Font-Bold="true" CssClass="form-label">Upload File:</asp:Label>
+                                                <asp:FileUpload ID="AttachmentUpload" runat="server" CssClass="form-control" />
+                                                <asp:Label ID="lblfile1" runat="server" Font-Bold="true" ForeColor="blue" Text=""></asp:Label>
 
-
-
+                                            </div>
                                             <div class="col-md-6 col-12 mb-3">
                                                 <asp:Label ID="Label3" runat="server" Font-Bold="true" CssClass="form-label">Remarks:</asp:Label>
                                                 <asp:TextBox ID="txtRemarks" CssClass="form-control" placeholder="Enter Remark" TextMode="MultiLine" runat="server"></asp:TextBox>
@@ -780,6 +809,9 @@
                         </div>
                     </div>
             </ContentTemplate>
+            <Triggers>
+                <asp:PostBackTrigger ControlID="btnSendtopro" />
+            </Triggers>
         </asp:UpdatePanel>
     </form>
 

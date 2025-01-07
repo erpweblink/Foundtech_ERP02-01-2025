@@ -238,6 +238,32 @@
             $(this).closest("tr").next().remove();
         });
     </script>
+    <script type="text/javascript">
+        function downloadDWGFile(base64File, fileName) {
+            if (!base64File || !fileName) {
+                console.error("File data or file name is missing.");
+                return;
+            }
+
+            var byteCharacters = atob(base64File);
+            var byteArray = new Uint8Array(byteCharacters.length);
+
+
+            for (var i = 0; i < byteCharacters.length; i++) {
+                byteArray[i] = byteCharacters.charCodeAt(i);
+            }
+
+            var blob = new Blob([byteArray], { type: "application/octet-stream" });
+
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+ </script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <form id="form1" runat="server" enctype="multipart/form-data">
@@ -444,6 +470,21 @@
                                             <div class="col-md-6 col-12 mb-3">
                                                 <asp:Label ID="Label2" runat="server" Font-Bold="true" CssClass="form-label">Outward QTY:</asp:Label>
                                                 <asp:TextBox ID="txtoutwardqty" CssClass="form-control" ReadOnly="true" placeholder="Enter Outward QTY" TextMode="Number" runat="server"></asp:TextBox>
+                                            </div>
+
+                                            <div class="row">
+                                                <asp:Repeater ID="rptImages" runat="server">
+                                                    <ItemTemplate>
+                                                        <div class="col-md-6 col-12 mb-3">
+                                                            <div class="image-item">
+                                                                <!-- Display the image -->
+                                                                <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("Id") %>' ToolTip="Open File" />
+                                                                <asp:Label ID="Label14" runat="server" Font-Bold="true" Text="Name : " CssClass="form-label"></asp:Label>
+                                                                <asp:Label ID="Label4" runat="server" Font-Bold="true" Text='<%# Eval("FileName") %>' CssClass="form-label"></asp:Label>
+                                                            </div>
+                                                        </div>
+                                                    </ItemTemplate>
+                                                </asp:Repeater>
                                             </div>
                                             <%--   <div class="col-md-6 mb-3" runat="server" visible="false">
                                                 <asp:HiddenField ID="HFfile1" runat="server" />
