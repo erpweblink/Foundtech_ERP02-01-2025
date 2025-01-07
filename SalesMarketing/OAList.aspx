@@ -154,13 +154,13 @@
                                     </asp:AutoCompleteExtender>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 d-none">
                                 <asp:Label ID="lblfromdate" runat="server" Font-Bold="true" Text="From Date :"></asp:Label>
                                 <div style="margin-top: 14px;">
                                     <asp:TextBox ID="txtfromdate" Placeholder="Enter From Date" runat="server" TextMode="Date" AutoComplete="off" CssClass="form-control"></asp:TextBox>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 d-none">
                                 <asp:Label ID="lbltodate" runat="server" Font-Bold="true" Text="To Date :"></asp:Label>
                                 <div style="margin-top: 14px;">
                                     <asp:TextBox ID="txttodate" Placeholder="Enter To Date" runat="server" TextMode="Date" AutoComplete="off" CssClass="form-control"></asp:TextBox>
