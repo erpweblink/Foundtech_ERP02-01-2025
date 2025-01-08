@@ -253,7 +253,7 @@
                                     <div class="table">
                                         <br />
                                         <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,InwardNo" Width="100%"
-                                            OnRowCommand="GVPurchase_RowCommand" OnPageIndexChanging="GVPurchase_PageIndexChanging" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
+                                            OnRowCommand="GVPurchase_RowCommand" OnRowDataBound="GVPurchase_RowDataBound" OnPageIndexChanging="GVPurchase_PageIndexChanging" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
                                             <Columns>
                                                 <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>

@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 public partial class Production_DrawingDetails : System.Web.UI.Page
@@ -102,36 +103,29 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
+                LinkButton btnEdit = e.Row.FindControl("btnEdit") as LinkButton;
 
-                Label lblStatus = e.Row.FindControl("Status") as Label;
-
-                if (lblStatus != null)
+                if (btnEdit != null)
                 {
-                    string statusCode = lblStatus.Text;
-
-                    // Update the status text based on the status code
-                    switch (statusCode)
+                    string empcode = Session["UserCode"].ToString();
+                    DataTable Dt = new DataTable();
+                    SqlDataAdapter Sd = new SqlDataAdapter("Select ID from tbl_UserMaster where UserCode='" + empcode + "'", con);
+                    Sd.Fill(Dt);
+                    if (Dt.Rows.Count > 0)
                     {
-                        case "0":
-                            lblStatus.Text = "Pending";
-                            lblStatus.ForeColor = System.Drawing.Color.Orange;
-                            break;
-                        case "1":
-                            lblStatus.Text = "In-Process";
-                            lblStatus.ForeColor = System.Drawing.Color.Blue;
-                            break;
-                        case "2":
-                            lblStatus.Text = "Completed";
-                            lblStatus.ForeColor = System.Drawing.Color.Green;
-                            break;
-                        default:
-                            lblStatus.Text = "Unknown";
-                            lblStatus.ForeColor = System.Drawing.Color.Gray;
-                            break;
+                        string id = Dt.Rows[0]["ID"].ToString();
+                        DataTable Dtt = new DataTable();
+                        SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM tblUserRoleAuthorization where UserID = '" + id + "' AND PageName = 'DrawingDetails.aspx' AND PagesView = '1'", con);
+                        Sdd.Fill(Dtt);
+                        if (Dtt.Rows.Count > 0)
+                        {
+                            btnEdit.Enabled = false;
+                        }
                     }
                 }
-
+               
             }
+           
         }
         catch
         {

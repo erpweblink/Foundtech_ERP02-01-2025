@@ -141,32 +141,31 @@ public partial class Store_InwardEntry : System.Web.UI.Page
     {
         try
         {
-            //if (e.Row.RowType == DataControlRowType.DataRow)
-            //{
-            //    Label InwardQty = e.Row.FindControl("InwardQty") as Label;
-            //    Label OutwardQty = e.Row.FindControl("OutwardQty") as Label;
-            //    Label DefectedQty = e.Row.FindControl("DefectedQty") as Label;
-            //    LinkButton btnoutward = (LinkButton)e.Row.FindControl("btnoutward");
-            //    LinkButton btnEdit = (LinkButton)e.Row.FindControl("btnEdit");
-            //    LinkButton btnDelete = (LinkButton)e.Row.FindControl("btnDelete");
+            //Authorization
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                LinkButton btnEdit = e.Row.FindControl("btnEdit") as LinkButton;
+                LinkButton btnDelete = e.Row.FindControl("btnDelete") as LinkButton;
 
-            //    Double total = Convert.ToDouble(OutwardQty.Text) + Convert.ToDouble(DefectedQty.Text);
-            //    if (Convert.ToDouble(InwardQty.Text) == total)
-            //    {
-            //        //e.Row.BackColor = System.Drawing.Color.LightPink;
-            //        btnoutward.Visible = false;
-            //    }
-
-            //    if (OutwardQty.Text != "0" || DefectedQty.Text != "0")
-            //    {
-            //        btnEdit.Visible = false;
-            //        btnDelete.Visible = false;
-            //    }
-            //    Label Inwardno = e.Row.FindControl("Inwardno") as Label;
-            //    GridView gvDetails = e.Row.FindControl("gvDetails") as GridView;
-            //    gvDetails.DataSource = GetData(string.Format("select * from tbl_LM_Defects where InwardNo='{0}'", Inwardno.Text));
-            //    gvDetails.DataBind();
-            //}
+                string empcode = Session["UserCode"].ToString();
+                DataTable Dt = new DataTable();
+                SqlDataAdapter Sd = new SqlDataAdapter("Select ID from tbl_UserMaster where UserCode='" + empcode + "'", con);
+                Sd.Fill(Dt);
+                if (Dt.Rows.Count > 0)
+                {
+                    string id = Dt.Rows[0]["ID"].ToString();
+                    DataTable Dtt = new DataTable();
+                    SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM tblUserRoleAuthorization where UserID = '" + id + "' AND PageName = 'InwardEntry.aspx' AND PagesView = '1'", con);
+                    Sdd.Fill(Dtt);
+                    if (Dtt.Rows.Count > 0)
+                    {
+                        btnCreate.Visible = false;
+                        GVPurchase.Columns[11].Visible = false;
+                        btnEdit.Visible = false;
+                        btnDelete.Visible = false;
+                    }
+                }
+            }
         }
         catch
         {

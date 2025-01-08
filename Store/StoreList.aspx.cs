@@ -89,8 +89,6 @@ public partial class Store_StoreList : System.Web.UI.Page
 
     public void GetstoreList()
     {
-
-
         try
         {
             SqlCommand cmd = new SqlCommand("SP_StoreDeatils", con);
@@ -267,5 +265,42 @@ public partial class Store_StoreList : System.Web.UI.Page
             this.ModalPopupHistory.Show();
         }
         catch { }
+    }
+
+    protected void GVPurchase_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        try
+        {
+            //Authorization
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                LinkButton btnEdit = e.Row.FindControl("btnEdit") as LinkButton;
+                LinkButton btnDelete = e.Row.FindControl("btnDelete") as LinkButton;
+                LinkButton Lnkcancel = e.Row.FindControl("Lnkcancel") as LinkButton;
+
+                string empcode = Session["UserCode"].ToString();
+                DataTable Dt = new DataTable();
+                SqlDataAdapter Sd = new SqlDataAdapter("Select ID from tbl_UserMaster where UserCode='" + empcode + "'", con);
+                Sd.Fill(Dt);
+                if (Dt.Rows.Count > 0)
+                {
+                    string id = Dt.Rows[0]["ID"].ToString();
+                    DataTable Dtt = new DataTable();
+                    SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM tblUserRoleAuthorization where UserID = '" + id + "' AND PageName = 'StoreList.aspx' AND PagesView = '1'", con);
+                    Sdd.Fill(Dtt);
+                    if (Dtt.Rows.Count > 0)
+                    {
+                        GVPurchase.Columns[10].Visible = false;
+                        btnEdit.Visible = false;
+                        btnDelete.Visible = false;
+                        Lnkcancel.Visible = false;
+                    }
+                }
+            }
+        }
+        catch
+        {
+
+        }
     }
 }

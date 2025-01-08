@@ -127,7 +127,7 @@
 
                                     </div>
                                     <center>   <div class="col-md-6">  
-              <asp:Button  ID="btnSubmit" runat="server" class="btn btn-dark col-sm-3 " Text="Submit"  OnClick="btnSubmit_Click"  ></asp:Button>
+              <asp:Button  ID="btnSubmit" runat="server" class="btn btn-dark col-sm-3 " Text="Save"  OnClick="btnSubmit_Click"  ></asp:Button>
                 &nbsp;&nbsp;        &nbsp;&nbsp; 
              <asp:Button  ID="btnCancel" runat="server" class="btn btn-dark col-sm-3 " Text="Cancel"  CausesValidation="False" OnClick="btnCancel_Click" ></asp:Button>
 

@@ -185,7 +185,7 @@ public partial class SalesMarketing_QuatationList : System.Web.UI.Page
                 if (Dtt.Rows.Count > 0)
                 {
                     btnCreate.Visible = false;
-                    //GVQuotation.Columns[15].Visible = false;
+                    GVQuotation.Columns[8].Visible = false;
                     btnEdit.Visible = false;
                     btnDelete.Visible = false;
                 }

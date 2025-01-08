@@ -183,6 +183,28 @@ public partial class Production_Painting : System.Web.UI.Page
                     }
                 }
 
+                LinkButton btnEdit = e.Row.FindControl("btnEdit") as LinkButton;
+
+
+                if (btnEdit != null)
+                {
+                    string empcode = Session["UserCode"].ToString();
+                    DataTable Dt = new DataTable();
+                    SqlDataAdapter Sd = new SqlDataAdapter("Select ID from tbl_UserMaster where UserCode='" + empcode + "'", con);
+                    Sd.Fill(Dt);
+                    if (Dt.Rows.Count > 0)
+                    {
+                        string id = Dt.Rows[0]["ID"].ToString();
+                        DataTable Dtt = new DataTable();
+                        SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM tblUserRoleAuthorization where UserID = '" + id + "' AND PageName = 'Painting.aspx' AND PagesView = '1'", con);
+                        Sdd.Fill(Dtt);
+                        if (Dtt.Rows.Count > 0)
+                        {
+                            btnEdit.Enabled = false;
+                        }
+                    }
+                }
+
             }
         }
         catch

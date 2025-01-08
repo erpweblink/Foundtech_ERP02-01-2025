@@ -64,13 +64,12 @@ public partial class Masters_UserAuthorization : System.Web.UI.Page
             DataTable Dt = new DataTable();
 
             SqlDataAdapter Da = new SqlDataAdapter("Select Id,RoleName From tbl_Role where  IsDeleted=0", con);
-            //  SqlDataAdapter Da = new SqlDataAdapter("select Role from tbl_UserMaster where Role !='Admin' AND Status=1 and Isdeleted=0 group by Role", con);
             Da.Fill(Dt);
             ddlrole.DataTextField = "RoleName";
             ddlrole.DataValueField = "RoleName";
             ddlrole.DataSource = Dt;
             ddlrole.DataBind();
-            //ddluser.Items.Insert(0, "-- Select User --");
+
             BindUser();
         }
         catch (Exception)
@@ -96,7 +95,7 @@ public partial class Masters_UserAuthorization : System.Web.UI.Page
             Da.Fill(Dt);
             if (Dt.Rows.Count > 0)
             {
-                // btnSubmit.Text = "Save";
+
                 DataTable Dttt = new DataTable();
                 SqlDataAdapter Daaa = new SqlDataAdapter(@"select DISTINCT AP.ID,AP.MenuID,AP.MenuName,AP.PageName,ISNULL(UA.Pages,0),ISNULL(UA.PagesView,0)
 from tblAuthPages AS AP
@@ -106,14 +105,7 @@ AS UA ON AP.MenuID = UA.menuId AND UA.UserID = '" + ddluser.SelectedItem.Value +
                 gvUserAuthorization.EmptyDataText = "No Records Found";
                 gvUserAuthorization.DataSource = Dttt;
                 gvUserAuthorization.DataBind();
-                btnSubmit.Text = "Update";
-                //DataTable Dtt = new DataTable();
-                //SqlDataAdapter Daa = new SqlDataAdapter("SELECT * FROM [tblUserRoleAuthorization] where [UserID]='" + ddluser.SelectedItem.Value + "'", con);
-                //Daa.Fill(Dtt);
-                //gvUserAuthorization.EmptyDataText = "No Records Found";
-                //gvUserAuthorization.DataSource = Dtt;
-                //gvUserAuthorization.DataBind();
-                //con.Close();
+
             }
             else
             {
@@ -163,22 +155,8 @@ AS UA ON AP.MenuID = UA.menuId AND UA.UserID = '" + ddluser.SelectedItem.Value +
             else
             {
                 chkpages.Checked = Pages == "True" ? false : true;
-                //chkpagesview.Checked = PagesView == "True" ? false : true;
+               
             }
-          
-            //if (PageName == "OutstandingReport.aspx" || PageName == "PartyLedgerReport.aspx" || PageName == "PurchaseReport.aspx" || PageName == "RegisterReport.aspx" || PageName == "DepartmentWiseReport.aspx" || PageName == "CommercialReport.aspx" || PageName == "CompletedOADepartmentWiseRpt.aspx" || PageName == "TestCertificate.aspx" || PageName == "DepartmentWiseRpt.aspx")
-            //{
-            //    chkpages.Enabled = false;
-            //}
-            //if (PageName == "ManualOrderAcceptance.aspx" || PageName == "AuditLogDashboard.aspx" || PageName == "UserAuthorization.aspx" || PageName == "RoleMaster.aspx" || PageName == "Addusers.aspx")
-            //{
-            //    chkpagesview.Enabled = false;
-            //}
-            //if (PageName == "DeliveryChallanList.aspx" || PageName == "PaymentModule.aspx" || PageName == "PaymentModuleList.aspx" || PageName == "PaymentRequestList.aspx")
-            //{
-            //    //lblMenuName.Visible = false;
-            //    e.Row.Visible = false;
-            //}
             con.Close();
 
         }
@@ -201,16 +179,19 @@ AS UA ON AP.MenuID = UA.menuId AND UA.UserID = '" + ddluser.SelectedItem.Value +
         {
             if (btnSubmit.Text == "Save")
             {
+                int userId = Convert.ToInt32(ddluser.SelectedItem.Value);
+                con.Open();
+                SqlCommand cmds = new SqlCommand("Delete tblUserRoleAuthorization where UserId= '" + userId + "'", con);
+                cmds.ExecuteNonQuery();
+
                 foreach (GridViewRow g1 in gvUserAuthorization.Rows)
                 {
                     string menuname = (g1.FindControl("lblMenuName") as Label).Text;
                     string pagename = (g1.FindControl("lblPageName") as Label).Text;
                     string menu = (g1.FindControl("lblMenuId") as Label).Text;
-                    int userId = Convert.ToInt32(ddluser.SelectedItem.Value);
                     bool pageChk = (g1.FindControl("chkPages") as CheckBox).Checked;
                     bool pageviewChk = (g1.FindControl("chkPagesView") as CheckBox).Checked;
                     DateTime Date = DateTime.Now;
-                    con.Open();
                     SqlCommand cmd = new SqlCommand("SP_UAuthorization", con);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserID", ddluser.SelectedItem.Value);
@@ -224,37 +205,9 @@ AS UA ON AP.MenuID = UA.menuId AND UA.UserID = '" + ddluser.SelectedItem.Value +
                     cmd.Parameters.AddWithValue("@PagesView", pageviewChk);
                     cmd.Parameters.AddWithValue("@Action", "Insert");
                     cmd.ExecuteNonQuery();
-                    con.Close();
+
                 }
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Pages Authorized Successfully..!!'); window.location='UserAuthorization.aspx';", true);
-            }
-            else if (btnSubmit.Text == "Update")
-            {
-                foreach (GridViewRow g1 in gvUserAuthorization.Rows)
-                {
-                    string menuname = (g1.FindControl("lblMenuName") as Label).Text;
-                    string pagename = (g1.FindControl("lblPageName") as Label).Text;
-                    string menu = (g1.FindControl("lblMenuId") as Label).Text;
-                    bool pageChk = (g1.FindControl("chkPages") as CheckBox).Checked;
-                    bool pageviewChk = (g1.FindControl("chkPagesView") as CheckBox).Checked;
-                    int userId = Convert.ToInt32(ddluser.SelectedItem.Value);
-                    DateTime Date = DateTime.Now;
-                    con.Open();
-                    SqlCommand cmd = new SqlCommand("SP_UAuthorization", con);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@UserID", userId);
-                    cmd.Parameters.AddWithValue("@UserName", ddluser.SelectedItem.Text);
-                    cmd.Parameters.AddWithValue("@menuId", menu);
-                    cmd.Parameters.AddWithValue("@MenuName", menuname);
-                    cmd.Parameters.AddWithValue("@PageName", pagename);
-                    cmd.Parameters.AddWithValue("@UpdatedBy", Session["Username"].ToString());
-                    cmd.Parameters.AddWithValue("@updatedDate", Date);
-                    cmd.Parameters.AddWithValue("@Pages", pageChk);
-                    cmd.Parameters.AddWithValue("@PagesView", pageviewChk);
-                    cmd.Parameters.AddWithValue("@Action", "Update");
-                    cmd.ExecuteNonQuery();
-                    con.Close();
-                }
+                con.Close();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Pages Authorized Successfully..!!'); window.location='UserAuthorization.aspx';", true);
             }
         }

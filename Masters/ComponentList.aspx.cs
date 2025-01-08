@@ -97,7 +97,7 @@ public partial class Masters_ComponentList : System.Web.UI.Page
                 if (Dtt.Rows.Count > 0)
                 {
                     btnCreate.Visible = false;
-                    GVComponentlist.Columns[7].Visible = false;
+                    GVComponentlist.Columns[5].Visible = false;
                     btnEdit.Visible = false;
                     btnDelete.Visible = false;
                 }

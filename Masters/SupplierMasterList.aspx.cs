@@ -82,6 +82,7 @@ public partial class Masters_SupplierMasterList : System.Web.UI.Page
             LinkButton btnEdit = e.Row.FindControl("btnEdit") as LinkButton;
             LinkButton btnDelete = e.Row.FindControl("btnDelete") as LinkButton;
 
+            con.Open();
             string empcode = Session["UserCode"].ToString();
             DataTable Dt = new DataTable();
             SqlDataAdapter Sd = new SqlDataAdapter("Select ID from tbl_UserMaster where UserCode='" + empcode + "'", con);
@@ -90,7 +91,7 @@ public partial class Masters_SupplierMasterList : System.Web.UI.Page
             {
                 string id = Dt.Rows[0]["ID"].ToString();
                 DataTable Dtt = new DataTable();
-                SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM tblUserRoleAuthorization where UserID = '" + id + "' AND PageName = 'VendorMasterList.aspx' AND PagesView = '1'", con);
+                SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM tblUserRoleAuthorization where UserID = '" + id + "' AND PageName = 'TransporterList.aspx' AND PagesView = '1'", con);
                 Sdd.Fill(Dtt);
                 if (Dtt.Rows.Count > 0)
                 {
@@ -100,6 +101,7 @@ public partial class Masters_SupplierMasterList : System.Web.UI.Page
                     btnDelete.Visible = false;
                 }
             }
+            con.Close();
         }
     }
 

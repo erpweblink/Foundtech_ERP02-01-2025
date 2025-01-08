@@ -447,6 +447,24 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                         GVPurchase.Visible = false;
                     }
                 }
+
+
+                string empcode = Session["UserCode"].ToString();
+                DataTable Dt = new DataTable();
+                SqlDataAdapter Sd = new SqlDataAdapter("Select ID from tbl_UserMaster where UserCode='" + empcode + "'", con);
+                Sd.Fill(Dt);
+                if (Dt.Rows.Count > 0)
+                {
+                    string id = Dt.Rows[0]["ID"].ToString();
+                    DataTable Dtt = new DataTable();
+                    SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM tblUserRoleAuthorization where UserID = '" + id + "' AND PageName = 'ProdListGPWise.aspx' AND PagesView = '1'", con);
+                    Sdd.Fill(Dtt);
+                    if (Dtt.Rows.Count > 0)
+                    {
+                        MainGridLoad.Columns[8].Visible = false;
+                        btnSendtopro.Visible = false;
+                    }
+                }
             }
         }
         catch (Exception ex)

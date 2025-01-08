@@ -196,14 +196,13 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             {
                 string id = Dt.Rows[0]["ID"].ToString();
                 DataTable Dtt = new DataTable();
-                SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM tblUserRoleAuthorization where UserID = '" + id + "' AND PageName = 'CustomerPurchaseOrderList.aspx' AND PagesView = '1'", con);
+                SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM tblUserRoleAuthorization where UserID = '" + id + "' AND PageName = 'OAList.aspx' AND PagesView = '1'", con);
                 Sdd.Fill(Dtt);
                 if (Dtt.Rows.Count > 0)
                 {
                     btnCreate.Visible = false;
-                    //GVQuotation.Columns[15].Visible = false;
                     btnEdit.Visible = false;
-                    //btnDelete.Visible = false;
+                    btnDelete.Visible = false;
                 }
             }
         }

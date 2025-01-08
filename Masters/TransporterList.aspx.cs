@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
@@ -14,6 +15,8 @@ using System.Web.UI.WebControls;
 
 public partial class Masters_TransporterList : System.Web.UI.Page
 {
+    SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["constr"].ConnectionString);
+    CommonCls objcls = new CommonCls();
     protected void Page_Load(object sender, EventArgs e)
     {
         FillGrid();
@@ -91,22 +94,24 @@ public partial class Masters_TransporterList : System.Web.UI.Page
         {
             LinkButton Lnk_Delete = (LinkButton)e.Row.FindControl("btnDelete");
             LinkButton Lnk_Edit = (LinkButton)e.Row.FindControl("btnEdit");
-            //  DataTable Dt = Cls_Main.Read_Table("SELECT * FROM [tbl_UserMaster] WHERE Username='" + Session["UserCode"].ToString() + "'");
-            //if (Dt.Rows.Count > 0)
-            //{
-            //    string Role = Dt.Rows[0]["Role"].ToString();
-            //    if (Role == "Super User" || Role == "User")
-            //    {
-            //        Lnk_Delete.Visible = false;
-            //        Lnk_Edit.Visible = false;
-            //        GVUser.Columns[6].Visible = false;
-            //    }
-            //    else
-            //    {
-            //        Lnk_Delete.Visible = true;
-            //        Lnk_Edit.Visible = true;
-            //    }
-            //}
+            string empcode = Session["UserCode"].ToString();
+            DataTable Dt = new DataTable();
+            SqlDataAdapter Sd = new SqlDataAdapter("Select ID from tbl_UserMaster where UserCode='" + empcode + "'", con);
+            Sd.Fill(Dt);
+            if (Dt.Rows.Count > 0)
+            {
+                string id = Dt.Rows[0]["ID"].ToString();
+                DataTable Dtt = new DataTable();
+                SqlDataAdapter Sdd = new SqlDataAdapter("Select * FROM tblUserRoleAuthorization where UserID = '" + id + "' AND PageName = 'SupplierMasterList.aspx' AND PagesView = '1'", con);
+                Sdd.Fill(Dtt);
+                if (Dtt.Rows.Count > 0)
+                {
+                    btnCreate.Visible = false;
+                    GVTransporter.Columns[7].Visible = false;
+                    Lnk_Delete.Visible = false;
+                    Lnk_Edit.Visible = false;
+                }
+            }
         }
     }
 }
