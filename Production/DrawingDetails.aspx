@@ -225,6 +225,11 @@
                 max-width: 1250px !important;
             }
         }
+
+        .grid-scroll-container {
+            height: 150px;
+            overflow-y: auto;
+        }
     </style>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
@@ -381,6 +386,11 @@
                                                                             <asp:Label ID="Total_Price" runat="server" Text='<%#Eval("TotalQty")%>'></asp:Label>
                                                                         </ItemTemplate>
                                                                     </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Drawings" ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Eval("JobNo") %>'><i class="fas fa-folder-open"  style="font-size: 26px;"></i></i></asp:LinkButton>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
                                                                     <asp:TemplateField HeaderText="ACTION" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="120">
                                                                         <ItemTemplate>
                                                                             <asp:LinkButton runat="server" ID="btnEdit" ToolTip="Add Quantity and Send" CausesValidation="false" CommandName="Edit" CommandArgument='<%# Eval("JobNo") %>'><i class="fas fa-plus-square"  style="font-size: 26px; color:blue; "></i></i></asp:LinkButton>&nbsp;
@@ -445,7 +455,8 @@
                                 <div class="profilemodel2">
                                     <div class="headingcls">
                                         <h4 class="modal-title">Production Details 
-                                    <button type="button" id="Closepophistory" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button></h4>
+                        <button type="button" id="Closepophistory" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button>
+                                        </h4>
                                     </div>
 
                                     <br />
@@ -471,60 +482,117 @@
                                                 <asp:Label ID="Label2" runat="server" Font-Bold="true" CssClass="form-label">Outward QTY:</asp:Label>
                                                 <asp:TextBox ID="txtoutwardqty" CssClass="form-control" ReadOnly="true" placeholder="Enter Outward QTY" TextMode="Number" runat="server"></asp:TextBox>
                                             </div>
-
-                                            <div class="row">
-                                                <asp:Repeater ID="rptImages" runat="server">
-                                                    <ItemTemplate>
-                                                        <div class="col-md-6 col-12 mb-3">
-                                                            <div class="image-item">
-                                                                <!-- Display the image -->
-                                                                <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("Id") %>' ToolTip="Open File" />
-                                                                <asp:Label ID="Label14" runat="server" Font-Bold="true" Text="Name : " CssClass="form-label"></asp:Label>
-                                                                <asp:Label ID="Label4" runat="server" Font-Bold="true" Text='<%# Eval("FileName") %>' CssClass="form-label"></asp:Label>
-                                                            </div>
-                                                        </div>
-                                                    </ItemTemplate>
-                                                </asp:Repeater>
-                                            </div>
-                                            <%--   <div class="col-md-6 mb-3" runat="server" visible="false">
-                                                <asp:HiddenField ID="HFfile1" runat="server" />
-                                                <asp:Label ID="lblCompanyPan" runat="server" Font-Bold="true" CssClass="form-label LblStyle">Drawing Attachment:</asp:Label>
-                                                <asp:FileUpload ID="fileUpload" CssClass="form-control" runat="server" />
-                                                <asp:Label ID="lblPath1" runat="server" Text="" ForeColor="Red"></asp:Label>
-                                            </div>--%>
-
-                                            <div id="container" class="row">
-                                                <!-- Existing divs will go here -->
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <asp:Button ID="btnAdd" runat="server" Text="Add Drawing" OnClientClick="addNewDiv(); return false;" CssClass="btn btn-primary" />
-                                            </div>
                                             <div class="col-md-6 col-12 mb-3">
-                                            </div>
-                                            <div class="col-md-6 col-12 mb-3">
-                                                <asp:Label ID="Label3" runat="server" Font-Bold="true" CssClass="form-label">Remarks:</asp:Label>
-                                                <asp:TextBox ID="txtRemarks" CssClass="form-control" placeholder="Enter Remark" TextMode="MultiLine" runat="server"></asp:TextBox>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="col-md-4"></div>
-                                                <div class="col-md-3" style="margin-top: 18px">
-                                                    <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click">
-                                                        <span class="btn-label">
-                                                            <i class="fa fa-check"></i>
-                                                        </span>
-                                                       Save & Next
-                                                    </asp:LinkButton>
+                                                <div class="grid-scroll-container">
+                                                    <asp:GridView ID="grdgrid" runat="server"
+                                                        CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Inward Qty" HeaderStyle-CssClass="gvhead">
+                                                                <ItemTemplate>
+                                                                    <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("Id") %>' ToolTip="Open File" />
+                                                                    <asp:Label ID="lblFileName" runat="server" Text='<%#Eval("FileName")%>'></asp:Label>
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Action" HeaderStyle-CssClass="gvhead">
+                                                                <ItemTemplate>
+                                                                    <asp:LinkButton ID="LinkButtonTrash" runat="server" OnClick="LinkButtonTrash_Click" CommandArgument='<%# Eval("Id") %>' ToolTip="Delete File">
+                                                                         <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                    </asp:LinkButton>
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+
+
+                                                        </Columns>
+                                                    </asp:GridView>
                                                 </div>
                                             </div>
 
                                         </div>
-                                    </div>
 
+                                        <!-- GridView is placed before the Remarks section -->
+                                        <div class="row">
+                                        </div>
+
+                                        <!-- This is the container div for dynamically added elements (still outside the GridView) -->
+                                        <div id="container" class="row">
+                                            <!-- Existing divs will go here -->
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <asp:Button ID="btnAdd" runat="server" Text="Add Drawing" OnClientClick="addNewDiv(); return false;" CssClass="btn btn-primary" />
+                                        </div>
+
+                                        <!-- Remarks section -->
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label3" runat="server" Font-Bold="true" CssClass="form-label">Remarks:</asp:Label>
+                                            <asp:TextBox ID="txtRemarks" CssClass="form-control" placeholder="Enter Remark" TextMode="MultiLine" runat="server"></asp:TextBox>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-3" style="margin-top: 18px">
+                                                <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click" OnClientClick="this.style.display='none';">
+                                <span class="btn-label">
+                                    <i class="fa fa-check"></i>
+                                </span>
+                               Save & Next
+                                                </asp:LinkButton>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-1"></div>
                         </div>
                     </asp:Panel>
+
+
+
+
+                    <asp:Button ID="Button1" runat="server" Style="display: none" />
+                    <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="Button1"
+                        PopupControlID="PopupHistoryDetail1" OkControlID="Closepophistory1" />
+
+                    <asp:Panel ID="PopupHistoryDetail1" runat="server" CssClass="modelprofile1">
+                        <div class="row container">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6" style="display: flex; margin-left: 33%; margin-top: 10%;">
+                                <div class="profilemodel2">
+                                    <div class="headingcls">
+                                        <h4 class="modal-title">Drawing Files
+                 <button type="button" id="Closepophistory1" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button>
+                                        </h4>
+                                    </div>
+                                    <br />
+                                    <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">
+                                        <asp:Label ID="lblJobNo" runat="server" Font-Bold="true" Text="Job No : "></asp:Label>
+                                        <asp:Label ID="lblJobNumb" runat="server"></asp:Label>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                     <asp:Label ID="lblProductName" runat="server" Font-Bold="true" Text="Product Name : "></asp:Label>
+                                        <asp:Label ID="lblProdName" runat="server"></asp:Label>
+                                        <br />
+                                        <br />
+                                        <div class="row">
+                                            <asp:Repeater ID="rptImages" runat="server">
+                                                <ItemTemplate>
+                                                    <div class="col-md-6 col-12 mb-3">
+                                                        <div class="image-item">
+                                                            <!-- Display the image -->
+                                                            <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("ID") %>' ToolTip="Open File" />
+                                                            <asp:Label ID="Label14" runat="server" Font-Bold="true" Text="Drawing Name : " CssClass="form-label"></asp:Label>
+                                                            <asp:Label ID="Label4" runat="server" Font-Bold="true" Text='<%# Eval("FileName") %>' CssClass="form-label"></asp:Label>
+                                                        </div>
+                                                    </div>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </asp:Panel>
+
 
 
 

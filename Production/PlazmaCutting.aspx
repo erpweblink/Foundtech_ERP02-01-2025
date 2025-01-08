@@ -509,7 +509,7 @@
                                                         </span>
                                                        Save & Back
                                                 </asp:LinkButton>--%>
-                                                <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click">
+                                                <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click" OnClientClick="this.style.display='none';">
                                                         <span class="btn-label">
                                                             <i class="fa fa-check"></i>
                                                         </span>

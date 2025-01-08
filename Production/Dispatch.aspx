@@ -222,31 +222,31 @@
             $(this).closest("tr").next().remove();
         });
     </script>
-      <script type="text/javascript">
-          function downloadDWGFile(base64File, fileName) {
-              if (!base64File || !fileName) {
-                  console.error("File data or file name is missing.");
-                  return;
-              }
+    <script type="text/javascript">
+        function downloadDWGFile(base64File, fileName) {
+            if (!base64File || !fileName) {
+                console.error("File data or file name is missing.");
+                return;
+            }
 
-              var byteCharacters = atob(base64File);
-              var byteArray = new Uint8Array(byteCharacters.length);
+            var byteCharacters = atob(base64File);
+            var byteArray = new Uint8Array(byteCharacters.length);
 
 
-              for (var i = 0; i < byteCharacters.length; i++) {
-                  byteArray[i] = byteCharacters.charCodeAt(i);
-              }
+            for (var i = 0; i < byteCharacters.length; i++) {
+                byteArray[i] = byteCharacters.charCodeAt(i);
+            }
 
-              var blob = new Blob([byteArray], { type: "application/octet-stream" });
+            var blob = new Blob([byteArray], { type: "application/octet-stream" });
 
-              var link = document.createElement('a');
-              link.href = URL.createObjectURL(blob);
-              link.download = fileName;
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
 
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-          }
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
   </script>
 
 </asp:Content>
@@ -499,20 +499,25 @@
 
                                             <div class="col-md-12" style="margin-top: 18px; text-align: center">
 
-                                                <asp:LinkButton runat="server" ID="btnsendtoback" class="btn btn-warning" OnClick="btnsendtoback_Click">
+                                                <asp:LinkButton runat="server" ID="btnsendtoback" class="btn btn-warning" OnClick="btnsendtoback_Click" OnClientClick="hideButtons();">
                                                         <span class="btn-label">
                                                             <i class="fa fa-arrow-left"></i>
                                                         </span>
                                                        Save & Back
                                                 </asp:LinkButton>
-                                                <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click">
+                                                <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click" OnClientClick="hideButtons();">
                                                         <span class="btn-label">
                                                             <i class="fa fa-check"></i>
                                                         </span>
                                                        Save & Next
                                                 </asp:LinkButton>
                                             </div>
-
+                                            <script type="text/javascript">
+                                                function hideButtons() {
+                                                    document.getElementById('<%= btnsendtoback.ClientID %>').style.display = 'none';
+                                                     document.getElementById('<%= btnSendtopro.ClientID %>').style.display = 'none';
+                                                }
+                                            </script>
                                         </div>
                                     </div>
 

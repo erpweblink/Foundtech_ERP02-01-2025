@@ -95,8 +95,9 @@ public partial class Production_Bending : System.Web.UI.Page
                 B = 0;
             }
 
-            txtoutwardqty.Text = txtoutwardqty.Text;
+          
             txtpending.Text = (A -B).ToString();
+            txtoutwardqty.Text = txtpending.Text;
             this.ModalPopupHistory.Show();
         }
         if (e.CommandName == "DrawingFiles")
@@ -289,7 +290,7 @@ public partial class Production_Bending : System.Web.UI.Page
                     Cls_Main.Conn_Close();
                     Cls_Main.Conn_Dispose();
 
-                    FillGrid();
+                   // FillGrid();
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send to the Next..!!');", true);
                 }
                 else
@@ -332,7 +333,6 @@ public partial class Production_Bending : System.Web.UI.Page
                     Cls_Main.Conn_Close();
                     Cls_Main.Conn_Dispose();
 
-                    FillGrid();
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send Back..!!');", true);
                 }
 

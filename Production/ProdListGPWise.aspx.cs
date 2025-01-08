@@ -391,6 +391,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             Cls_Main.Conn_Close();
             Cls_Main.Conn_Dispose();
         }
+        this.ModalPopupHistory.Hide();
         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Production Plan Saved Successfully..!!');window.location='ProdListGPWise.aspx'; ", true);
     }
 

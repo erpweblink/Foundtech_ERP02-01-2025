@@ -323,7 +323,7 @@
                                                         <ItemTemplate>
                                                             <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
                                                             <asp:Panel ID="pnlOrders" runat="server" Style="display: none">
-                                                                <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,JobNo,Remark,OutwardQTY"  Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
+                                                                <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="ID,JobNo,Remark,OutwardQTY" Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
                                                                     OnRowCommand="GVPurchase_RowCommand" OnPageIndexChanging="GVPurchase_PageIndexChanging" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
                                                                     <Columns>
                                                                         <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center">
@@ -503,20 +503,25 @@
 
                                             <div class="col-md-12" style="margin-top: 18px; text-align: center">
 
-                                                <asp:LinkButton runat="server" ID="btnsendtoback" class="btn btn-warning" OnClick="btnsendtoback_Click">
+                                                <asp:LinkButton runat="server" ID="btnsendtoback" class="btn btn-warning" OnClick="btnsendtoback_Click" OnClientClick="hideButtons();">
                                                         <span class="btn-label">
                                                             <i class="fa fa-arrow-left"></i>
                                                         </span>
                                                        Save & Back
                                                 </asp:LinkButton>
-                                                <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click">
+                                                <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click" OnClientClick="hideButtons();">
                                                         <span class="btn-label">
                                                             <i class="fa fa-check"></i>
                                                         </span>
                                                        Save & Next
                                                 </asp:LinkButton>
                                             </div>
-
+                                            <script type="text/javascript">
+                                                function hideButtons() {
+                                                    document.getElementById('<%= btnsendtoback.ClientID %>').style.display = 'none';
+                                                     document.getElementById('<%= btnSendtopro.ClientID %>').style.display = 'none';
+                                                }
+                                            </script>
                                         </div>
                                     </div>
 

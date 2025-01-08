@@ -71,16 +71,18 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
             GridViewRow row = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
             GridView gvPurchase = (GridView)row.FindControl("GVPurchase");
 
+
             string Total_Price = ((Label)row.FindControl("Total_Price")).Text;
             string CustomerName = ((Label)row.FindControl("CustomerName")).Text;
             string JobNo = ((Label)row.FindControl("jobno")).Text;
             string Productname = ((Label)row.FindControl("Productname")).Text;
 
-            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_DrawingDetails where JobNo='" + JobNo + "'");
+            DataTable Dt = Cls_Main.Read_Table("SELECT id, FileName FROM tbl_DrawingDetails where JobNo='" + JobNo + "'");
+
             if (Dt.Rows.Count > 0)
             {
-                rptImages.DataSource = Dt;
-                rptImages.DataBind();
+                grdgrid.DataSource = Dt;
+                grdgrid.DataBind();
             }
             txtcustomername.Text = CustomerName;
             txtProductname.Text = Productname;
@@ -88,6 +90,29 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
             txtjobno.Text = JobNo;
 
             this.ModalPopupHistory.Show();
+        }
+        if (e.CommandName == "DrawingFiles")
+        {
+            string rowIndex = e.CommandArgument.ToString();
+            GridViewRow row = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
+            GridView gvPurchase = (GridView)row.FindControl("GVPurchase");
+
+            string JobNo = ((Label)row.FindControl("jobno")).Text;
+            string ProdName = ((Label)row.FindControl("ProductName")).Text;
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_DrawingDetails AS PD where JobNo='" + JobNo + "'");
+            if (Dt.Rows.Count > 0)
+            {
+                rptImages.DataSource = Dt;
+                rptImages.DataBind();
+                lblJobNumb.Text = JobNo;
+                lblProdName.Text = ProdName;
+                this.ModalPopupExtender1.Show();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Data not found..!!')", true);
+            }
+
         }
     }
 
@@ -123,9 +148,32 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
                         }
                     }
                 }
-               
+
+
+                Label JobNo = e.Row.FindControl("JobNo") as Label;
+
+                if (JobNo != null)
+                {
+                    DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_DrawingDetails AS PD where JobNo='" + JobNo.Text + "'");
+
+                    LinkButton btndrawings = e.Row.FindControl("btndrawings") as LinkButton;
+
+                    if (btndrawings != null)
+                    {
+
+                        if (Dt.Rows.Count > 0)
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Green;
+                        }
+                        else
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Black;
+                        }
+                    }
+                }
+
             }
-           
+
         }
         catch
         {
@@ -292,7 +340,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
                 Cmd1.ExecuteNonQuery();
                 Cls_Main.Conn_Close();
             }
-            FillGrid();
+
             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send to the Next..!!');", true);
         }
         catch
@@ -602,4 +650,16 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
     }
 
+
+
+
+    protected void LinkButtonTrash_Click(object sender, EventArgs e)
+    {
+        string id = ((sender as LinkButton).CommandArgument).ToString();
+
+        DataTable Dt = Cls_Main.Read_Table("DELETE tbl_DrawingDetails WHERE Id='" + id + "'");
+
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Image deleted successfully..!!');", true);
+
+    }
 }
