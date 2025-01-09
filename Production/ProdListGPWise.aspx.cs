@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Authentication;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Windows.Threading;
 
 public partial class Production_ProdListGPWise : System.Web.UI.Page
 {
@@ -65,7 +66,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             }
         }
     }
-  
+
     protected void GVPurchase_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         //GVPurchase.PageIndex = e.NewPageIndex;
@@ -77,7 +78,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
         try
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
-            {               
+            {
                 Label JobNo = e.Row.FindControl("jobno") as Label;
 
                 if (JobNo != null)
@@ -124,12 +125,14 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
     protected void GVPurchase_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        if(e.CommandName == "DrawingFiles")
+        if (e.CommandName == "DrawingFiles")
         {
             Response.Redirect("~/Drawings/" + e.CommandArgument.ToString());
         }
 
+
     }
+
     //Search Company Search methods
     [System.Web.Script.Services.ScriptMethod()]
     [System.Web.Services.WebMethod]
@@ -431,7 +434,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
                 if (GVPurchase == null)
                 {
-                   
+
                     return;
                 }
 
@@ -483,7 +486,208 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             this.ModalPopupHistory.Show();
 
         }
+        if (e.CommandName == "SendMail")
+        {
+            string Customer = e.CommandArgument.ToString();
+            if (Customer != null)
+            {
+                String Usermail = "", SerialNo = "", PoNo = "";
+                string Id = "";
+                SqlDataAdapter ad = new SqlDataAdapter("SELECT TOP 1 *  FROM tbl_OrderAcceptanceHdr WHERE CustomerName ='" + Customer + "'", con);
+                DataTable dt = new DataTable();
+                ad.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    Id = dt.Rows[0]["ID"].ToString();
+                    Usermail = dt.Rows[0]["EmailId"].ToString();
+                    PoNo = dt.Rows[0]["PoNo"].ToString();
+                    SerialNo = dt.Rows[0]["SerialNo"].ToString();
+                    string url = "ProductionListForCust.aspx?ID=" + objcls.encrypt(Id) + "&name=" + objcls.encrypt(Customer);
+
+                    SendMail(url, Usermail, Customer, PoNo, SerialNo);
+
+                   // Response.Redirect(url);
+                }
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please Register Mail First !!');", true);
+                }
+            }
+        }
     }
 
-   
+    protected void SendMail(string url, string mail, string CustomerName, string PoNo, string SerialNo)
+    {
+        try
+        {
+            // Force using TLS 1.2 for SMTP
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+
+            string strMessage = "Hello, " + CustomerName + " <br /> Click the link below to track your OA report:<br /><br />";
+            strMessage += "<a href='https://www.foundtecherp.com/Production/" + url + "'>View Report</a>";
+            MailMessage message = new MailMessage();
+            message.To.Add(mail);
+            // Add CC recipients
+            string erp = "testing@weblinkservices.net";
+            string Gmail = "Bss@excelenclosures.com";
+            message.CC.Add(erp);
+            message.CC.Add(Gmail);
+
+            message.Subject = "Track Your Order";
+            message.Body = GetEmailTemplate(CustomerName, "https://www.foundtecherp.com/Production/" + url, PoNo, SerialNo);
+            message.From = new System.Net.Mail.MailAddress("testing@weblinkservices.net"); // Email-ID of Sender
+            message.IsBodyHtml = true;
+
+            SmtpClient SmtpMail = new SmtpClient();
+            SmtpMail.Host = "smtpout.secureserver.net";
+            SmtpMail.Port = 587;
+            SmtpMail.Credentials = new System.Net.NetworkCredential("testing@weblinkservices.net", "Weblink@Testing#123"); // Username/password of network, if apply  
+            SmtpMail.DeliveryMethod = SmtpDeliveryMethod.Network;
+            SmtpMail.EnableSsl = true;
+            SmtpMail.Timeout = 10000;
+            SmtpMail.ServicePoint.MaxIdleTime = 0;
+            SmtpMail.ServicePoint.SetTcpKeepAlive(true, 2000, 2000);
+            message.BodyEncoding = Encoding.Default;
+            message.Priority = MailPriority.High;
+            SmtpMail.Send(message);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Mail Send Successfully !!');", true);
+        }
+        catch (Exception ex)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Mail Not send !!');", true);
+            throw ex;
+        }
+    }
+
+
+
+
+    private string GetEmailTemplate(string user, string link, string PoNo, string SerialNo)
+    {
+        string template = @"
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset=""utf-8"" />
+            <title></title>
+        </head>
+        <body>
+            <div width=""100%"" style=""min-width:100%!important;margin:0!important;padding:0!important"">
+                <table width=""660"" border=""1"" cellpadding=""0"" cellspacing=""0"" align=""center"">
+                    <tbody>
+                        <tr>
+                            <td width=""100%"" style=""min-width:100%"">
+                                <table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""100%"" style=""display:block"">
+                                    <tbody>
+                                        <tr>
+                                            <td width=""100%"" align=""center"" style=""display:block;text-align:center;vertical-align:top;font-size:16;min-width:100%;background-color:#edece6"">
+                                                <table align=""center"" width=""100%"" border=""0"" cellpadding=""0"" cellspacing=""0"" style=""display:block;min-width:100%!important"" bgcolor=""#ffffff"">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>&nbsp;</td>
+                                                            <td width=""100%"" align=""center"" style=""text-align:center;padding:10px 0px"">
+                                                                <a href=""https://www.foundtecherp.com/"" target=""_blank""><img src=""https://www.foundtecherp.com/Content/img/logo.png"" width=""20%""></a>
+                                                            </td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div style=""overflow:hidden;display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0"">&nbsp;</div>
+                                                <table align=""center"" border=""0"" cellpadding=""0"" cellspacing=""0"" width=""100%"" style=""display:block;min-width:100%;background-color:#edece6"">
+                                                    <tbody>
+                                                        <tr style=""background-color:#1a263a"">
+                                                            <td>&nbsp;</td>
+                                                            <td width=""660"" style=""padding:20px 0px 20px 0px;text-align:center""><a href=""#"" style=""text-decoration:none;font-size:20px;color:#ffffff""> Notification From Foundtech Engineering </a></td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>&nbsp;</td>
+                                                            <td valign=""middle"" align=""left"" width=""100%"" style=""padding:0px 21px 0px 21px"">&nbsp;</td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>&nbsp;</td>
+                                                            <td width=""100%"">
+                                                                <table cellpadding=""0"" cellspacing=""0"" border=""0"" align=""center"" style=""border-bottom:2px solid #b8b8b8; width:90%"" bgcolor=""#ffffff"">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td width=""100%"" align=""left"" valign=""top"" style=""padding:10px;"">
+                                                                                <table border=""0"" cellspacing=""0"" cellpadding=""0"" width=""100%"">
+                                                                                    <tbody>
+                                                                                        <tr height=""40"">
+                                                                                            <td style=""text-align:center;padding:0px 1px 1px 15px;font-size:14px;color:#333333;line-height:1.4!important;word-wrap:break-word"" valign=""top"">
+                                                                                                <p class=""pdata"" align=""center"" style=""font-size: 16px; text-align: left; color:black;"">
+                                                                                                    Dear: <strong>{user}</strong>,
+                                                                                                </p>
+                                                                                                <p class=""pdata"" align=""center"" style=""font-size: 16px; text-align: left;"">
+                                                                                                   We hope this message finds you well. Thank you for choosing Foundtech Engineering for your recent purchase. We're happy to provide you with an update.
+                                                                                                </p>
+                                                                                                <p class=""pdata"" align=""center"" style=""font-size: 16px; text-align: left;"">
+                                                                                                     Your order <strong>{PoNo}</strong>, with the reference number <strong>{SerialNo}</strong>, is currently in the production stage.
+                                                                                                </p>
+                                                                                                <p class=""pdata"" align=""center"" style=""font-size: 16px; text-align: left;"">
+                                                                                                    To help you track the progress of your order, <a href=""{link}"" style=""color: #1a263a; text-decoration: underline;""><strong>Click Here</strong></a>.
+                                                                                                </p>
+                                                                                                   <p class=""pdata"" align=""center"" style=""font-size: 16px; text-align: left;"">
+                                                                                                    We appreciate your patience and trust in Foundtech  Engineering. Thank you for being a valued customer.
+                                                                                                </p>
+                                                                                                <p class=""pdata"" align=""center"" style=""font-size: 16px; text-align: left;"">
+                                                                                                    Best regards, <br />
+                                                                                            Foundtech  Engineering. <br/>
+                                                                                            Mobile: 9552513956 / 8888884238 <br/>
+                                                                                            <a href=""https://www.foundtechengg.com/"" >https://www.foundtechengg.com/</a>
+                                                                                                </p>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                <br />
+                                                            </td>
+                                                            <td>&nbsp;</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <br />
+                                                <table width=""100%"">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td width=""100%"" bgcolor=""#1A263A"" style=""padding:0px 30px!important;background-color:#1a263a"">
+                                                                <table width=""100%"" border=""0"" cellpadding=""0"" cellspacing=""0"" style=""color:#ffffff;text-align:center;font-size:14px"">
+                                                                    <tbody>
+                                                                        <tr><td height=""24px"">&nbsp;</td></tr>
+                                                                        <tr>
+                                                                            <td style=""padding:0px 10px 0px 10px;font-size:14px"">
+                                                                                <!-- Add any additional content or links here -->
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style=""padding:5px 10px 24px 10px;text-decoration:none!important;color:#ffffff!important;font-size:14px"">
+                                                                                <span>Gat No.-250, Opp.Agarwal Packaging Ltd. Kharabwadi Chakan, Pune 410501</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </body>
+        </html>
+    ";
+
+        return template.Replace("{user}", user).Replace("{SerialNo}", SerialNo).Replace("{PoNo}",PoNo).Replace("{link}", link);
+    }
 }

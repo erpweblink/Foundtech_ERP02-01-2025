@@ -412,7 +412,8 @@
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="ACTION" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
-                                                <asp:LinkButton runat="server" ID="btnSendtopro" ToolTip="Send to Production" CommandName="Sendtoproduction" CommandArgument='<%# Eval("ProjectCode") %>'><i class="fa fa-arrow-circle-right" style="font-size: 26px; color: green;"></i></i></asp:LinkButton>
+                                                <asp:LinkButton runat="server" ID="btnSendtopro" ToolTip="Send to Production" CommandName="Sendtoproduction" CommandArgument='<%# Eval("ProjectCode") %>'><i class="fa fa-arrow-circle-right" style="font-size: 26px; color: green;"></i></i></asp:LinkButton>&nbsp;&nbsp;
+                                                <asp:LinkButton runat="server" ID="btnpdfview" ToolTip="Send to Client" CommandName="SendMail" CommandArgument='<%# Eval("CustomerName") %>'><i class="fa fa-envelope"  style="font-size: 26px; color:green; "></i></i></asp:LinkButton> 
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>
