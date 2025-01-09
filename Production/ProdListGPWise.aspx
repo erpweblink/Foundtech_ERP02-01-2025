@@ -223,6 +223,72 @@
             $(this).closest("tr").next().remove();
         });
     </script>
+
+    <style>
+        #BodyMain {
+            background-color: black;
+            margin: 0px;
+            height: 15vh;
+        }
+
+        #DivMain {
+            position: relative;
+            left: 50%;
+            top: 48%;
+            transform: translate(-50%, -50%);
+            color: white;
+        }
+
+        #SpanMain {
+            font-size: 40px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            line-height: 85%;
+            position: relative;
+            mix-blend-mode: difference;
+            color: white;
+        }
+
+        #DivMain::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0; /* Start with zero width */
+            height: 100%;
+            background-color: black;
+            animation: move 5s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes move {
+            0%, 100% {
+                width: 0; /* Start with width 0 */
+            }
+
+            50% {
+                width: 100%; /* Cover the entire width of the text */
+            }
+        }
+    </style>
+
+    <script type="text/javascript">
+        function showLoadingSpinner() {
+            // Show loading spinner
+            document.getElementById('loadingSpinner').style.display = 'block';
+
+            // Simulate a server-side operation (use the AJAX response callback in real scenario)
+            //setTimeout(function () {
+            //    // Hide the loading spinner when the operation completes
+            //    document.getElementById('loadingSpinner').style.display = 'none';
+
+            //    // Trigger alert
+            //    alert('Email sent to client successfully!');
+            //}, 3000); // Simulate a delay of 3 seconds (you can adjust the time as needed)
+        }
+    </script>
+
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <form id="form1" runat="server">
@@ -413,11 +479,19 @@
                                         <asp:TemplateField HeaderText="ACTION" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
                                                 <asp:LinkButton runat="server" ID="btnSendtopro" ToolTip="Send to Production" CommandName="Sendtoproduction" CommandArgument='<%# Eval("ProjectCode") %>'><i class="fa fa-arrow-circle-right" style="font-size: 26px; color: green;"></i></i></asp:LinkButton>&nbsp;&nbsp;
-                                                <asp:LinkButton runat="server" ID="btnpdfview" ToolTip="Send to Client" CommandName="SendMail" CommandArgument='<%# Eval("CustomerName") %>'><i class="fa fa-envelope"  style="font-size: 26px; color:green; "></i></i></asp:LinkButton> 
+                                                <asp:LinkButton runat="server" ID="btnpdfview" ToolTip="Send to Client" CommandName="SendMail" CommandArgument='<%# Eval("CustomerName") %>' OnClientClick="showLoadingSpinner();"><i class="fa fa-envelope"  style="font-size: 26px; color:green; "></i></i></asp:LinkButton>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>
                                 </asp:GridView>
+
+                                <div id="loadingSpinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+                                    <div id="BodyMain">
+                                        <div id="DivMain">
+                                            <span id="SpanMain">Sending..</span>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <%-- End Code --%>
                             </div>
@@ -442,8 +516,8 @@
                             <button type="button" id="Closepophistory" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button></h4>
                         </div>
 
-                        <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">
-                            <br />
+                        <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding - left: 1px;">
+                            < br />
                             <br />
                             <asp:HiddenField runat="server" ID="hdnid" />
                             <div class="col-md-12">

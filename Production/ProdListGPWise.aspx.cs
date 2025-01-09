@@ -36,7 +36,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
     {
         DataTable Dts = Cls_Main.Read_Table(" SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum, " +
-            " MAX(CAST(Stage AS INT)) AS MaxStage FROM tbl_ProductionHDR GROUP BY ProjectCode, CustomerName,  ProjectName " +
+            " MAX(CAST(Stage AS INT)) AS MaxStage FROM tbl_ProductionHDR Where CustomerName = 'Web Link Services Pvt Ltd Pune' GROUP BY ProjectCode, CustomerName,  ProjectName " +
             " ORDER BY ProjectCode desc; ");
 
         MainGridLoad.DataSource = Dts;
@@ -504,9 +504,9 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                     SerialNo = dt.Rows[0]["SerialNo"].ToString();
                     string url = "ProductionListForCust.aspx?ID=" + objcls.encrypt(Id) + "&name=" + objcls.encrypt(Customer);
 
-                    SendMail(url, Usermail, Customer, PoNo, SerialNo);
+                   SendMail(url, Usermail, Customer, PoNo, SerialNo);
 
-                   // Response.Redirect(url);
+                    // Response.Redirect(url);
                 }
                 else
                 {
@@ -528,10 +528,11 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             MailMessage message = new MailMessage();
             message.To.Add(mail);
             // Add CC recipients
-            string erp = "testing@weblinkservices.net";
-            string Gmail = "Bss@excelenclosures.com";
+            string erp = "cn.foundtechengg@gmail.com";
+            string Gmail = "testing@weblinkservices.net";
             message.CC.Add(erp);
             message.CC.Add(Gmail);
+            message.ReplyToList.Add(new MailAddress("cn.foundtechengg@gmail.com"));
 
             message.Subject = "Track Your Order";
             message.Body = GetEmailTemplate(CustomerName, "https://www.foundtecherp.com/Production/" + url, PoNo, SerialNo);
@@ -586,7 +587,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                                                         <tr>
                                                             <td>&nbsp;</td>
                                                             <td width=""100%"" align=""center"" style=""text-align:center;padding:10px 0px"">
-                                                                <a href=""https://www.foundtecherp.com/"" target=""_blank""><img src=""https://www.foundtecherp.com/Content/img/logo.png"" width=""20%""></a>
+                                                                <a href=""https://www.foundtechengg.com/"" target=""_blank""><img src=""https://www.foundtechengg.com/images/logo.png"" width=""40%"" style=""box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;""></a>
                                                             </td>
                                                             <td>&nbsp;</td>
                                                         </tr>
@@ -597,7 +598,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                                                     <tbody>
                                                         <tr style=""background-color:#1a263a"">
                                                             <td>&nbsp;</td>
-                                                            <td width=""660"" style=""padding:20px 0px 20px 0px;text-align:center""><a href=""#"" style=""text-decoration:none;font-size:20px;color:#ffffff""> Notification From Foundtech Engineering </a></td>
+                                                            <td width=""660"" style=""padding:10px 0px 10px 0px;text-align:center""><a href=""#"" style=""text-decoration:none;font-size:14px;color:#ffffff""> Notification From Foundtech Engineering </a></td>
                                                             <td>&nbsp;</td>
                                                         </tr>
                                                         <tr>
@@ -688,6 +689,6 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
         </html>
     ";
 
-        return template.Replace("{user}", user).Replace("{SerialNo}", SerialNo).Replace("{PoNo}",PoNo).Replace("{link}", link);
+        return template.Replace("{user}", user).Replace("{SerialNo}", SerialNo).Replace("{PoNo}", PoNo).Replace("{link}", link);
     }
 }
