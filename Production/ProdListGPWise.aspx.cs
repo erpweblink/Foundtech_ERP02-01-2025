@@ -36,7 +36,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
     {
         DataTable Dts = Cls_Main.Read_Table(" SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum, " +
-            " MAX(CAST(Stage AS INT)) AS MaxStage FROM tbl_ProductionHDR Where CustomerName = 'Web Link Services Pvt Ltd Pune' GROUP BY ProjectCode, CustomerName,  ProjectName " +
+            " MAX(CAST(Stage AS INT)) AS MaxStage FROM tbl_ProductionHDR  GROUP BY ProjectCode, CustomerName,  ProjectName " +
             " ORDER BY ProjectCode desc; ");
 
         MainGridLoad.DataSource = Dts;
