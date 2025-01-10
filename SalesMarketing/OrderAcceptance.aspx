@@ -115,6 +115,130 @@
         }
     </style>
 
+    <style>
+        .modelprofile1 {
+            background-color: rgba(0, 0, 0, 0.54);
+            display: block;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            /*top: 10px;*/
+            height: 100%;
+            overflow: auto;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .profilemodel2 {
+            background-color: #fefefe;
+            margin-top: 25px;
+            /*padding: 17px 5px 18px 22px;*/
+            padding: 0px 0px 15px 0px;
+            width: 100%;
+            top: 40px;
+            color: #000;
+            border-radius: 5px;
+        }
+
+        .lblpopup {
+            text-align: left;
+        }
+
+        .wp-block-separator:not(.is-style-wide):not(.is-style-dots)::before, hr:not(.is-style-wide):not(.is-style-dots)::before {
+            content: '';
+            display: block;
+            height: 1px;
+            width: 100%;
+            background: #cccccc;
+        }
+
+        .btnclose {
+            background-color: #ef1e24;
+            float: right;
+            font-size: 18px !important;
+            /* font-weight: 600; */
+            color: #f7f6f6 !important;
+            border: 0px groove !important;
+            background-color: none !important;
+            /*margin-right: 10px !important;*/
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        /*hr {
+         margin-top: 5px !important;
+         margin-bottom: 15px !important;
+         border: 1px solid #eae6e6 !important;
+         width: 100%;
+     }*/
+        hr.new1 {
+            border-top: 1px dashed green !important;
+            border: 0;
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+            width: 100%;
+        }
+
+        .errspan {
+            float: right;
+            margin-right: 6px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 2;
+            color: black;
+        }
+
+        .currentlbl {
+            text-align: center !important;
+        }
+
+        .completionList {
+            border: solid 1px Gray;
+            border-radius: 5px;
+            margin: 0px;
+            padding: 3px;
+            height: 120px;
+            overflow: auto;
+            background-color: #FFFFFF;
+        }
+
+        .listItem {
+            color: #191919;
+        }
+
+        .itemHighlighted {
+            background-color: #ADD6FF;
+        }
+
+        .headingcls {
+            background-color: #01a9ac;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px 5px 0px 0px;
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1250px !important;
+            }
+        }
+    </style>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $("[src*=plus]").live("click", function () {
+            $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>")
+            $(this).attr("src", "../Content1/img/minus.png");
+        });
+        $("[src*=minus]").live("click", function () {
+            $(this).attr("src", "../Content1/img/plus.png");
+            $(this).closest("tr").next().remove();
+        });
+    </script>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <form id="form1" runat="server">
@@ -168,7 +292,7 @@
                                     <div class="col-md-6 col-12 mb-3">
                                         <asp:Label ID="Label19" runat="server" Font-Bold="true" CssClass="form-label">User Name:</asp:Label>
                                         <asp:TextBox ID="txtUserName" runat="server" ReadOnly="true" ValidationGroup="1" ForeColor="Red" AutoComplete="off" CssClass="form-control"></asp:TextBox>
-                                       <%--<asp:DropDownList runat="server" ID="ddlUser" ValidationGroup="1" CssClass="form-control">
+                                        <%--<asp:DropDownList runat="server" ID="ddlUser" ValidationGroup="1" CssClass="form-control">
                                         </asp:DropDownList>--%>
                                     </div>
                                     <div class="col-md-6 col-12 mb-3">
@@ -261,14 +385,14 @@
                                 <div class="row">
                                     <div class="col-md-6 col-12 mb-3">
                                         <asp:Label ID="Label40" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Project Code:</asp:Label>
-                                        <asp:TextBox ID="txtprojectCode" CssClass="form-control"  ForeColor="Red" runat="server" OnTextChanged="txtprojectCode_TextChanged" AutoPostBack="true" autocomplete="off"></asp:TextBox>
+                                        <asp:TextBox ID="txtprojectCode" CssClass="form-control" ForeColor="Red" runat="server" OnTextChanged="txtprojectCode_TextChanged" AutoPostBack="true" autocomplete="off"></asp:TextBox>
                                         <asp:Label ID="lblProjCodeValidate" runat="server" Text="Project Code Already Exist.." Visible="false" ForeColor="Red" Font-Size="Large" Font-Italic="true"></asp:Label>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator7" ValidationGroup="1" runat="server" ControlToValidate="txtprojectCode"
                                             ForeColor="Red" ErrorMessage="Please Enter Project Code" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                     </div>
                                     <div class="col-md-6 col-12 mb-3">
                                         <asp:Label ID="Label41" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Project Name:</asp:Label>
-                                        <asp:TextBox ID="txtprojectName" CssClass="form-control" ForeColor="Red" runat="server"  autocomplete="off"></asp:TextBox>
+                                        <asp:TextBox ID="txtprojectName" CssClass="form-control" ForeColor="Red" runat="server" autocomplete="off"></asp:TextBox>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator8" ValidationGroup="1" runat="server" ControlToValidate="txtprojectName"
                                             ForeColor="Red" ErrorMessage="Please Enter Project Name" Display="Dynamic" SetFocusOnError="true"></asp:RequiredFieldValidator>
                                     </div>
@@ -348,8 +472,25 @@
                                             <%--<div class="row" id="divdtls">--%>
                                             <div class="table-responsive text-center">
                                                 <asp:GridView ID="dgvMachineDetails" runat="server" CellPadding="4" DataKeyNames="id" Width="100%" CssClass="display table table-striped table-hover"
-                                                    OnRowEditing="dgvMachineDetails_RowEditing" OnRowDataBound="dgvMachineDetails_RowDataBound" AutoGenerateColumns="false">
+                                                    OnRowEditing="dgvMachineDetails_RowEditing" OnRowDataBound="dgvMachineDetails_RowDataBound" AutoGenerateColumns="false" OnRowCommand="dgvMachineDetails_RowCommand">
                                                     <Columns>
+                                                        <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
+                                                            <ItemTemplate>
+                                                                <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
+                                                                <asp:Panel ID="pnlOrders" runat="server" Style="display: none">
+                                                                    <asp:GridView ID="gvDetails" DataKeyNames="Id" runat="server" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
+                                                                        <Columns>
+                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="SubProductName" HeaderText="Sub Product" />
+                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="Description" HeaderText="Sub Product Description" />
+                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="Quantity" HeaderText="Quantityn" />
+                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="Weight" HeaderText="Weight" />
+                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="TotalWeight" HeaderText="Total Weight" />
+                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="Length" HeaderText="Length" />
+                                                                        </Columns>
+                                                                    </asp:GridView>
+                                                                </asp:Panel>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="Sr.No" ItemStyle-Width="20" HeaderStyle-CssClass="gvhead">
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
@@ -410,8 +551,8 @@
                                                             <ItemTemplate>
                                                                 <%--<asp:LinkButton ID="btn_edit" runat="server" Height="27px" CausesValidation="false" CommandName="RowEdit" CommandArgument='<%#Eval("ID")%>'><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>--%>
 
-                                                                <asp:LinkButton ID="btn_edit" CausesValidation="false" Text="Edit" runat="server" CommandName="Edit"><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>
-
+                                                                <asp:LinkButton ID="btn_edit" CausesValidation="false" Text="Edit" runat="server" CommandName="Edit"><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>&nbsp;
+                                                                 <asp:LinkButton ID="gv_AddSubProd" Text="Add" CausesValidation="false" CommandName="AddNew" runat="server" Visible="false" CommandArgument='<%# Eval("Id") + "," + Eval("ProductName") %>'><i class='fa fa-plus-circle' style='font-size:24px;color: #212529;'></i></asp:LinkButton>&nbsp;
                                                                 <asp:LinkButton runat="server" ID="lnkbtnDelete" OnClick="lnkbtnDelete_Click" ToolTip="Delete" OnClientClick="Javascript:return confirm('Are you sure to Delete?')" CausesValidation="false"><i class="fa fa-trash" style="font-size:24px"></i></asp:LinkButton>
                                                             </ItemTemplate>
                                                             <EditItemTemplate>
@@ -452,11 +593,103 @@
                         <asp:HiddenField ID="hhdstate" runat="server" />
                     </div>
                 </div>
+
+
+                <%--New Code By Nikhil 10-01-2025--%>
+                <asp:Button ID="btnhist" runat="server" Style="display: none" />
+                <asp:ModalPopupExtender ID="ModalPopupHistory" runat="server" TargetControlID="btnhist"
+                    PopupControlID="PopupHistoryDetail" OkControlID="Closepophistory" />
+
+                <asp:Panel ID="PopupHistoryDetail" runat="server" CssClass="modelprofile1">
+                    <div class="row container">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-8">
+                            <div class="profilemodel2">
+                                <div class="headingcls">
+                                    <h4 class="modal-title">PRODUCTION PLAN
+                
+                          <button type="button" id="Closepophistory" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button></h4>
+                                </div>
+
+                                <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding - left: 1px;">
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-6 d-none">
+                                            <asp:Label ID="Label14" runat="server" Font-Bold="true" CssClass="form-label">PONO :</asp:Label>
+                                            <asp:TextBox ID="txtPonoProd" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <asp:Label ID="Label13" runat="server" Font-Bold="true" CssClass="form-label">Product Name:</asp:Label>
+                                            <asp:TextBox ID="txtProductname" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-6 col-12 mb-3" >
+                                            <asp:Label ID="lblSubPro" runat="server" Font-Bold="true" CssClass="form-label">SubPart Bulk Upload :</asp:Label>
+                                            <asp:FileUpload ID="SubProdFile" runat="server" CssClass="form-control" />
+                                            <asp:Label ID="lblsubProduct" runat="server" Font-Bold="true" ForeColor="blue" Text=""></asp:Label>
+
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <div class="col-md-2" style="margin-top: 18px">
+                                                <asp:Button ID="SubProdBtn" runat="server" CausesValidation="false" AutoPostBack="true" Text="Upload" CssClass="form-control btn btn-outline-primary m-2" OnClick="SubProdBtn_Click" Style="padding: 4px 11px 4px 11px !important" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <table class="table-bordered" style="width: 100%; border: 2px solid #0c7d38;">
+                                        <tr style="background-color: #7ad2d4; color: #000; font-weight: 600; text-align: center;">
+                                            <td>Product (SubPart)</td>
+                                            <td>Description</td>
+                                            <td>Quantity</td>
+                                            <td>Length</td>
+                                            <td>Weight (kg)</td>
+                                            <td>Total Weight (Kg)</td>
+                                            <td>Action</td>
+                                        </tr>
+
+                                        <%--  Row 1--%>
+                                        <tr>
+                                            <td>
+                                                <asp:TextBox ID="TextBox1" CssClass="form-control" placeholder="Enter Product" runat="server"></asp:TextBox>
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="TextBox2" TextMode="MultiLine" placeholder="Description" CssClass="form-control" runat="server"></asp:TextBox>
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="TextBox3" CssClass="form-control" placeholder="Quantity"  runat="server"></asp:TextBox>
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="TextBox4" CssClass="form-control" placeholder="Lenght" runat="server"></asp:TextBox>
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="TextBox5" CssClass="form-control" placeholder="Weight" runat="server"></asp:TextBox>
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="TextBox6" CssClass="form-control" placeholder="Total Weight" runat="server" ></asp:TextBox>
+                                            </td>
+                                            <td>
+                                                <asp:Button ID="Button1" CausesValidation="false" OnClick="Button1_Click1" Style="padding: 4px 4px 4px 4px !important;" CssClass="btn btn-primary btn-sm btncss" runat="server" Text="Add More" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+
+                    </div>
+                </asp:Panel>
+
+                <%--End Code--%>
             </ContentTemplate>
             <Triggers>
                 <asp:PostBackTrigger ControlID="btnsave" />
                 <asp:PostBackTrigger ControlID="btncancel" />
                 <asp:PostBackTrigger ControlID="uploadfile" />
+                <asp:PostBackTrigger ControlID="SubProdBtn" />
             </Triggers>
         </asp:UpdatePanel>
     </form>

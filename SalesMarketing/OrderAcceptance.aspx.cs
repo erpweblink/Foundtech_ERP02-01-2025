@@ -1,4 +1,7 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Presentation;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Org.BouncyCastle.Asn1.Cmp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -24,13 +27,14 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         }
         else
         {
+            
             if (!IsPostBack)
             {
                 POCode(); FillddlUsers();
 
                 if (Request.QueryString["ID"] != null)
                 {
-                    string Id = objcls.Decrypt(Request.QueryString["ID"].ToString());
+                     string Id = objcls.Decrypt(Request.QueryString["ID"].ToString());
                     hhd.Value = Id;
                     Load_Record(Id);
                 }
@@ -48,7 +52,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
                 ViewState["RowNo"] = 0;
 
-                Dt_Product.Columns.AddRange(new DataColumn[7] { new DataColumn("id"), new DataColumn("Productname"), new DataColumn("Description"), new DataColumn("Quantity"), new DataColumn("Length"), new DataColumn("Weight"), new DataColumn("TotalWeight") });
+                Dt_Product.Columns.AddRange(new DataColumn[8] {new DataColumn("Id"), new DataColumn("id"), new DataColumn("Productname"), new DataColumn("Description"), new DataColumn("Quantity"), new DataColumn("Length"), new DataColumn("Weight"), new DataColumn("TotalWeight") });
                 ViewState["PurchaseOrderProduct"] = Dt_Product;
 
                 //Edit 
@@ -58,6 +62,22 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                     btnsave.Text = "Update";
                     ShowDtlEdit();
                     hhd.Value = ID;
+
+                    foreach (GridViewRow row in dgvMachineDetails.Rows)
+                    {
+
+                        GridView gvDetails = row.FindControl("gvDetails") as GridView;
+
+                        if (gvDetails != null)
+                        {
+                            LinkButton gvAddSubProd = row.FindControl("gv_AddSubProd") as LinkButton;
+
+                            if (gvAddSubProd != null)
+                            {
+                                gvAddSubProd.Visible = true;
+                            }
+                        }
+                    }
 
                 }
             }
@@ -165,7 +185,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
             for (int i = 0; i < DTCOMP.Rows.Count; i++)
             {
-                Dt_Product.Rows.Add(count, DTCOMP.Rows[i]["Productname"].ToString(), DTCOMP.Rows[i]["Description"].ToString(), DTCOMP.Rows[i]["Quantity"].ToString(), DTCOMP.Rows[i]["Weight"].ToString(), DTCOMP.Rows[i]["Length"].ToString(), DTCOMP.Rows[i]["TotalWeight"].ToString());
+                Dt_Product.Rows.Add(DTCOMP.Rows[i]["Id"].ToString() ,count, DTCOMP.Rows[i]["Productname"].ToString(), DTCOMP.Rows[i]["Description"].ToString(), DTCOMP.Rows[i]["Quantity"].ToString(), DTCOMP.Rows[i]["Weight"].ToString(), DTCOMP.Rows[i]["Length"].ToString(), DTCOMP.Rows[i]["TotalWeight"].ToString());
                 count = count + 1;
             }
         }
@@ -507,7 +527,6 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         }
     }
 
-
     protected void txtquantity_TextChanged(object sender, EventArgs e)
     {
 
@@ -658,17 +677,16 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                //LinkButton lnkedit = e.Row.FindControl("btn_edit") as LinkButton;
+                GridView gvDetails = e.Row.FindControl("gvDetails") as GridView;
 
-
-                //    lblproduct = (e.Row.FindControl("txtproduct") as TextBox).Text;
-                //    Description = (e.Row.FindControl("txtDescription") as TextBox).Text;
-
-                //    Quantity = (e.Row.FindControl("txtQuantity") as TextBox).Text;
-                //    Weight = (e.Row.FindControl("txtWeight") as TextBox).Text;
-                //    TotalWeight = (e.Row.FindControl("txtTotalWeight") as TextBox).Text;
-
-
+                string productName = DataBinder.Eval(e.Row.DataItem, "Productname") as string;
+                string Id = DataBinder.Eval(e.Row.DataItem, "Id") as string;
+                if (!string.IsNullOrEmpty(productName))
+                {
+                    gvDetails.DataSource = GetData(string.Format("select * from tbl_SubProducts where ProductName='{0}' AND PoNo = '{1}' ", productName,Id));
+                    gvDetails.DataBind();
+                }
+               
             }
         }
         catch (Exception ex)
@@ -1176,6 +1194,101 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                 }
             }
             con.Close();
+        }
+    }
+
+    
+    protected void dgvMachineDetails_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if(e.CommandName == "AddNew")
+        {
+            string value = e.CommandArgument.ToString();
+            string[] val = value.Split(',');
+
+            string pono = val[0];
+            string productName = val[1];
+            txtPonoProd.Text = pono;
+            txtProductname.Text = productName;
+            this.ModalPopupHistory.Show();
+        }
+    }
+
+    protected void SubProdBtn_Click(object sender, EventArgs e)
+    {
+        if (SubProdFile.HasFile)
+        {
+           
+            OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+           
+            byte[] fileContent;
+            using (Stream fs = SubProdFile.PostedFile.InputStream)
+            {
+                using (BinaryReader br = new BinaryReader(fs))
+                {
+                    fileContent = br.ReadBytes((int)fs.Length);
+                }
+            }
+
+            using (var package = new OfficeOpenXml.ExcelPackage(new MemoryStream(fileContent)))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+                var rowCount = worksheet.Dimension.End.Row;
+                var colCount = worksheet.Dimension.End.Column;
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand("INSERT INTO tbl_SubProducts (Pono,ProductName,SubProductName,Description,Quantity,Weight" +
+                        ",TotalWeight,Length) VALUES ('"+txtPonoProd.Text+"','"+ txtProductname.Text + "','"+ worksheet.Cells[row, 2].Text + "'," +
+                        "'"+ worksheet.Cells[row, 3].Text + "','"+ worksheet.Cells[row, 4].Text + "','"+ worksheet.Cells[row, 5].Text + "'," +
+                        "'"+ worksheet.Cells[row, 6].Text + "','"+ worksheet.Cells[row, 7].Text + "')", con);
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                   
+                }
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Sub Products Save Successfully..!!');window.location='"+ "OrderAcceptance.aspx?Id=" + objcls.encrypt(hhd.Value) + "" + "'; ", true);
+            }
+        }
+    }
+
+
+    private static DataTable GetData(string query)
+    {
+        string strConnString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+        using (SqlConnection con = new SqlConnection(strConnString))
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandText = query;
+                using (SqlDataAdapter sda = new SqlDataAdapter())
+                {
+                    cmd.Connection = con;
+                    sda.SelectCommand = cmd;
+                    using (DataSet ds = new DataSet())
+                    {
+                        DataTable dt = new DataTable();
+                        sda.Fill(dt);
+                        return dt;
+                    }
+                }
+            }
+        }
+    }
+
+    protected void Button1_Click1(object sender, EventArgs e)
+    {
+        if(TextBox1.Text != "")
+        {
+            con.Open();
+            SqlCommand cmd = new SqlCommand("INSERT INTO tbl_SubProducts (Pono,ProductName,SubProductName,Description,Quantity,Weight" +
+                ",TotalWeight,Length) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + TextBox1.Text + "'," +
+                "'" + TextBox2.Text + "','" + TextBox3.Text + "','" + TextBox5.Text + "'," +
+                "'" + TextBox6.Text + "','" + TextBox4.Text + "')", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Sub Products Save Successfully..!!');window.location='" + "OrderAcceptance.aspx?Id=" + objcls.encrypt(hhd.Value) + "" + "'; ", true);
         }
     }
 }

@@ -517,7 +517,7 @@
                         </div>
 
                         <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding - left: 1px;">
-                            < br />
+                            <br />
                             <br />
                             <asp:HiddenField runat="server" ID="hdnid" />
                             <div class="col-md-12">
@@ -540,7 +540,7 @@
                                         <label style="font-weight: bold">Painting</label>&nbsp;&nbsp;&nbsp;
                                        
                                         <asp:CheckBox ID="Packaging" Checked="true" runat="server" CssClass="form-check-input" />
-                                        <label style="font-weight: bold">Packaging</label>&nbsp;&nbsp;&nbsp;
+                                        <label style="font-weight: bold">Quality</label>&nbsp;&nbsp;&nbsp;
                                        
                                         <asp:CheckBox ID="Dispatch" Checked="true" runat="server" CssClass="form-check-input" />
                                         <label style="font-weight: bold">Dispatch</label>

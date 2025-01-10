@@ -549,7 +549,7 @@
                                 <br />
 
                                 <%--<div class="table-responsive text-center">--%>
-                                <div class="table ">
+                                <div class="table table-responsive ">
                                     <br />
                                     <%--New Code by Nikhil 03-01-2025--%>
                                     <asp:GridView ID="MainGridLoad" runat="server" CellPadding="4" DataKeyNames="ProjectCode" Width="100%"

@@ -238,25 +238,26 @@ public partial class Production_Bending : System.Web.UI.Page
 
                     string fileExtension = Path.GetExtension(fileName);
 
-                    if (fileExtension == ".dwg")
-                    {
-                        //New Code by Nikhil 04-01-2025
-                        string filePath = Server.MapPath("~/Drawings/" + fileName);
+                    if (fileExtension == ".pdf")
+ {
+     //Old Code 
+     Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
+ }
+ else
+ {
+     //New Code by Nikhil 04-01-2025
+     string filePath = Server.MapPath("~/Drawings/" + fileName);
 
-                        if (File.Exists(filePath))
-                        {
-                            byte[] fileBytes = File.ReadAllBytes(filePath);
-                            string base64File = Convert.ToBase64String(fileBytes);
-                            string safeBase64File = base64File.Replace("'", @"\'");
-                            string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
+     if (File.Exists(filePath))
+     {
+         byte[] fileBytes = File.ReadAllBytes(filePath);
+         string base64File = Convert.ToBase64String(fileBytes);
+         string safeBase64File = base64File.Replace("'", @"\'");
+         string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
+         ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
 
-                        }
-                    }
-                    else
-                    {
-                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
-                    }
+     }
+ }
                 }
                 else
                 {

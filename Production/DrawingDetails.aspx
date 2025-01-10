@@ -487,7 +487,7 @@
                                                     <asp:GridView ID="grdgrid" runat="server"
                                                         CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
                                                         <Columns>
-                                                            <asp:TemplateField HeaderText="Inward Qty" HeaderStyle-CssClass="gvhead">
+                                                            <asp:TemplateField HeaderText="File Name" HeaderStyle-CssClass="gvhead">
                                                                 <ItemTemplate>
                                                                     <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("Id") %>' ToolTip="Open File" />
                                                                     <asp:Label ID="lblFileName" runat="server" Text='<%#Eval("FileName")%>'></asp:Label>
