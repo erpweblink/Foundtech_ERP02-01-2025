@@ -2,20 +2,25 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
-<html>
-<head runat="server">
-    <title>FoundTech Engineering</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="description" content="#" />
-    <meta name="keywords" content="Admin" />
-    <meta name="author" content="#" />
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Foundtech Engineering</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials.css">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials-theme-flat.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
     <link rel="stylesheet" href="Content/assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="Content/assets/css/plugins.min.css" />
     <link rel="stylesheet" href="Content/assets/css/kaiadmin.min.css" />
-    <script src="../JS/jquery.min.js"></script>
+
+
     <link href="../Content/css/Griddiv.css" rel="stylesheet" />
 
     <script src="../Content/assets/js/plugin/webfont/webfont.min.js"></script>
@@ -102,6 +107,11 @@
             padding-top: 10px;
         }
     </style>
+
+
+
+
+
     <style>
         .modelprofile1 {
             background-color: rgba(0, 0, 0, 0.54);
@@ -205,8 +215,296 @@
                 max-width: 1250px !important;
             }
         }
+
+
+        @import url("https://fonts.googleapis.com/css?family=Lato:400,400i,700");
+
+        * {
+            font-family: Lato, sans-serif;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #F5F5F5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 50px 0;
+        }
+
+        .wrapper {
+            width: 80%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .container {
+            background-color: white;
+            color: black;
+            border-radius: 20px;
+            box-shadow: 0 5px 10px 0 rgb(26 160 255);
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .question {
+            font-size: 1.3rem !important;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #747474;
+            padding: 12px 80px 12px 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: none !important;
+        }
+
+            .question::after {
+                content: "\002B";
+                font-size: 2.2rem;
+                position: absolute;
+                right: 20px;
+                transition: 0.2s;
+            }
+
+            .question.active::after {
+                transform: rotate(45deg);
+            }
+
+        .answercont {
+            max-height: 0;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .answer {
+            padding: 0 20px 20px;
+            line-height: 1.5rem;
+        }
+
+        .question.active + .answercont {
+            @media screen and (max-width: 790px) {
+                html {
+                    font-size: 14px;
+                }
+
+                .wrapper {
+                    width: 100%;
+                }
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 95% !important;
+            }
+
+            .question {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mob-sty {
+                width: 260px !important;
+            }
+
+            .question {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .newline {
+                white-space: pre;
+                font-weight: bold;
+            }
+        }
+
+        .abc li {
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .abc {
+            text-align: left;
+        }
+
+        @media (max-width: 767px) {
+            .abc li {
+                display: block;
+                font-weight: bold;
+            }
+
+            .mr-left {
+                margin-left: 12%;
+            }
+
+            .wrapper {
+                width: 100%;
+            }
+
+            .newline {
+                white-space: pre;
+                font-weight: bold;
+                text-align: left;
+            }
+        }
+
+        .button,
+        [type=submit] {
+            font-size: x-large;
+            align-content: center;
+            color: #fff;
+            border-color: #747474;
+            background-color: #eb1538;
+            margin-bottom: .25em;
+            text-shadow: 0 .075em .075em rgba(0, 0, 0, .5);
+            box-shadow: 0 .25em 0 0 #747474, 0 4px 9px rgba(0, 0, 0, .75);
+            border-radius: .5em
+        }
+
+
+            .button:hover,
+            [type=submit]:hover {
+                color: #fff;
+                border-color: #747474;
+                background-color: #747474;
+                margin-bottom: .25em;
+                text-shadow: 0 .075em .075em rgba(0, 0, 0, .5);
+                box-shadow: 0 .25em 0 0 #747474, 0 4px 9px rgba(0, 0, 0, .75)
+            }
+
+        h2 {
+            /* text-shadow: 1px 4px #40F2B8C4; */
+            /* text-shadow: 2px 2px #000000c4; */
+            /* text-shadow: 1px 4px rgb(227 103 103); */
+        }
+
+        hr {
+            text-shadow: 1px 4px #40F2B8C4;
+            /* text-shadow: 1px 4px rgb(227 103 103); */
+        }
+
+        .container {
+            /* box-shadow: 0 5px 10px 0 rgb(26 255 255); */
+            box-shadow: 0 5px 10px 0 rgb(26 160 255);
+        }
+
+        p {
+            text-align: initial;
+            font-weight: bold;
+        }
+
+        .circle {
+            border-radius: 50%;
+            box-shadow: 0px 0px 2px 2px #24c76473;
+            position: fixed;
+            left: 20px;
+            bottom: 15px;
+            z-index: 9999;
+        }
+
+        .circle1 {
+            border-radius: 15px;
+            /* box-shadow: 0px 0px 2px 2px #24c76473; */
+            position: fixed;
+            right: 15px;
+            bottom: 10px;
+            z-index: 9999;
+            background-color: #e31e24;
+            padding: 11px;
+            color: #fff;
+        }
+
+        .pulse {
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% {
+                box-shadow: 0 0 0 0px #24c76473;
+            }
+
+            100% {
+                box-shadow: 0 0 0 20px #24c76473;
+            }
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .awesome {
+            font-family: futura;
+            font-style: italic;
+            width: 100%;
+            /* margin: 0 auto; */
+            /* text-align: center; */
+
+            color: #313131;
+            font-size: 25px;
+            /* margin-top: 2px; */
+            font-weight: bold;
+            /* position: absolute; */
+            -webkit-animation: colorchange 20s infinite alternate;
+        }
+
+        @-webkit-keyframes colorchange {
+            0% {
+                color: blue;
+            }
+
+            10% {
+                color: #8e44ad;
+            }
+
+            20% {
+                color: #1abc9c;
+            }
+
+            30% {
+                color: #d35400;
+            }
+
+            40% {
+                color: blue;
+            }
+
+            50% {
+                color: #34495e;
+            }
+
+            60% {
+                color: blue;
+            }
+
+            70% {
+                color: #2980b9;
+            }
+
+            80% {
+                color: #f1c40f;
+            }
+
+            90% {
+                color: #2980b9;
+            }
+
+            100% {
+                color: pink;
+            }
+        }
     </style>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
 
     <script type="text/javascript">
         $("[src*=plus]").live("click", function () {
@@ -223,159 +521,181 @@
 </head>
 
 
-<form id="form1" runat="server">
-    <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
-    </asp:ToolkitScriptManager>
+<body style="background-color: #dbd6c6;">
 
-    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
-        <contenttemplate>
-            <div class="container-fluid px-4">
-                <br />
-                <br />
-                <br />
-                <br />
-                <div class="row">
-                    <div class="col-9 col-md-10">
-                        <h4 class="mt-4 "><b>PRODUCTION LIST</b></h4>
-                    </div>
-                </div>
-                <hr />
-                <div>
-                    <div class="row">
-                        <br />
+    <div class="container" id="comment_form">
 
-                        <%--<div class="table-responsive text-center">--%>
-                        <div class="table ">
-                            <br />
-                            <%--New Code by Nikhil 03-01-2025--%>
-                            <asp:GridView ID="MainGridLoad" runat="server" CellPadding="4" DataKeyNames="ProjectCode" Width="100%"
-                                OnRowDataBound="MainGridLoad_RowDataBound" OnRowCommand="MainGridLoad_RowCommand" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
-                                <columns>
-                                    <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
-                                        <itemtemplate>
-                                            <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
-                                            <asp:Panel ID="pnlOrders" runat="server" Style="display: none">
-                                                <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="id,JobNo" Width="100%" OnRowDataBound="GVPurchase_RowDataBound"
-                                                    OnRowCommand="GVPurchase_RowCommand" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
-                                                    <columns>
-                                                        <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
-                                                            <itemtemplate>
-                                                                <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
-                                                                <asp:Panel ID="Panel1" runat="server" Style="display: none">
-                                                                    <b>Customer Name :</b>
-                                                                    <asp:Label ID="lblmessagee" runat="server" Text='<%# Eval("CustomerName") %>'></asp:Label>
-                                                                    <br />
-                                                                    <b>Product Name :</b>
-                                                                    <asp:Label ID="Label7" runat="server" Text='<%# Eval("ProductName") %>'></asp:Label>
-                                                                    <br />
-                                                                    <b>Description :</b>
-                                                                    <asp:Label ID="Label6" runat="server" Text='<%# Eval("Discription") %>'></asp:Label>
-                                                                    <br />
-                                                                    <hr />
-                                                                    <asp:GridView ID="gvDetails" runat="server" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
-                                                                        <columns>
-                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="Stage" HeaderText="Stage" />
-                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="TotalQTY" HeaderText="Total Quantity" />
-                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="InwardQTY" HeaderText="Inward Quantity" />
-                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="OutwardQTY" HeaderText="Outward Quantity" />
-                                                                            <asp:BoundField ItemStyle-Width="150px" DataField="Pending" HeaderText="Pending" />
-                                                                        </columns>
-                                                                    </asp:GridView>
-                                                                </asp:Panel>
-                                                            </itemtemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
-                                                            <itemtemplate>
-                                                                <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
-                                                            </itemtemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Job No." HeaderStyle-CssClass="gvhead">
-                                                            <itemtemplate>
-                                                                <asp:Label ID="jobno" runat="server" Text='<%#Eval("JobNo")%>'></asp:Label>
-                                                            </itemtemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="OA No." HeaderStyle-CssClass="gvhead">
-                                                            <itemtemplate>
-                                                                <asp:Label ID="OAno" runat="server" Text='<%#Eval("OANumber")%>'></asp:Label>
-                                                            </itemtemplate>
-                                                        </asp:TemplateField>
+        <form id="form1" runat="server">
 
-                                                        <asp:TemplateField HeaderText="Product Name" HeaderStyle-CssClass="gvhead">
-                                                            <itemtemplate>
-                                                                <asp:Label ID="ProductName" runat="server" Text='<%#Eval("ProductName")%>'></asp:Label>
-                                                            </itemtemplate>
-                                                        </asp:TemplateField>
+            <center>
+                <br>
+                <img src="https://www.foundtechengg.com/images/logo.png" alt="" style="align-items: flex-start;"><br>
+            </center>
+            <hr style="border: 1px solid rgb(182, 178, 156);">
+            <center>
+                <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">PRODUCTION LIST</h2>
+            </center>
 
-                                                        <asp:TemplateField HeaderText="Product Discription" HeaderStyle-CssClass="gvhead">
-                                                            <itemtemplate>
-                                                                <asp:Label ID="ProdDiscript" runat="server" Text='<%#Eval("Discription")%>'></asp:Label>
-                                                            </itemtemplate>
-                                                        </asp:TemplateField>
 
-                                                        <asp:TemplateField HeaderText="Delivery Date" HeaderStyle-CssClass="gvhead">
-                                                            <itemtemplate>
-                                                                <asp:Label ID="Deliverydate" runat="server" Text='<%# Eval("Deliverydate", "{0:dd-MM-yyyy}") %>'></asp:Label>
-                                                            </itemtemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Total Quantity" HeaderStyle-CssClass="gvhead">
-                                                            <itemtemplate>
-                                                                <asp:Label ID="Total_Price" runat="server" Text='<%#Eval("TotalQuantity")%>'></asp:Label>
-                                                            </itemtemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Quality File" ItemStyle-HorizontalAlign="Center">
-                                                            <itemtemplate>
-                                                                <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Eval("FilePath") %>'><i class="fas fa-folder-open" style="font-size: 26px;"></i></i></asp:LinkButton>
-                                                            </itemtemplate>
-                                                        </asp:TemplateField>
-                                                    </columns>
-                                                </asp:GridView>
-                                            </asp:Panel>
-                                        </itemtemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
-                                        <itemtemplate>
-                                            <asp:Label ID="Label8" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
-                                        </itemtemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Project Code" HeaderStyle-CssClass="gvhead">
-                                        <itemtemplate>
-                                            <asp:Label ID="lblProjectCode" runat="server" Text='<%#Eval("ProjectCode")%>'></asp:Label>
-                                        </itemtemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Customer Name" HeaderStyle-CssClass="gvhead">
-                                        <itemtemplate>
-                                            <asp:Label ID="lblCustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
-                                        </itemtemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Project Name" HeaderStyle-CssClass="gvhead">
-                                        <itemtemplate>
-                                            <asp:Label ID="lblProjectName" runat="server" Text='<%#Eval("ProjectName")%>'></asp:Label>
-                                        </itemtemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Total Sub Products" HeaderStyle-CssClass="gvhead">
-                                        <itemtemplate>
-                                            <asp:Label ID="lblSubProdCount" runat="server" Text='<%#Eval("TotalRecords")%>'></asp:Label>
-                                        </itemtemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Total Qty" HeaderStyle-CssClass="gvhead">
-                                        <itemtemplate>
-                                            <asp:Label ID="lblQtyCount" runat="server" Text='<%#Eval("TotalQuantitySum")%>'></asp:Label>
-                                        </itemtemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Completed Qty" HeaderStyle-CssClass="gvhead">
-                                        <itemtemplate>
-                                            <asp:Label ID="lblCompletedQtySum" runat="server" Text='<%#Eval("CompletedQuantitySum")%>'></asp:Label>
-                                        </itemtemplate>
-                                    </asp:TemplateField>
-                                </columns>
-                            </asp:GridView>
 
-                            <%-- End Code --%>
+            <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
+            </asp:ToolkitScriptManager>
+
+            <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                <ContentTemplate>
+                    <div class="container-fluid px-4">
+                        <div>
+                            <div class="row">
+                                <br />
+
+                                <%--<div class="table-responsive text-center">--%>
+                                <div class="table ">
+                                    <br />
+                                    <%--New Code by Nikhil 03-01-2025--%>
+                                    <asp:GridView ID="MainGridLoad" runat="server" CellPadding="4" DataKeyNames="ProjectCode" Width="100%"
+                                        OnRowDataBound="MainGridLoad_RowDataBound" OnRowCommand="MainGridLoad_RowCommand" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
+                                        <Columns>
+                                            <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
+                                                <ItemTemplate>
+                                                    <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
+                                                    <asp:Panel ID="pnlOrders" runat="server" Style="display: none">
+                                                        <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="id,JobNo" Width="100%" OnRowDataBound="GVPurchase_RowDataBound"
+                                                            OnRowCommand="GVPurchase_RowCommand" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
+                                                            <Columns>
+                                                                <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
+                                                                    <ItemTemplate>
+                                                                        <img alt="" style="cursor: pointer" src="../Content1/img/plus.png" />
+                                                                        <asp:Panel ID="Panel1" runat="server" Style="display: none">
+                                                                            <b>Customer Name :</b>
+                                                                            <asp:Label ID="lblmessagee" runat="server" Text='<%# Eval("CustomerName") %>'></asp:Label>
+                                                                            <br />
+                                                                            <b>Product Name :</b>
+                                                                            <asp:Label ID="Label7" runat="server" Text='<%# Eval("ProductName") %>'></asp:Label>
+                                                                            <br />
+                                                                            <b>Description :</b>
+                                                                            <asp:Label ID="Label6" runat="server" Text='<%# Eval("Discription") %>'></asp:Label>
+                                                                            <br />
+                                                                            <hr />
+                                                                            <asp:GridView ID="gvDetails" runat="server" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
+                                                                                <Columns>
+                                                                                    <asp:BoundField ItemStyle-Width="150px" DataField="Stage" HeaderText="Stage" />
+                                                                                    <asp:BoundField ItemStyle-Width="150px" DataField="TotalQTY" HeaderText="Total Quantity" />
+                                                                                    <asp:BoundField ItemStyle-Width="150px" DataField="InwardQTY" HeaderText="Inward Quantity" />
+                                                                                    <asp:BoundField ItemStyle-Width="150px" DataField="OutwardQTY" HeaderText="Outward Quantity" />
+                                                                                    <asp:BoundField ItemStyle-Width="150px" DataField="Pending" HeaderText="Pending" />
+                                                                                </Columns>
+                                                                            </asp:GridView>
+                                                                        </asp:Panel>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                                <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                                <asp:TemplateField HeaderText="Job No." HeaderStyle-CssClass="gvhead">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="jobno" runat="server" Text='<%#Eval("JobNo")%>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                                <asp:TemplateField HeaderText="OA No." HeaderStyle-CssClass="gvhead">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="OAno" runat="server" Text='<%#Eval("OANumber")%>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+
+                                                                <asp:TemplateField HeaderText="Product Name" HeaderStyle-CssClass="gvhead">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="ProductName" runat="server" Text='<%#Eval("ProductName")%>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+
+                                                                <asp:TemplateField HeaderText="Product Discription" HeaderStyle-CssClass="gvhead">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="ProdDiscript" runat="server" Text='<%#Eval("Discription")%>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+
+                                                                <asp:TemplateField HeaderText="Delivery Date" HeaderStyle-CssClass="gvhead">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="Deliverydate" runat="server" Text='<%# Eval("Deliverydate", "{0:dd-MM-yyyy}") %>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                                <asp:TemplateField HeaderText="Total Quantity" HeaderStyle-CssClass="gvhead">
+                                                                    <ItemTemplate>
+                                                                        <asp:Label ID="Total_Price" runat="server" Text='<%#Eval("TotalQuantity")%>'></asp:Label>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                                <asp:TemplateField HeaderText="Quality File" ItemStyle-HorizontalAlign="Center">
+                                                                    <ItemTemplate>
+                                                                        <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Eval("FilePath") %>'><i class="fas fa-folder-open" style="font-size: 26px;"></i></i></asp:LinkButton>
+                                                                    </ItemTemplate>
+                                                                </asp:TemplateField>
+                                                            </Columns>
+                                                        </asp:GridView>
+                                                    </asp:Panel>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="Label8" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Project Code" HeaderStyle-CssClass="gvhead">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblProjectCode" runat="server" Text='<%#Eval("ProjectCode")%>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Customer Name" HeaderStyle-CssClass="gvhead">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCustomerName" runat="server" Text='<%#Eval("CustomerName")%>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Project Name" HeaderStyle-CssClass="gvhead">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblProjectName" runat="server" Text='<%#Eval("ProjectName")%>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Total Sub Products" HeaderStyle-CssClass="gvhead">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblSubProdCount" runat="server" Text='<%#Eval("TotalRecords")%>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Total Qty" HeaderStyle-CssClass="gvhead">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblQtyCount" runat="server" Text='<%#Eval("TotalQuantitySum")%>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Completed Qty" HeaderStyle-CssClass="gvhead">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCompletedQtySum" runat="server" Text='<%#Eval("CompletedQuantitySum")%>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                        </Columns>
+                                    </asp:GridView>
+
+                                    <%-- End Code --%>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </contenttemplate>
-    </asp:UpdatePanel>
-</form>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </form>
+         <br>
+         <br>
+         <br>
+        <footer>
+            <center style="padding: 20px 10px 20px 10px; text-decoration: none!important; color: whitesmoke !important; font-size: 14px; background-color: #001a4f">
+                <span><b>GAT NO.-250, OPP.AGARWAL PACKAGING LTD. KHARABWADICHAKAN PUNE 410501</b></span>
+            </center>
+
+            <br>
+        </footer>
+    </div>
+
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+    <script src="script.js"></script>
+</body>
+
 </html>
