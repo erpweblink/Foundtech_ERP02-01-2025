@@ -223,7 +223,61 @@
             $(this).closest("tr").next().remove();
         });
     </script>
-
+    <style>
+        #BodyMain {
+            background-color: black;
+            margin: 0px;
+            height: 15vh;
+        }
+        #DivMain {
+            position: relative;
+            left: 50%;
+            top: 48%;
+            transform: translate(-50%, -50%);
+            color: white;
+        }
+        #SpanMain {
+            font-size: 40px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            line-height: 85%;
+            position: relative;
+            mix-blend-mode: difference;
+            color: white;
+        }
+        #DivMain::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0; /* Start with zero width */
+            height: 100%;
+            background-color: black;
+            animation: move 5s linear infinite;
+            z-index: -1;
+        }
+        @keyframes move {
+            0%, 100% {
+                width: 0; /* Start with width 0 */
+            }
+            50% {
+                width: 100%; /* Cover the entire width of the text */
+            }
+        }
+    </style>
+    <script type="text/javascript">
+        function showLoadingSpinner() {
+            // Show loading spinner
+            document.getElementById('loadingSpinner').style.display = 'block';
+            // Simulate a server-side operation (use the AJAX response callback in real scenario)
+            //setTimeout(function () {
+            //    // Hide the loading spinner when the operation completes
+            //    document.getElementById('loadingSpinner').style.display = 'none';
+            //    // Trigger alert
+            //    alert('Email sent to client successfully!');
+            //}, 3000); // Simulate a delay of 3 seconds (you can adjust the time as needed)
+        }
+    </script>
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
