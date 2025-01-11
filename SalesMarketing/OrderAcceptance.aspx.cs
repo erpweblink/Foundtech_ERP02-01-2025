@@ -27,14 +27,14 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         }
         else
         {
-            
+
             if (!IsPostBack)
             {
                 POCode(); FillddlUsers();
 
                 if (Request.QueryString["ID"] != null)
                 {
-                     string Id = objcls.Decrypt(Request.QueryString["ID"].ToString());
+                    string Id = objcls.Decrypt(Request.QueryString["ID"].ToString());
                     hhd.Value = Id;
                     Load_Record(Id);
                 }
@@ -52,7 +52,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
                 ViewState["RowNo"] = 0;
 
-                Dt_Product.Columns.AddRange(new DataColumn[8] {new DataColumn("Id"), new DataColumn("id"), new DataColumn("Productname"), new DataColumn("Description"), new DataColumn("Quantity"), new DataColumn("Length"), new DataColumn("Weight"), new DataColumn("TotalWeight") });
+                Dt_Product.Columns.AddRange(new DataColumn[8] { new DataColumn("Id"), new DataColumn("id"), new DataColumn("Productname"), new DataColumn("Description"), new DataColumn("Quantity"), new DataColumn("Length"), new DataColumn("Weight"), new DataColumn("TotalWeight") });
                 ViewState["PurchaseOrderProduct"] = Dt_Product;
 
                 //Edit 
@@ -185,7 +185,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
             for (int i = 0; i < DTCOMP.Rows.Count; i++)
             {
-                Dt_Product.Rows.Add(DTCOMP.Rows[i]["Id"].ToString() ,count, DTCOMP.Rows[i]["Productname"].ToString(), DTCOMP.Rows[i]["Description"].ToString(), DTCOMP.Rows[i]["Quantity"].ToString(), DTCOMP.Rows[i]["Weight"].ToString(), DTCOMP.Rows[i]["Length"].ToString(), DTCOMP.Rows[i]["TotalWeight"].ToString());
+                Dt_Product.Rows.Add(DTCOMP.Rows[i]["Id"].ToString(), count, DTCOMP.Rows[i]["Productname"].ToString(), DTCOMP.Rows[i]["Description"].ToString(), DTCOMP.Rows[i]["Quantity"].ToString(), DTCOMP.Rows[i]["Weight"].ToString(), DTCOMP.Rows[i]["Length"].ToString(), DTCOMP.Rows[i]["TotalWeight"].ToString());
                 count = count + 1;
             }
         }
@@ -218,7 +218,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
     {
         string name = Session["UserCode"].ToString();
 
-        SqlDataAdapter ad = new SqlDataAdapter("select Username from tbl_UserMaster where UserCode = '"+name+"' and Status=1 and IsDeleted=0", Cls_Main.Conn);
+        SqlDataAdapter ad = new SqlDataAdapter("select Username from tbl_UserMaster where UserCode = '" + name + "' and Status=1 and IsDeleted=0", Cls_Main.Conn);
         DataTable dt = new DataTable();
         ad.Fill(dt);
         if (dt.Rows.Count > 0)
@@ -311,6 +311,8 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
             }
             else
             {
+                ViewState["OrderAcceptanceData"] = "";
+
                 if (dgvMachineDetails.Rows.Count > 0)
                 {
                     if (btnsave.Text == "Save")
@@ -353,7 +355,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@Deliverydate", txtdeliverydate.Text);
                         cmd.Parameters.AddWithValue("@Referquotation", txtreferquotation.Text);
                         cmd.Parameters.AddWithValue("@Remarks", txtremark.Text);
-                        cmd.Parameters.AddWithValue("@CGST_Amt","0");
+                        cmd.Parameters.AddWithValue("@CGST_Amt", "0");
                         cmd.Parameters.AddWithValue("@SGST_Amt", "0.00");
                         cmd.Parameters.AddWithValue("@IGST_Amt", "0.00");
                         cmd.Parameters.AddWithValue("@Total_Price", "0.00");
@@ -461,6 +463,13 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
 
+
+                        DataTable Dt = Cls_Main.Read_Table("SELECT Id,Pono,Productname FROM [tbl_OrderAcceptancedtls] WHERE Pono='" + txtpono.Text + "'");
+                        if (Dt.Rows.Count > 0)
+                        {
+                            ViewState["OrderAcceptanceData"] = Dt;
+                        }
+
                         //DELETE DETAILS DATA FOR UPDATE
                         Cls_Main.Conn_Open();
                         SqlCommand cmddelete = new SqlCommand("DELETE FROM tbl_OrderAcceptanceDtls WHERE Pono=@Pono", Cls_Main.Conn);
@@ -471,7 +480,6 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         //Save Product Details 
                         foreach (GridViewRow grd1 in dgvMachineDetails.Rows)
                         {
-                            
                             string lblproduct = (grd1.FindControl("lblproduct") as Label).Text;
                             string lblDescription = (grd1.FindControl("lblDescription") as Label).Text;
                             string lblQuantity = (grd1.FindControl("lblQuantity") as Label).Text;
@@ -510,6 +518,37 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             cmdd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
                             cmdd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
                             cmdd.ExecuteNonQuery();
+
+
+                            // New Functionality by Nikhil 10-01-2025
+                            DataTable dt1 = (DataTable)ViewState["OrderAcceptanceData"];
+                            foreach (DataRow dr in dt1.Rows)
+                            {
+                                string idValue = dr["id"].ToString();
+                                string productValue = dr["ProductName"].ToString();
+                                DataTable Dt2 = Cls_Main.Read_Table("SELECT * FROM [tbl_SubProducts] WHERE Pono='" + idValue + "' AND ProductName = '"+ productValue +"'");
+                                if (Dt2.Rows.Count > 0)
+                                {
+                                    string SubProductName = Dt2.Rows[0]["ProductName"].ToString();
+                                    DataTable Dt3 = Cls_Main.Read_Table("select * from tbl_OrderAcceptanceDtls where id = (select max(id) from tbl_OrderAcceptanceDtls)");
+                                    if (Dt3.Rows.Count > 0)
+                                    {
+                                        string newId = Dt3.Rows[0]["Id"].ToString();
+                                        string Name = Dt3.Rows[0]["ProductName"].ToString();
+                                        if(SubProductName == Name)
+                                        {
+                                            con.Open();
+                                            SqlCommand smd = new SqlCommand("UPDATE [tbl_SubProducts] SET pono = '" + newId + "' where ProductName = '" + Name + "' ",con);
+                                            smd.ExecuteNonQuery();
+                                            con.Close();
+                                        }
+                                    }
+
+                                }
+                            }
+                           
+
+                            // End code
                             Cls_Main.Conn_Close();
                         }
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Order Acceptance Update Successfully..!!');window.location='OAList.aspx'; ", true);
@@ -683,10 +722,10 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                 string Id = DataBinder.Eval(e.Row.DataItem, "Id") as string;
                 if (!string.IsNullOrEmpty(productName))
                 {
-                    gvDetails.DataSource = GetData(string.Format("select * from tbl_SubProducts where ProductName='{0}' AND PoNo = '{1}' ", productName,Id));
+                    gvDetails.DataSource = GetData(string.Format("select * from tbl_SubProducts where ProductName='{0}' AND PoNo = '{1}' ", productName, Id));
                     gvDetails.DataBind();
                 }
-               
+
             }
         }
         catch (Exception ex)
@@ -1092,7 +1131,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         }
     }
 
-   
+
     protected void btncancel_Click(object sender, EventArgs e)
     {
         Response.Redirect("OAList.aspx");
@@ -1197,10 +1236,10 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         }
     }
 
-    
+
     protected void dgvMachineDetails_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        if(e.CommandName == "AddNew")
+        if (e.CommandName == "AddNew")
         {
             string value = e.CommandArgument.ToString();
             string[] val = value.Split(',');
@@ -1217,10 +1256,10 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
     {
         if (SubProdFile.HasFile)
         {
-           
+
             OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
 
-           
+
             byte[] fileContent;
             using (Stream fs = SubProdFile.PostedFile.InputStream)
             {
@@ -1240,14 +1279,14 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                 {
                     con.Open();
                     SqlCommand cmd = new SqlCommand("INSERT INTO tbl_SubProducts (Pono,ProductName,SubProductName,Description,Quantity,Weight" +
-                        ",TotalWeight,Length) VALUES ('"+txtPonoProd.Text+"','"+ txtProductname.Text + "','"+ worksheet.Cells[row, 2].Text + "'," +
-                        "'"+ worksheet.Cells[row, 3].Text + "','"+ worksheet.Cells[row, 4].Text + "','"+ worksheet.Cells[row, 5].Text + "'," +
-                        "'"+ worksheet.Cells[row, 6].Text + "','"+ worksheet.Cells[row, 7].Text + "')", con);
+                        ",TotalWeight,Length) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + worksheet.Cells[row, 2].Text + "'," +
+                        "'" + worksheet.Cells[row, 3].Text + "','" + worksheet.Cells[row, 4].Text + "','" + worksheet.Cells[row, 5].Text + "'," +
+                        "'" + worksheet.Cells[row, 6].Text + "','" + worksheet.Cells[row, 7].Text + "')", con);
                     cmd.ExecuteNonQuery();
                     con.Close();
-                   
+
                 }
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Sub Products Save Successfully..!!');window.location='"+ "OrderAcceptance.aspx?Id=" + objcls.encrypt(hhd.Value) + "" + "'; ", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Sub Products Save Successfully..!!');window.location='" + "OrderAcceptance.aspx?Id=" + objcls.encrypt(hhd.Value) + "" + "'; ", true);
             }
         }
     }
@@ -1278,7 +1317,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
     protected void Button1_Click1(object sender, EventArgs e)
     {
-        if(TextBox1.Text != "")
+        if (TextBox1.Text != "")
         {
             con.Open();
             SqlCommand cmd = new SqlCommand("INSERT INTO tbl_SubProducts (Pono,ProductName,SubProductName,Description,Quantity,Weight" +

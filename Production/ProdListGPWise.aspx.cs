@@ -429,28 +429,28 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                     btnSendtopro.Visible = false;
                 }
 
-                Label ProjectCode = e.Row.FindControl("lblProjectCode") as Label;
-                GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
+                //Label ProjectCode = e.Row.FindControl("lblProjectCode") as Label;
+                //GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
 
-                if (GVPurchase == null)
-                {
+                //if (GVPurchase == null)
+                //{
 
-                    return;
-                }
+                //    return;
+                //}
 
-                if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
-                {
-                    var data = GetData(string.Format("SELECT * FROM tbl_ProductionHDR WHERE ProjectCode='{0}'", ProjectCode.Text));
-                    if (data != null && data.Rows.Count > 0)
-                    {
-                        GVPurchase.DataSource = data;
-                        GVPurchase.DataBind();
-                    }
-                    else
-                    {
-                        GVPurchase.Visible = false;
-                    }
-                }
+                //if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
+                //{
+                //    var data = GetData(string.Format("SELECT * FROM tbl_ProductionHDR WHERE ProjectCode='{0}'", ProjectCode.Text));
+                //    if (data != null && data.Rows.Count > 0)
+                //    {
+                //        GVPurchase.DataSource = data;
+                //        GVPurchase.DataBind();
+                //    }
+                //    else
+                //    {
+                //        GVPurchase.Visible = false;
+                //    }
+                //}
 
 
                 string empcode = Session["UserCode"].ToString();
@@ -513,6 +513,10 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Alert", "alert('Please Register Mail First !!');", true);
                 }
             }
+        }
+        if(e.CommandName == "ViewDetails")
+        {
+            Response.Redirect("ProdDTLSProjCodeWise.aspx?Id=" + objcls.encrypt(e.CommandArgument.ToString()) + "");
         }
     }
 
