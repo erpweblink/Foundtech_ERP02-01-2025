@@ -499,7 +499,7 @@
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="Product" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
                                                             <EditItemTemplate>
-                                                                <asp:TextBox Text='<%# Eval("Productname") %>' CssClass="form-control" Width="230px" ID="Product" runat="server"></asp:TextBox>
+                                                                <asp:TextBox Text='<%# Eval("Productname") %>' CssClass="form-control" Width="230px" ID="Product" runat="server" ReadOnly="true"></asp:TextBox>
                                                             </EditItemTemplate>
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblproduct" runat="Server" Text='<%# Eval("Productname") %>' />
