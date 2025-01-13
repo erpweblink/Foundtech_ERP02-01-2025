@@ -40,12 +40,12 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
     private void FillGrid()
     {
 
-        DataTable Dt = Cls_Main.Read_Table("SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName,COUNT(*) AS TotalRecords, " +
+        DataTable Dt = Cls_Main.Read_Table("SELECT OH.PdfFilePath, PD.ProjectCode, PD.ProjectName, PH.CustomerName,COUNT(*) AS TotalRecords, " +
         " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY,SUM(CAST(OutwardQty AS INT)) AS OutwardQty " +
         " FROM[tbl_ProductionDTLS] AS PD " +
         " INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-        " WHERE PD.Stage = 'PlazmaCutting' AND PD.Status < 2 " +
-        " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+        " INNER JOIN tbl_orderacceptancehdr AS OH ON OH.ProjectCode = PD.ProjectCode WHERE PD.Stage = 'PlazmaCutting' AND PD.Status < 2 " +
+        " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName, OH.PdfFilePath " +
         " ORDER BY PD.ProjectCode desc ");
         MainGridLoad.DataSource = Dt;
         MainGridLoad.DataBind();
@@ -127,6 +127,10 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Data not found..!!')", true);
             }
 
+        }
+        if (e.CommandName == "ViewDetails")
+        {
+            Response.Redirect("SubProducts.aspx?Id=" + objcls.encrypt(e.CommandArgument.ToString()) + "");
         }
     }
 
@@ -669,6 +673,39 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
                     }
                 }
 
+                Label JobNo = e.Row.FindControl("lblProjectCode") as Label;
+
+                if (JobNo != null)
+                {
+                    DataTable Dts = Cls_Main.Read_Table("SELECT PdfFilePath FROM tbl_orderacceptancehdr  where ProjectCode ='" + JobNo.Text + "'");
+
+                    LinkButton btndrawings = e.Row.FindControl("btnPdfFile") as LinkButton;
+
+                    if (btndrawings != null)
+                    {
+
+                        if (Dts.Rows.Count > 0)
+                        {
+                            string fileName = Dts.Rows[0]["PdfFilePath"].ToString();
+
+                            if (fileName != "")
+                            {
+                                btndrawings.ForeColor = System.Drawing.Color.Blue;
+                            }
+                            else
+                            {
+                                btndrawings.ForeColor = System.Drawing.Color.Red;
+                                btndrawings.Enabled = false;
+                            }
+                        }
+                        else
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Red;
+                        }
+                    }
+
+                }
+
             }
         }
         catch
@@ -850,6 +887,15 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
 
 
+
+    protected void MainGridLoad_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "PdfDownload")
+        {
+            string fileName = Path.GetFileName(e.CommandArgument.ToString());
+            Response.Redirect("~/PDF_Files/" + fileName);
+        }
+    }
 }
 
 

@@ -142,6 +142,7 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
                             else
                             {
                                 btndrawings.ForeColor = System.Drawing.Color.Black;
+                                btndrawings.Enabled = false;
                             }
                         }
                         else

@@ -36,11 +36,11 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
     private void FillGrid()
     {
 
-        DataTable Dt = Cls_Main.Read_Table("SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+        DataTable Dt = Cls_Main.Read_Table("SELECT OH.PdfFilePath, PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY " +
             " FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-            " Where PD.Stage = 'Drawing' " +
-            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+            " INNER JOIN tbl_orderacceptancehdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Drawing' " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName, OH.PdfFilePath " +
             " ORDER BY PD.ProjectCode desc ");
         MainGridLoad.DataSource = Dt;
         MainGridLoad.DataBind();
@@ -63,7 +63,6 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
             GetRequestdata(hdnJobid.Value);
         }
-
         if (e.CommandName == "Edit")
         {
             string rowIndex = e.CommandArgument.ToString();
@@ -114,6 +113,10 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
             }
 
         }
+        if (e.CommandName == "ViewDetails")
+        {
+            Response.Redirect("SubProducts.aspx?Id=" + objcls.encrypt(e.CommandArgument.ToString()) + "");
+        }
     }
 
     protected void GVPurchase_PageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -151,10 +154,10 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
 
                 Label JobNo = e.Row.FindControl("JobNo") as Label;
-
+                Label ProdName = e.Row.FindControl("Productname") as Label;
                 if (JobNo != null)
                 {
-                    DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_DrawingDetails AS PD where JobNo='" + JobNo.Text + "'");
+                    DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_DrawingDetails where JobNo='" + JobNo.Text + "'");
 
                     LinkButton btndrawings = e.Row.FindControl("btndrawings") as LinkButton;
 
@@ -168,6 +171,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
                         else
                         {
                             btndrawings.ForeColor = System.Drawing.Color.Black;
+                            btndrawings.Enabled = false;
                         }
                     }
                 }
@@ -205,25 +209,25 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
                     string fileExtension = Path.GetExtension(fileName);
 
                     if (fileExtension == ".pdf")
- {
-     //Old Code 
-     Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString()); 
- }
- else
- {
-     //New Code by Nikhil 04-01-2025
-     string filePath = Server.MapPath("~/Drawings/" + fileName);
+                    {
+                        //Old Code 
+                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
+                    }
+                    else
+                    {
+                        //New Code by Nikhil 04-01-2025
+                        string filePath = Server.MapPath("~/Drawings/" + fileName);
 
-     if (File.Exists(filePath))
-     {
-         byte[] fileBytes = File.ReadAllBytes(filePath);
-         string base64File = Convert.ToBase64String(fileBytes);
-         string safeBase64File = base64File.Replace("'", @"\'");
-         string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
-         ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
+                        if (File.Exists(filePath))
+                        {
+                            byte[] fileBytes = File.ReadAllBytes(filePath);
+                            string base64File = Convert.ToBase64String(fileBytes);
+                            string safeBase64File = base64File.Replace("'", @"\'");
+                            string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
 
-     }
- }
+                        }
+                    }
                 }
                 else
                 {
@@ -432,7 +436,6 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
         }
     }
 
-
     protected void MainGridLoad_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         try
@@ -464,6 +467,40 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
                     }
                 }
 
+                Label JobNo = e.Row.FindControl("lblProjectCode") as Label;
+
+                if (JobNo != null)
+                {
+                    DataTable Dts = Cls_Main.Read_Table("SELECT PdfFilePath FROM tbl_orderacceptancehdr  where ProjectCode ='" + JobNo.Text + "'");
+
+                    LinkButton btndrawings = e.Row.FindControl("btnPdfFile") as LinkButton;
+
+                    if (btndrawings != null)
+                    {
+
+                        if (Dts.Rows.Count > 0)
+                        {
+                            string fileName = Dts.Rows[0]["PdfFilePath"].ToString();
+
+                            if (fileName != "")
+                            {
+                                btndrawings.ForeColor = System.Drawing.Color.Blue;
+                            }
+                            else
+                            {
+                                btndrawings.ForeColor = System.Drawing.Color.Red;
+                                btndrawings.Enabled = false;
+                            }
+                        }
+                        else
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Red;
+                        }
+                    }
+
+                }
+
+
             }
         }
         catch
@@ -472,8 +509,6 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
         }
 
     }
-
-
 
     // Search Filters added by Nikhil 04-01-2025
 
@@ -643,15 +678,10 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
         }
     }
 
-
-
     protected void GVPurchase_RowEditing(object sender, GridViewEditEventArgs e)
     {
 
     }
-
-
-
 
     protected void LinkButtonTrash_Click(object sender, EventArgs e)
     {
@@ -661,5 +691,14 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Image deleted successfully..!!');", true);
 
+    }
+
+    protected void MainGridLoad_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "PdfDownload")
+        {
+            string fileName = Path.GetFileName(e.CommandArgument.ToString());
+            Response.Redirect("~/PDF_Files/" + fileName);
+        }
     }
 }

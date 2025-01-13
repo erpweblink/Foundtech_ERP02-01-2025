@@ -36,11 +36,11 @@ public partial class Production_Dispatch : System.Web.UI.Page
     //Fill GridView
     private void FillGrid()
     {
-        DataTable Dt = Cls_Main.Read_Table("SELECT  PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+        DataTable Dt = Cls_Main.Read_Table("SELECT OH.PdfFilePath, PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
                        " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY,SUM(CAST(OutwardQty AS INT)) AS OutwardQty " +
                        " FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo=PD.JobNo " +
-                       " Where PD.Stage = 'Dispatch' and PD.Status < 2 " +
-                       " GROUP BY  PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
+                       " INNER JOIN tbl_orderacceptancehdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Dispatch' and PD.Status < 2 " +
+                       " GROUP BY  PD.ProjectCode, PD.ProjectName, PH.CustomerName, OH.PdfFilePath " +
                        " ORDER BY PD.ProjectCode desc ");
         MainGridLoad.DataSource = Dt;
         MainGridLoad.DataBind();
@@ -84,7 +84,7 @@ public partial class Production_Dispatch : System.Web.UI.Page
                 B = 0;
             }
 
-            
+
             txtpending.Text = (A - B).ToString();
             txtoutwardqty.Text = txtpending.Text;
             this.ModalPopupHistory.Show();
@@ -227,26 +227,26 @@ public partial class Production_Dispatch : System.Web.UI.Page
 
                     string fileExtension = Path.GetExtension(fileName);
 
-                     if (fileExtension == ".pdf")
- {
-     //Old Code 
-     Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
- }
- else
- {
-     //New Code by Nikhil 04-01-2025
-     string filePath = Server.MapPath("~/Drawings/" + fileName);
+                    if (fileExtension == ".pdf")
+                    {
+                        //Old Code 
+                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
+                    }
+                    else
+                    {
+                        //New Code by Nikhil 04-01-2025
+                        string filePath = Server.MapPath("~/Drawings/" + fileName);
 
-     if (File.Exists(filePath))
-     {
-         byte[] fileBytes = File.ReadAllBytes(filePath);
-         string base64File = Convert.ToBase64String(fileBytes);
-         string safeBase64File = base64File.Replace("'", @"\'");
-         string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
-         ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
+                        if (File.Exists(filePath))
+                        {
+                            byte[] fileBytes = File.ReadAllBytes(filePath);
+                            string base64File = Convert.ToBase64String(fileBytes);
+                            string safeBase64File = base64File.Replace("'", @"\'");
+                            string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
 
-     }
- }
+                        }
+                    }
                 }
                 else
                 {
@@ -281,7 +281,7 @@ public partial class Production_Dispatch : System.Web.UI.Page
                     Cls_Main.Conn_Close();
                     Cls_Main.Conn_Dispose();
 
-                  
+
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send to the Next..!!');", true);
                 }
                 else
@@ -324,7 +324,7 @@ public partial class Production_Dispatch : System.Web.UI.Page
                     Cls_Main.Conn_Close();
                     Cls_Main.Conn_Dispose();
 
-                   
+
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send Back..!!');", true);
                 }
 
@@ -414,6 +414,38 @@ public partial class Production_Dispatch : System.Web.UI.Page
                     {
                         GVPurchase.Visible = false;
                     }
+                }
+                Label JobNo = e.Row.FindControl("lblProjectCode") as Label;
+
+                if (JobNo != null)
+                {
+                    DataTable Dts = Cls_Main.Read_Table("SELECT PdfFilePath FROM tbl_orderacceptancehdr  where ProjectCode ='" + JobNo.Text + "'");
+
+                    LinkButton btndrawings = e.Row.FindControl("btnPdfFile") as LinkButton;
+
+                    if (btndrawings != null)
+                    {
+
+                        if (Dts.Rows.Count > 0)
+                        {
+                            string fileName = Dts.Rows[0]["PdfFilePath"].ToString();
+
+                            if (fileName != "")
+                            {
+                                btndrawings.ForeColor = System.Drawing.Color.Blue;
+                            }
+                            else
+                            {
+                                btndrawings.ForeColor = System.Drawing.Color.Red;
+                                btndrawings.Enabled = false;
+                            }
+                        }
+                        else
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Red;
+                        }
+                    }
+
                 }
 
             }
@@ -593,6 +625,14 @@ public partial class Production_Dispatch : System.Web.UI.Page
         }
     }
 
+    protected void MainGridLoad_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "PdfDownload")
+        {
+            string fileName = Path.GetFileName(e.CommandArgument.ToString());
+            Response.Redirect("~/PDF_Files/" + fileName);
+        }
+    }
 }
 
 

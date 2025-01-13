@@ -211,9 +211,9 @@
                                                 <asp:Label ID="projectName" runat="server" Text='<%# Eval("ProjectName") %>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="User Name" HeaderStyle-CssClass="gvhead">
+                                        <asp:TemplateField HeaderText="PDF File" ItemStyle-HorizontalAlign="Center">
                                             <ItemTemplate>
-                                                <asp:Label ID="username" runat="server" Text='<%#Eval("Username1")%>'></asp:Label>
+                                                <asp:LinkButton runat="server" ID="btnPdf" ToolTip="Show drawings" CausesValidation="false" CommandName="PdfFiles" CommandArgument='<%# Eval("PdfFilePath") %>'><i class="fas fa-folder-open" style="font-size: 26px;"></i></i></asp:LinkButton>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <%--  <asp:TemplateField HeaderText="PO File" ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
@@ -232,8 +232,9 @@
                                                 <asp:LinkButton ID="btnEdit" runat="server" Height="27px" ToolTip="Edit" CausesValidation="false" CommandName="RowEdit" Visible='<%# Eval("Status").ToString() == "0" ? true : false %>' CommandArgument='<%#Eval("ID")%>'><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>&nbsp;
 
 
-                                                <asp:LinkButton ID="btnDelete" runat="server" Height="27px" ToolTip="Delete" CausesValidation="false" CommandName="RowDelete"  OnClientClick="Javascript:return confirm('Are you sure to Delete?')" CommandArgument='<%#Eval("Pono")%>'><i class='fas fa-trash' style='font-size:24px;color: red;'></i></asp:LinkButton>&nbsp;
-                                                <asp:LinkButton runat="server" ID="btnpdfview" ToolTip="View Order Acceptance PDF" CommandName="RowView" CommandArgument='<%# Eval("Pono") %>'><i class="fa fa-table"  style="font-size: 26px; color:green; "></i></i></asp:LinkButton> &nbsp;
+                                                <asp:LinkButton ID="btnDelete" runat="server" Height="27px" ToolTip="Delete" CausesValidation="false" CommandName="RowDelete" OnClientClick="Javascript:return confirm('Are you sure to Delete?')" CommandArgument='<%#Eval("Pono")%>'><i class='fas fa-trash' style='font-size:24px;color: red;'></i></asp:LinkButton>&nbsp;
+                                                <asp:LinkButton runat="server" ID="btnpdfview" ToolTip="View Order Acceptance PDF" CommandName="RowView" CommandArgument='<%# Eval("Pono") %>'><i class="fa fa-table"  style="font-size: 26px; color:green; "></i></i></asp:LinkButton>
+                                                &nbsp;
                                                 <asp:LinkButton runat="server" ID="btnSendtopro" ToolTip="Send to Production" CommandName="Sendtoproduction" Visible='<%# Eval("Status").ToString() == "0" ? true : false %>' OnClientClick="Javascript:return confirm('Are you sure to send order acceptance to production....?')" CommandArgument='<%# Eval("ID") %>'><i class="fa fa-arrow-circle-right"  style="font-size: 26px; color:dodgerblue; "></i></i></asp:LinkButton>
                                             </ItemTemplate>
                                         </asp:TemplateField>

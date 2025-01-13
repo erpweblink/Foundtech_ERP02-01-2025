@@ -247,7 +247,7 @@
             link.click();
             document.body.removeChild(link);
         }
-  </script>
+    </script>
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
@@ -317,7 +317,7 @@
                                     <div class="table-responsive">
                                         <div class="table">
                                             <br />
-                                            <asp:GridView ID="MainGridLoad" runat="server" CellPadding="4" DataKeyNames="ProjectCode" Width="100%"
+                                            <asp:GridView ID="MainGridLoad" runat="server" CellPadding="4" DataKeyNames="ProjectCode" Width="100%" OnRowCommand="MainGridLoad_RowCommand"
                                                 OnRowDataBound="MainGridLoad_RowDataBound" CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
                                                 <Columns>
                                                     <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
@@ -440,6 +440,11 @@
                                                             <asp:Label ID="lblQtyCount" runat="server" Text='<%#Eval("OutwardQty")%>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="PDF File" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:LinkButton runat="server" ID="btnPdfFile" ToolTip="Show drawings" CausesValidation="false" CommandName="PdfDownload" CommandArgument='<%# Eval("PdfFilePath") %>'><i class="fas fa-folder-open"  style="font-size: 26px;"></i></i></asp:LinkButton>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
                                                 </Columns>
                                             </asp:GridView>
                                         </div>
@@ -517,7 +522,7 @@
                                             <script type="text/javascript">
                                                 function hideButtons() {
                                                     document.getElementById('<%= btnsendtoback.ClientID %>').style.display = 'none';
-                                                     document.getElementById('<%= btnSendtopro.ClientID %>').style.display = 'none';
+                                                    document.getElementById('<%= btnSendtopro.ClientID %>').style.display = 'none';
                                                 }
                                             </script>
                                         </div>
@@ -759,7 +764,11 @@
                         </div>
                     </div>
             </ContentTemplate>
+            <Triggers>
+                <asp:PostBackTrigger ControlID="MainGridLoad" />
+            </Triggers>
         </asp:UpdatePanel>
+
     </form>
 
 </asp:Content>

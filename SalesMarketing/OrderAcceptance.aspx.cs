@@ -331,6 +331,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@GSTNo", txtgstno.Text);
                         cmd.Parameters.AddWithValue("@PANNo", txtpanno.Text);
                         cmd.Parameters.AddWithValue("@UserName", Session["usercode"].ToString());
+
                         //if (ddlUser.SelectedValue == "-- Select User Name--")
                         //{
                         //    cmd.Parameters.AddWithValue("@UserName", Session["UserCode"].ToString());
@@ -366,6 +367,37 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@ProjectName", txtprojectName.Text);
                         cmd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
                         cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
+
+                        if (PdfFile.HasFile)
+                        {
+                            string fileName = Path.GetFileName(PdfFile.PostedFile.FileName);
+                            byte[] fileContents;
+
+                            using (Stream fs = PdfFile.PostedFile.InputStream)
+                            {
+                                using (BinaryReader br = new BinaryReader(fs))
+                                {
+                                    fileContents = br.ReadBytes((int)fs.Length);
+                                }
+                            }
+                            lblPdfName.Text = fileName;
+
+                            string[] pdffilename = lblPdfName.Text.Split('.');
+                            string pdffilename1 = pdffilename[0];
+                            string filenameExt = pdffilename[1];
+
+                            string filePath = Server.MapPath("~/PDF_Files/") + pdffilename1 + "." + filenameExt;
+                            System.IO.File.WriteAllBytes(filePath, fileContents);
+
+                            cmd.Parameters.AddWithValue("@PdfFile", filePath);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@PdfFile", DBNull.Value);
+                        }
+
+
+
                         cmd.Parameters.AddWithValue("@Action", "Save");
                         cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
@@ -459,6 +491,36 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@IsDeleted", '0');
                         cmd.Parameters.AddWithValue("@ProjectCode", txtprojectCode.Text);
                         cmd.Parameters.AddWithValue("@ProjectName", txtprojectName.Text);
+
+                        if (PdfFile.HasFile)
+                        {
+                            string fileName = Path.GetFileName(PdfFile.PostedFile.FileName);
+                            byte[] fileContents;
+
+                            using (Stream fs = PdfFile.PostedFile.InputStream)
+                            {
+                                using (BinaryReader br = new BinaryReader(fs))
+                                {
+                                    fileContents = br.ReadBytes((int)fs.Length);
+                                }
+                            }
+                            lblPdfName.Text = fileName;
+
+                            string[] pdffilename = lblPdfName.Text.Split('.');
+                            string pdffilename1 = pdffilename[0];
+                            string filenameExt = pdffilename[1];
+
+                            string filePath = Server.MapPath("~/PDF_Files/") + pdffilename1 + "." + filenameExt;
+                            System.IO.File.WriteAllBytes(filePath, fileContents);
+
+                            cmd.Parameters.AddWithValue("@PdfFile", filePath);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@PdfFile", DBNull.Value);
+                        }
+
+
                         cmd.Parameters.AddWithValue("@Action", "Update");
                         cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();

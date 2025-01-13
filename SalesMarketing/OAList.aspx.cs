@@ -168,9 +168,13 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                     }
                 }
             }
-
             // Response.Redirect("Pdf_CustomerPurchase.aspx?Pono=" + objcls.encrypt(e.CommandArgument.ToString()) + " ");
             // Response.Write("<script>window.open ('Pdf_Quotation.aspx?Quotationno=" + (e.CommandArgument.ToString()) + "','_blank');</script>");
+        }
+        if (e.CommandName == "PdfFiles")
+        {
+            string fileName = Path.GetFileName(e.CommandArgument.ToString());
+            Response.Redirect("~/PDF_Files/" + fileName);
         }
     }
 
@@ -187,6 +191,43 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
         {
             LinkButton btnEdit = e.Row.FindControl("btnEdit") as LinkButton;
             LinkButton btnDelete = e.Row.FindControl("btnDelete") as LinkButton;
+
+            Label JobNo = e.Row.FindControl("Pono") as Label;
+
+            if (JobNo != null)
+            {
+                DataTable Dts = Cls_Main.Read_Table("SELECT PdfFilePath FROM tbl_orderacceptancehdr  where Pono ='" + JobNo.Text + "'");
+
+                LinkButton btndrawings = e.Row.FindControl("btnPdf") as LinkButton;
+
+                if (btndrawings != null)
+                {
+
+                    if (Dts.Rows.Count > 0)
+                    {
+                        string fileName = Dts.Rows[0]["PdfFilePath"].ToString();
+
+                        if (fileName != "")
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Blue;
+                        }
+                        else
+                        {
+                            btndrawings.ForeColor = System.Drawing.Color.Red;
+                            btndrawings.Enabled = false;
+                        }
+                    }
+                    else
+                    {
+                        btndrawings.ForeColor = System.Drawing.Color.Red;
+                    }
+                }
+
+            }
+
+
+
+
 
             string empcode = Session["UserCode"].ToString();
             DataTable Dt = new DataTable();
@@ -205,6 +246,8 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                     btnDelete.Visible = false;
                 }
             }
+
+
         }
     }
 
