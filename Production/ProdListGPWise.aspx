@@ -229,6 +229,7 @@
             margin: 0px;
             height: 15vh;
         }
+
         #DivMain {
             position: relative;
             left: 50%;
@@ -236,6 +237,7 @@
             transform: translate(-50%, -50%);
             color: white;
         }
+
         #SpanMain {
             font-size: 40px;
             letter-spacing: 5px;
@@ -245,6 +247,7 @@
             mix-blend-mode: difference;
             color: white;
         }
+
         #DivMain::before {
             content: "";
             position: absolute;
@@ -256,10 +259,12 @@
             animation: move 5s linear infinite;
             z-index: -1;
         }
+
         @keyframes move {
             0%, 100% {
                 width: 0; /* Start with width 0 */
             }
+
             50% {
                 width: 100%; /* Cover the entire width of the text */
             }
@@ -352,7 +357,7 @@
                                     <Columns>
                                         <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
-                                               <asp:LinkButton runat="server" ID="btnShowDtls" ToolTip="Send to Details" CommandName="ViewDetails" CommandArgument='<%# Eval("ProjectCode") %>'><i class="fa fa-plus-square" aria-hidden="true" style="font-size: 26px; color: blue;"></i></asp:LinkButton>
+                                                <asp:LinkButton runat="server" ID="btnShowDtls" ToolTip="Send to Details" CommandName="ViewDetails" CommandArgument='<%# Eval("ProjectCode") %>'><i class="fa fa-plus-square" aria-hidden="true" style="font-size: 26px; color: blue;"></i></asp:LinkButton>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
@@ -466,12 +471,16 @@
                                     <div class="col-md-4"></div>
                                     <div class="col-md-2">
                                         <br />
-                                        <asp:Button ID="btnsave" runat="server" CssClass="form-control btn btn-success" OnClick="btnsave_Click" AutoPostBack="true" Text="Submit" />
+                                        <asp:Button ID="btnsave" runat="server" CssClass="form-control btn btn-success" OnClick="btnsave_Click" AutoPostBack="true" Text="Submit" OnClientClick="hideButtons();" />
                                     </div>
                                 </div>
                             </div>
                         </div>
-
+                        <script type="text/javascript">
+                            function hideButtons() {
+                                document.getElementById('<%= btnsave.ClientID %>').style.display = 'none';
+                            }
+                        </script>
 
                     </div>
                 </div>

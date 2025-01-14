@@ -18,8 +18,36 @@
     <link rel="stylesheet" href="Content/assets/css/plugins.min.css" />
     <link rel="stylesheet" href="Content/assets/css/kaiadmin.min.css" />
 
-
-    <link href="../Content/css/Griddiv.css" rel="stylesheet" />
+    <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script>     
+        function SuccessResult(msg) {
+            swal("Success", msg, {
+                icon: "success",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-success",
+                        TimeRanges: "5000",
+                    },
+                },
+            }).then(function () {
+                window.location.href = "DrawingDetails.aspx";
+            });
+        };
+        function DeleteResult(msg) {
+            swal("Delete!", msg, {
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-danger",
+                        TimeRanges: "5000",
+                    },
+                },
+            }).then(function () {
+                window.location.href = "DrawingDetails.aspx";
+            });
+        };
+    </script>
+    <link href="../Content1/css/styles.css" rel="stylesheet" />
 
     <script src="../Content/assets/js/plugin/webfont/webfont.min.js"></script>
     <script>
@@ -38,6 +66,63 @@
                 sessionStorage.fonts = true;
             },
         });
+    </script>
+
+    <script src="../Content/assets/js/core/jquery-3.7.1.min.js"></script>
+    <script src="../Content/assets/js/core/popper.min.js"></script>
+    <script src="../Content/assets/js/core/bootstrap.min.js"></script>
+
+    <!-- jQuery Scrollbar -->
+    <script src="../Content/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+    <!-- Chart JS -->
+    <script src="../Content/assets/js/plugin/chart.js/chart.min.js"></script>
+
+    <!-- jQuery Sparkline -->
+    <script src="../Content/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+    <!-- Chart Circle -->
+    <script src="../Content/assets/js/plugin/chart-circle/circles.min.js"></script>
+
+    <!-- Datatables -->
+    <script src="../Content/assets/js/plugin/datatables/datatables.min.js"></script>
+
+    <!-- Bootstrap Notify -->
+    <script src="../Content/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+    <!-- jQuery Vector Maps -->
+    <script src="../Content/assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+    <script src="../Content/assets/js/plugin/jsvectormap/world.js"></script>
+
+    <!-- Sweet Alert -->
+    <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+    <!-- Kaiadmin JS -->
+    <script src="../Content/assets/js/kaiadmin.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("[id*=ddlRMC]").select2();
+
+        });
+        function addNewDiv() {
+            // Get the count of file input fields to create unique names
+            var fileCount = $('input[type="file"]').length;
+
+            // Append new file input and remark fields to the container
+            $('#container').append(`
+     <div class="col-md-6 mb-3">
+         <input type="hidden" name="HFfile1" />
+         <label class="form-label LblStyle" style="font-weight: bold;">Drawing Attachment:</label>
+         <input type="file" name="fileUpload_${fileCount}" class="form-control" />
+         <label style="color: red;"></label>
+     </div>
+     <div class="col-md-6 col-12 mb-3">
+         <label class="form-label" style="font-weight: bold;">Drawing Remarks:</label>
+         <textarea class="form-control" name="fileRemarks_${fileCount}" placeholder="Enter Drawing Remark"></textarea>
+     </div>
+                                `);
+        }
     </script>
     <style>
         .spancls {
@@ -503,17 +588,6 @@
         }
     </style>
 
-
-    <script type="text/javascript">
-        $("[src*=plus]").live("click", function () {
-            $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>")
-            $(this).attr("src", "../Content1/img/minus.png");
-        });
-        $("[src*=minus]").live("click", function () {
-            $(this).attr("src", "../Content1/img/plus.png");
-            $(this).closest("tr").next().remove();
-        });
-    </script>
     <!-- Kaiadmin JS -->
     <script src="../Content/assets/js/kaiadmin.min.js"></script>
 </head>
@@ -524,10 +598,46 @@
     <div class="container-fluid" id="comment_form">
         <form id="form1" runat="server">
             <center>
-                <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">SUB PRODUCT LIST</h2>
+                <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">
+                    <asp:Label ID="lblPageName" runat="server"></asp:Label>
+                    PRODUCT LIST</h2>
             </center>
             <hr style="border: 1px solid rgb(182, 178, 156);">
             <br />
+            <div class="row">
+                <div class="col-md-9" style="margin-left: 24px;">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true"></asp:Label><br />
+                            <asp:Label ID="txtProjectCode" runat="server"></asp:Label>
+                        </div>
+                        <div class="col-md-4">
+                            <asp:Label ID="lblProjectName" runat="server" Text="Project Name :" Font-Bold="true"></asp:Label><br />
+                            <asp:Label ID="txtProjectName" runat="server"></asp:Label>
+                        </div>
+                        <div class="col-md-4">
+                            <asp:Label ID="lblCustomerName" runat="server" Text="Customer Name :" Font-Bold="true"></asp:Label><br />
+                            <asp:Label ID="txtCustoName" runat="server"></asp:Label>
+                        </div>
+                    </div>
+                </div>
+
+                <div clss="col-md-3" style="margin-left: 79px;">
+                    <span>Show Records: 
+                             <asp:DropDownList
+                                 ID="DropDownList1"
+                                 CssClass="form-control"
+                                 runat="server"
+                                 Style="width: 90px; margin-top: -2px; display: inline-block;"
+                                 AutoPostBack="true"
+                                 OnTextChanged="DropDownList1_TextChanged">
+                             </asp:DropDownList>
+                        <b>/</b>
+                        <asp:Label ID="lblCount" runat="server" Text="20" Style="display: inline-block;"></asp:Label>
+                    </span>
+
+                </div>
+            </div>
             <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
             </asp:ToolkitScriptManager>
 
@@ -598,7 +708,311 @@
                             </div>
                         </div>
                     </div>
+
+
+
+                    <%-- First PopUp Of Save and next and add drawing --%>
+                    <asp:Button ID="btnhist" runat="server" Style="display: none" />
+                    <asp:ModalPopupExtender ID="ModalPopupHistory" runat="server" TargetControlID="btnhist"
+                        PopupControlID="PopupHistoryDetail" OkControlID="Closepophistory" />
+                    <asp:Panel ID="PopupHistoryDetail" runat="server" CssClass="modelprofile1">
+                        <div class="row">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6">
+                                <div class="container" style="margin-left: 25px;">
+                                    <div class="container-fluid" style="display: flex;">
+                                        <div class="profilemodel2">
+                                            <div class="headingcls">
+                                                <h4 class="modal-title">Production Details 
+                                    <button type="button" id="Closepophistory" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button>
+                                                </h4>
+                                            </div>
+
+                                            <br />
+                                            <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-12 mb-3">
+                                                        <asp:Label ID="Label4" runat="server" Font-Bold="true" CssClass="form-label">Job No:</asp:Label>
+                                                        <asp:TextBox ID="txtjobno" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-6 col-12 mb-3">
+                                                        <asp:Label ID="Label5" runat="server" Font-Bold="true" CssClass="form-label">Customer Name:</asp:Label>
+                                                        <asp:TextBox ID="txtcustomername" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-6 col-12 mb-3">
+                                                        <asp:Label ID="Label12" runat="server" Font-Bold="true" CssClass="form-label">Product Name:</asp:Label>
+                                                        <asp:TextBox ID="txtProductname" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-6 col-12 mb-3">
+                                                        <asp:Label ID="Label6" runat="server" Font-Bold="true" CssClass="form-label">Total Quantity:</asp:Label>
+                                                        <asp:TextBox ID="txttotalqty" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-6 col-12 mb-3">
+                                                        <asp:Label ID="Label2" runat="server" Font-Bold="true" CssClass="form-label">Outward QTY:</asp:Label>
+                                                        <asp:TextBox ID="txtoutwardqty" CssClass="form-control" ReadOnly="true" placeholder="Enter Outward QTY" TextMode="Number" runat="server"></asp:TextBox>
+                                                    </div>
+                                                    <div class="col-md-6 col-12 mb-3">
+                                                        <div class="grid-scroll-container">
+                                                            <asp:GridView ID="grdgrid" runat="server"
+                                                                CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
+                                                                <Columns>
+                                                                    <asp:TemplateField HeaderText="File Name" HeaderStyle-CssClass="gvhead">
+                                                                        <ItemTemplate>
+                                                                            <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("Id") %>' ToolTip="Open File" />
+                                                                            <asp:Label ID="lblFileName" runat="server" Text='<%#Eval("FileName")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="Action" HeaderStyle-CssClass="gvhead">
+                                                                        <ItemTemplate>
+                                                                            <asp:LinkButton ID="LinkButtonTrash" runat="server" OnClick="LinkButtonTrash_Click" CommandArgument='<%# Eval("Id") %>' ToolTip="Delete File">
+                                                     <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                            </asp:LinkButton>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+
+
+                                                                </Columns>
+                                                            </asp:GridView>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <!-- GridView is placed before the Remarks section -->
+                                                <div class="row">
+                                                </div>
+
+                                                <!-- This is the container div for dynamically added elements (still outside the GridView) -->
+                                                <div id="container" class="row">
+                                                    <!-- Existing divs will go here -->
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <asp:Button ID="btnAdd" runat="server" Text="Add Drawing" OnClientClick="addNewDiv(); return false;" CssClass="btn btn-primary" Style="padding: 5px; font-size: 16px; background-color: #01a9ac;" />
+                                                </div>
+
+                                                <!-- Remarks section -->
+                                                <div class="col-md-6 col-12 mb-3">
+                                                    <asp:Label ID="Label3" runat="server" Font-Bold="true" CssClass="form-label">Remarks:</asp:Label>
+                                                    <asp:TextBox ID="txtRemarks" CssClass="form-control" placeholder="Enter Remark" TextMode="MultiLine" runat="server"></asp:TextBox>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3"></div>
+                                                    <div class="col-md-6">
+                                                        <asp:LinkButton runat="server" ID="btnSendtopro" class="btn btn-success" OnClick="btnsave_Click" OnClientClick="this.style.display='none';" Style="display: flex; align-items: center;">
+                                                            <span class="btn-label" style="padding: 7px 5px 4px 60px;">
+                                                                <i class="fa fa-check"></i>
+                                                            </span>
+                                                           Save & Next
+                                                        </asp:LinkButton>
+                                                    </div>
+                                                    <div class="col-md-3"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </asp:Panel>
+                    <%-- End of first popUP  --%>
+
+
+
+                    <%-- Second PopUp Of View files --%>
+                    <asp:Button ID="Button1" runat="server" Style="display: none" />
+                    <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="Button1"
+                        PopupControlID="PopupHistoryDetail1" OkControlID="Closepophistory1" />
+                    <asp:Panel ID="PopupHistoryDetail1" runat="server" CssClass="modelprofile1">
+                        <div class="row">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6">
+                                <div class="container" style="margin-left: 25px;">
+                                    <div class="container-fulid" style="display: flex;">
+                                        <div class="profilemodel2">
+                                            <div class="headingcls">
+                                                <h4 class="modal-title">Drawing Files
+                                            <button type="button" id="Closepophistory1" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button>
+                                                </h4>
+                                            </div>
+                                            <br />
+                                            <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">
+                                                <asp:Label ID="lblJobNo" runat="server" Font-Bold="true" Text="Job No : "></asp:Label>
+                                                <asp:Label ID="lblJobNumb" runat="server"></asp:Label>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <asp:Label ID="lblProductName" runat="server" Font-Bold="true" Text="Product Name : "></asp:Label>
+                                                <asp:Label ID="lblProdName" runat="server"></asp:Label>
+                                                <br />
+                                                <br />
+                                                <div class="row">
+                                                    <asp:Repeater ID="rptImages" runat="server">
+                                                        <ItemTemplate>
+                                                            <div class="col-md-6 col-12 mb-3">
+                                                                <div class="image-item">
+                                                                    <!-- Display the image -->
+                                                                    <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("ID") %>' ToolTip="Open File" />
+                                                                    <asp:Label ID="Label14" runat="server" Font-Bold="true" Text="Drawing Name : " CssClass="form-label"></asp:Label>
+                                                                    <asp:Label ID="Label4" runat="server" Font-Bold="true" Text='<%# Eval("FileName") %>' CssClass="form-label"></asp:Label>
+                                                                </div>
+                                                            </div>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-3"></div>
+                    </asp:Panel>
+                    <%-- End of Second popUP  --%>
+
+
+
+                    <%-- Third PopUp --%>
+                    <div class="row container" id="DivWarehouse" runat="server" visible="false">
+                        <div class="col-md-12">
+                            <div class="profilemodel2">
+                                <div class="headingcls">
+                                    <h4 class="modal-title">Warehouse Material Request Page
+                                    </h4>
+                                </div>
+                                <br />
+                                <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">
+                                    <div class="row">
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label1" runat="server" Font-Bold="true" CssClass="form-label">Stock/RM:</asp:Label>
+                                            <asp:TextBox ID="txtRMC" CssClass="form-control" placeholder="Search Company" runat="server" Width="100%"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ValidationGroup="1" ErrorMessage="Please Enter Stock/RM" ControlToValidate="txtRMC" ForeColor="Red"></asp:RequiredFieldValidator>
+                                            <asp:AutoCompleteExtender ID="AutoCompleteExtender2" runat="server" CompletionListCssClass="completionList"
+                                                CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                                CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetRMCList"
+                                                TargetControlID="txtRMC">
+                                            </asp:AutoCompleteExtender>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3" runat="server" visible="false">
+                                            <asp:Label ID="Label11" runat="server" Font-Bold="true" CssClass="form-label"> Available Size:</asp:Label>
+                                            <asp:TextBox ID="txtAvailablesize" CssClass="form-control" Font-Bold="true" AutoPostBack="true" OnTextChanged="txtAvailablesize_TextChanged" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ValidationGroup="1" ErrorMessage="Please Enter Available Size" ControlToValidate="txtAvailablesize" ForeColor="Red"></asp:RequiredFieldValidator>
+                                            <asp:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" CompletionListCssClass="completionList"
+                                                CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                                CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetAvailablesizeList"
+                                                TargetControlID="txtAvailablesize">
+                                            </asp:AutoCompleteExtender>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3" runat="server" visible="false">
+                                            <asp:Label ID="Label7" runat="server" Font-Bold="true" CssClass="form-label">Available Quantity:</asp:Label>
+
+                                            <asp:TextBox ID="txtAvilableqty" CssClass="form-control" Font-Bold="true" ReadOnly="true" runat="server"></asp:TextBox>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label8" runat="server" Font-Bold="true" CssClass="form-label">Need Size:</asp:Label>
+
+                                            <asp:TextBox ID="txtsize" CssClass="form-control" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ValidationGroup="1" ErrorMessage="Please Enter Need Size" ControlToValidate="txtsize" ForeColor="Red"></asp:RequiredFieldValidator>
+                                        </div>
+
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label10" runat="server" Font-Bold="true" CssClass="form-label">Need QTY:</asp:Label>
+
+                                            <asp:TextBox ID="txtneedqty" CssClass="form-control" TextMode="Number" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ValidationGroup="1" ErrorMessage="Please Enter Need QTY" ControlToValidate="txtneedqty" ForeColor="Red"></asp:RequiredFieldValidator>
+                                        </div>
+
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label13" runat="server" Font-Bold="true" CssClass="form-label">Size weight:</asp:Label>
+
+                                            <asp:TextBox ID="Txtweight" CssClass="form-control" TextMode="Number" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ValidationGroup="1" ErrorMessage="Please Enter Weight" ControlToValidate="Txtweight" ForeColor="Red"></asp:RequiredFieldValidator>
+                                        </div>
+
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label9" runat="server" Font-Bold="true" CssClass="form-label">Description:</asp:Label>
+
+                                            <asp:TextBox ID="txtDescription" CssClass="form-control" TextMode="MultiLine" runat="server"></asp:TextBox>
+                                        </div>
+                                        <asp:HiddenField ID="hdnJobid" runat="server" />
+                                        <div class="col-md-12">
+
+                                            <div class="col-md-12" style="margin-top: 18px; text-align: center">
+                                                <asp:LinkButton runat="server" ID="btnWarehousedata" ValidationGroup="1" class="btn btn-success" OnClick="btnWarehousedata_Click">
+                                                     <span class="btn-label">
+                                                         <i class="fa fa-check"></i>
+                                                     </span>
+                                                    Send Request
+                                                </asp:LinkButton>
+                                                <asp:LinkButton runat="server" ID="btncancle" CausesValidation="false" class="btn btn-danger" OnClick="btncancle_Click">
+                                                     <span class="btn-label">
+                                                         <i class="fas fa-times"></i>
+                                                     </span>
+                                                    Cancel
+                                                </asp:LinkButton>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="table-responsive">
+                                            <asp:GridView ID="GVRequest" CssClass="display table table-striped table-hover" AutoGenerateColumns="false" DataKeyNames="ID" OnRowCommand="GVRequest_RowCommand" runat="server" CellPadding="4" ForeColor="#333333" PageSize="30" AllowPaging="true" Width="100%" OnRowEditing="GVRequest_RowEditing">
+                                                <Columns>
+                                                    <asp:TemplateField HeaderText="SR.NO" ItemStyle-Width="20" HeaderStyle-CssClass="gvhead sno">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblsrno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Request No" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblRequestNo" runat="server" Text='<%# Eval("RequestNo") %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Row Material" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblRowmaterial" runat="server" Text='<%# Eval("RowMaterial") %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Size" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblSize" runat="server" Text='<%# Eval("NeedSize") %>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Qantity" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblQantity" runat="server" Text='<%# Eval("NeedQty")%>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Status" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="Label14" runat="server" Visible='<%# Eval("Status").ToString() == "1" ? true : false %>' Font-Bold="true" ForeColor="orange" Text="Pending"></asp:Label>
+                                                            <asp:Label ID="Label15" runat="server" Visible='<%# Eval("Status").ToString() == "2" ? true : false %>' Font-Bold="true" ForeColor="Green" Text="Approved"></asp:Label>
+                                                            <asp:Label ID="Label16" runat="server" Visible='<%# Eval("Status").ToString() == "3" ? true : false %>' Font-Bold="true" ForeColor="Green" Text="Rejected"></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="Action" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
+                                                        <ItemTemplate>
+                                                            <asp:LinkButton runat="server" ID="ImgbtnDelete" CommandName="RowDelete" ToolTip="Delete" CommandArgument='<%#Eval("ID")%>' Visible='<%# Eval("Status").ToString() == "1" ? true : false %>' OnClientClick="Javascript:return confirm('Are you sure to Delete?')" CausesValidation="false"><i class="fa fa-trash" style="font-size:24px;color:red"></i></asp:LinkButton>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <%-- End of third popup  --%>
                 </ContentTemplate>
+
+                <Triggers>
+                    <asp:PostBackTrigger ControlID="btnSendtopro" />
+
+                </Triggers>
             </asp:UpdatePanel>
         </form>
         <br>

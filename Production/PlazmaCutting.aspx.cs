@@ -648,30 +648,30 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                Label ProjectCode = e.Row.FindControl("lblProjectCode") as Label;
-                GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
+                //Label ProjectCode = e.Row.FindControl("lblProjectCode") as Label;
+                //GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
 
-                if (GVPurchase == null)
-                {
+                //if (GVPurchase == null)
+                //{
 
-                    return;
-                }
+                //    return;
+                //}
 
-                if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
-                {
-                    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
-                        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
-                        " WHERE Pd.Stage = 'PlazmaCutting' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
-                    if (data != null && data.Rows.Count > 0)
-                    {
-                        GVPurchase.DataSource = data;
-                        GVPurchase.DataBind();
-                    }
-                    else
-                    {
-                        GVPurchase.Visible = false;
-                    }
-                }
+                //if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
+                //{
+                //    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
+                //        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+                //        " WHERE Pd.Stage = 'PlazmaCutting' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
+                //    if (data != null && data.Rows.Count > 0)
+                //    {
+                //        GVPurchase.DataSource = data;
+                //        GVPurchase.DataBind();
+                //    }
+                //    else
+                //    {
+                //        GVPurchase.Visible = false;
+                //    }
+                //}
 
                 Label JobNo = e.Row.FindControl("lblProjectCode") as Label;
 
@@ -894,6 +894,12 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
         {
             string fileName = Path.GetFileName(e.CommandArgument.ToString());
             Response.Redirect("~/PDF_Files/" + fileName);
+        }
+        if (e.CommandName == "ViewDetails")
+        {
+            string Page = "PlazmaCutting";
+            string encryptedValue = objcls.encrypt(e.CommandArgument.ToString());
+            Response.Redirect("ProdListPerProjCode2.aspx?ID=" + Page + "&EncryptedValue=" + encryptedValue);
         }
     }
 }

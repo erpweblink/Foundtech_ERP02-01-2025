@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using System.Windows.Media;
 
 public partial class Production_DrawingDetails : System.Web.UI.Page
 {
@@ -451,21 +452,21 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
                     return;
                 }
 
-                if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
-                {
-                    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
-                        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
-                        " WHERE Pd.Stage = 'Drawing' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
-                    if (data != null && data.Rows.Count > 0)
-                    {
-                        GVPurchase.DataSource = data;
-                        GVPurchase.DataBind();
-                    }
-                    else
-                    {
-                        GVPurchase.Visible = false;
-                    }
-                }
+                //if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
+                //{
+                //    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
+                //        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+                //        " WHERE Pd.Stage = 'Drawing' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
+                //    if (data != null && data.Rows.Count > 0)
+                //    {
+                //        GVPurchase.DataSource = data;
+                //        GVPurchase.DataBind();
+                //    }
+                //    else
+                //    {
+                //        GVPurchase.Visible = false;
+                //    }
+                //}
 
                 Label JobNo = e.Row.FindControl("lblProjectCode") as Label;
 
@@ -699,6 +700,12 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
         {
             string fileName = Path.GetFileName(e.CommandArgument.ToString());
             Response.Redirect("~/PDF_Files/" + fileName);
+        }
+        if (e.CommandName == "ViewDetails")
+        {
+            string Page = "Drawing";
+            string encryptedValue = objcls.encrypt(e.CommandArgument.ToString());
+            Response.Redirect("ProdListPerProjCode.aspx?ID=" + Page + "&EncryptedValue=" + encryptedValue);
         }
     }
 }

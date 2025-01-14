@@ -41,7 +41,6 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
         MainGridLoad.DataSource = Dts;
         MainGridLoad.DataBind();
-
     }
 
     private static DataTable GetData(string query)

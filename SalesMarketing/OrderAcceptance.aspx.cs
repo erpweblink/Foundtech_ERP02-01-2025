@@ -85,7 +85,9 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
     }
     protected void POCode()
     {
-        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([pono]) as maxid FROM [tbl_OrderAcceptanceHdr]", Cls_Main.Conn);
+        SqlDataAdapter ad = new SqlDataAdapter("SELECT TOP 1 Pono AS maxid " +
+            " FROM tbl_OrderAcceptanceHdr " +
+            " ORDER BY CAST(SUBSTRING(Pono, CHARINDEX('-', Pono) + 1, LEN(Pono)) AS INT) DESC; ", Cls_Main.Conn);
         DataTable dt = new DataTable();
         ad.Fill(dt);
         if (dt.Rows.Count > 0)
