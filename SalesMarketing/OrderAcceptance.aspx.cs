@@ -401,7 +401,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                         cmd.Parameters.AddWithValue("@Action", "Save");
-                        cmd.ExecuteNonQuery();
+                       cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
                         Cls_Main.Conn_Dispose();
 
@@ -412,8 +412,29 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             string lblDescription = (grd1.FindControl("lblDescription") as Label).Text;
                             string lblQuantity = (grd1.FindControl("lblQuantity") as Label).Text;
                             string lblWeight = (grd1.FindControl("lblWeight") as Label).Text;
+                            decimal parsedWeight;
+                            bool isValidDecimal = Decimal.TryParse(lblWeight, out parsedWeight);
+                            if (!isValidDecimal || parsedWeight < 0.00M)
+                            {
+                                lblWeight = "0.00";
+                            }
+
                             string lblLength = (grd1.FindControl("lblLength") as Label).Text;
+                            decimal parsedLength;
+                            bool isValidLength = Decimal.TryParse(lblLength, out parsedLength);
+                            if (!isValidLength || parsedLength < 0.00M)
+                            {
+                                lblLength = "0.00";
+                            }
+
                             string lblTotWeight = (grd1.FindControl("lblTotalWeight") as Label).Text;
+                            decimal parsedTotWeight;
+                            bool isValidTotWeight = Decimal.TryParse(lblTotWeight, out parsedTotWeight);
+                            if (!isValidLength || parsedTotWeight < 0.00M)
+                            {
+                                lblTotWeight = "0.00";
+                            }
+
 
 
                             Cls_Main.Conn_Open();
@@ -445,7 +466,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             cmdd.Parameters.AddWithValue("@lblTotWeight", lblTotWeight);
                             cmdd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
                             cmdd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
-                            cmdd.ExecuteNonQuery();
+                           cmdd.ExecuteNonQuery();
                             Cls_Main.Conn_Close();
                         }
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Order Acceptance Save Successfully..!!');window.location='OAList.aspx'; ", true);
@@ -524,7 +545,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                         cmd.Parameters.AddWithValue("@Action", "Update");
-                        cmd.ExecuteNonQuery();
+                      //  cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
 
 
@@ -548,8 +569,30 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             string lblDescription = (grd1.FindControl("lblDescription") as Label).Text;
                             string lblQuantity = (grd1.FindControl("lblQuantity") as Label).Text;
                             string lblWeight = (grd1.FindControl("lblWeight") as Label).Text;
+                            decimal parsedWeight;
+                            bool isValidDecimal = Decimal.TryParse(lblWeight, out parsedWeight);
+                            if (!isValidDecimal || parsedWeight < 0.00M)
+                            {
+                                lblWeight = "0.00";
+                            }
+
                             string lblLength = (grd1.FindControl("lblLength") as Label).Text;
+                            decimal parsedLength;
+                            bool isValidLength = Decimal.TryParse(lblLength, out parsedLength);
+                            if (!isValidLength || parsedLength < 0.00M)
+                            {
+                                lblLength = "0.00";
+                            }
+
                             string lblTotWeight = (grd1.FindControl("lblTotalWeight") as Label).Text;
+                            decimal parsedTotWeight;
+                            bool isValidTotWeight = Decimal.TryParse(lblTotWeight, out parsedTotWeight);
+                            if (!isValidLength || parsedTotWeight < 0.00M)
+                            {
+                                lblTotWeight = "0.00";
+                            }
+
+
 
 
                             Cls_Main.Conn_Open();
@@ -603,7 +646,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                                         {
                                             con.Open();
                                             SqlCommand smd = new SqlCommand("UPDATE [tbl_SubProducts] SET pono = '" + newId + "' where ProductName = '" + Name + "' ",con);
-                                            smd.ExecuteNonQuery();
+                                           smd.ExecuteNonQuery();
                                             con.Close();
                                         }
                                     }
