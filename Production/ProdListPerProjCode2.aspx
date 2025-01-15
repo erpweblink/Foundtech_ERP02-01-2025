@@ -18,35 +18,35 @@
     <link rel="stylesheet" href="Content/assets/css/plugins.min.css" />
     <link rel="stylesheet" href="Content/assets/css/kaiadmin.min.css" />
 
-     <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
- <script>     
-     function SuccessResult(msg) {
-         swal("Success", msg, {
-             icon: "success",
-             buttons: {
-                 confirm: {
-                     className: "btn btn-success",
-                     TimeRanges: "5000",
-                 },
-             },
-         }).then(function () {
-             //window.location.href = "DrawingDetails.aspx";
-         });
-     };
-     function DeleteResult(msg) {
-         swal("Delete!", msg, {
-             icon: "error",
-             buttons: {
-                 confirm: {
-                     className: "btn btn-danger",
-                     TimeRanges: "5000",
-                 },
-             },
-         }).then(function () {
-            // window.location.href = "DrawingDetails.aspx";
-         });
-     };
- </script>
+    <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script>     
+        function SuccessResult(msg, redirectUrl) {
+            swal("Success", msg, {
+                icon: "success",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-success",
+                        TimeRanges: "5000",
+                    },
+                },
+            }).then(function () {
+                window.location.href = redirectUrl;
+            });
+        };
+        function DeleteResult(msg, redirectUrl) {
+            swal("Delete!", msg, {
+                icon: "error",
+                buttons: {
+                    confirm: {
+                        className: "btn btn-danger",
+                        TimeRanges: "5000",
+                    },
+                },
+            }).then(function () {
+                window.location.href = redirectUrl;
+            });
+        };
+    </script>
     <link href="../Content/css/Griddiv.css" rel="stylesheet" />
 
     <script src="../Content/assets/js/plugin/webfont/webfont.min.js"></script>
@@ -223,13 +223,7 @@
             padding: 4px;
         }
 
-        hr.new1 {
-            border-top: 1px dashed green !important;
-            border: 0;
-            margin-top: 5px !important;
-            margin-bottom: 5px !important;
-            width: 100%;
-        }
+
 
         .errspan {
             float: right;
@@ -277,22 +271,6 @@
 
 
         @import url("https://fonts.googleapis.com/css?family=Lato:400,400i,700");
-
-        * {
-            font-family: Lato, sans-serif;
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #F5F5F5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            margin: 50px 0;
-        }
 
         .wrapper {
             width: 80%;
@@ -361,7 +339,7 @@
 
         @media (min-width: 768px) {
             .container {
-                max-width: 95% !important;
+                max-width: 100% !important;
             }
 
             .question {
@@ -446,10 +424,7 @@
             /* text-shadow: 1px 4px rgb(227 103 103); */
         }
 
-        hr {
-            text-shadow: 1px 4px #40F2B8C4;
-            /* text-shadow: 1px 4px rgb(227 103 103); */
-        }
+
 
         .container {
             /* box-shadow: 0 5px 10px 0 rgb(26 255 255); */
@@ -590,6 +565,19 @@
         }
     </script>
 
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $("[src*=plus]").live("click", function () {
+            $(this).closest("tr").after("<tr><td></td><td colspan = '999'>" + $(this).next().html() + "</td></tr>")
+            $(this).attr("src", "../Content1/img/minus.png");
+        });
+        $("[src*=minus]").live("click", function () {
+            $(this).attr("src", "../Content1/img/plus.png");
+            $(this).closest("tr").next().remove();
+        });
+    </script>
     <!-- Kaiadmin JS -->
     <script src="../Content/assets/js/kaiadmin.min.js"></script>
 </head>
@@ -598,46 +586,49 @@
 <body>
 
     <div class="container-fluid" id="comment_form">
-        <form id="form1" runat="server">
+        <form id="form1" runat="server" enctype="multipart/form-data">
             <center>
                 <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">
                     <asp:Label ID="lblPageName" runat="server"></asp:Label>
                     PRODUCT LIST</h2>
             </center>
+            <div class="row">
+                <div class="col-md-10"></div>
+                <div class="col-md-1">
+                    <asp:Button ID="lblBtn" runat="server" CssClass="btn-primary" Text="Back To List" OnClick="lblBtn_Click" Font-Size="17px"></asp:Button>
+                </div>
+            </div>
             <hr style="border: 1px solid rgb(182, 178, 156);">
             <br />
-            <div class="row">
-                <div class="col-md-9" style="margin-left: 24px;">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true"></asp:Label><br />
-                            <asp:Label ID="txtProjectCode" runat="server"></asp:Label>
-                        </div>
-                        <div class="col-md-4">
-                            <asp:Label ID="lblProjectName" runat="server" Text="Project Name :" Font-Bold="true"></asp:Label><br />
-                            <asp:Label ID="txtProjectName" runat="server"></asp:Label>
-                        </div>
-                        <div class="col-md-4">
-                            <asp:Label ID="lblCustomerName" runat="server" Text="Customer Name :" Font-Bold="true"></asp:Label><br />
-                            <asp:Label ID="txtCustoName" runat="server"></asp:Label>
-                        </div>
+            <div class="container" style="box-shadow: none; margin-left: 16px;">
+                <div class="row">
+                    <div class="col-md-3">
+                        <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true"></asp:Label><br />
+                        <asp:Label ID="txtProjectCode" runat="server"></asp:Label>
                     </div>
-                </div>
+                    <div class="col-md-3">
+                        <asp:Label ID="lblProjectName" runat="server" Text="Project Name :" Font-Bold="true"></asp:Label><br />
+                        <asp:Label ID="txtProjectName" runat="server"></asp:Label>
+                    </div>
+                    <div class="col-md-3">
+                        <asp:Label ID="lblCustomerName" runat="server" Text="Customer Name :" Font-Bold="true"></asp:Label><br />
+                        <asp:Label ID="txtCustoName" runat="server"></asp:Label>
+                    </div>
+                    <div class="col-md-3">
+                        <span>Show Records: 
+                         <asp:DropDownList
+                             ID="DropDownList1"
+                             CssClass="form-control"
+                             runat="server"
+                             Style="width: 90px; margin-top: -2px; display: inline-block;"
+                             AutoPostBack="true"
+                             OnTextChanged="DropDownList1_TextChanged">
+                         </asp:DropDownList>
+                            <b>/</b>
+                            <asp:Label ID="lblCount" runat="server" Text="20" Style="display: inline-block;"></asp:Label>
+                        </span>
 
-                <div clss="col-md-3" style="margin-left: 79px;">
-                    <span>Show Records: 
-                             <asp:DropDownList
-                                 ID="DropDownList1"
-                                 CssClass="form-control"
-                                 runat="server"
-                                 Style="width: 90px; margin-top: -2px; display: inline-block;"
-                                 AutoPostBack="true"
-                                 OnTextChanged="DropDownList1_TextChanged">
-                             </asp:DropDownList>
-                        <b>/</b>
-                        <asp:Label ID="lblCount" runat="server" Text="20" Style="display: inline-block;"></asp:Label>
-                    </span>
-
+                    </div>
                 </div>
             </div>
             <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
@@ -657,7 +648,7 @@
                                         <Columns>
                                             <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
                                                 <ItemTemplate>
-                                                    <asp:LinkButton runat="server" ID="btnShowDtls" ToolTip="Send to Details" CommandName="ViewDetails" CommandArgument='<%# Eval("JobNo") + "," + Eval("rowmaterial") %>'><i class="fa fa-info-circle" aria-hidden="true" style="font-size: 26px; color: green;"></i></asp:LinkButton>
+                                                    <asp:LinkButton runat="server" ID="btnShowDtls" ToolTip="View Sub Products" CommandName="ViewDetails" CommandArgument='<%# Eval("JobNo") + "," + Eval("rowmaterial") %>'><i class="fa fa-info-circle" aria-hidden="true" style="font-size: 26px; color: green;"></i></asp:LinkButton>
                                                     <asp:Label ID="OaNumber" runat="server" Text='<%#Eval("Oanumber")%>' Visible="false"></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
@@ -869,8 +860,20 @@
                                 <div class="col-md-12">
                                     <div class="profilemodel2">
                                         <div class="headingcls">
-                                            <h4 class="modal-title">Warehouse Material Request Page
-                                            </h4>
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <h4 class="modal-title">Warehouse Material Request Page
+                                                    </h4>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <asp:LinkButton runat="server" ID="LinkButton1" CausesValidation="false" class="btn btn-danger" OnClick="btncancle_Click" Style="margin-left: 71px;">
+                                                 <span class="btn-label">
+                                                     <i class="fa fa-chevron-circle-left"></i>
+                                                 </span>
+                                                Back To Products
+                                                    </asp:LinkButton>
+                                                </div>
+                                            </div>
                                         </div>
                                         <br />
                                         <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">

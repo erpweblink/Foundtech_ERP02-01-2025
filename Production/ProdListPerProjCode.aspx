@@ -16,7 +16,7 @@
 
     <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
     <script>     
-        function SuccessResult(msg) {
+        function SuccessResult(msg, redirectUrl) {
             swal("Success", msg, {
                 icon: "success",
                 buttons: {
@@ -26,9 +26,10 @@
                     },
                 },
             }).then(function () {
-                window.location.href = "DrawingDetails.aspx";
+                window.location.href = redirectUrl;
             });
         };
+
         function DeleteResult(msg) {
             swal("Delete!", msg, {
                 icon: "error",
@@ -64,10 +65,19 @@
         });
     </script>
 
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Select2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Select2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+
     <script type="text/javascript">
         $(function () {
             $("[id*=ddlRMC]").select2();
-
         });
         function addNewDiv() {
             // Get the count of file input fields to create unique names
@@ -188,7 +198,7 @@
             text-align: left;
         }
 
-        .wp-block-separator:not(.is-style-wide):not(.is-style-dots)::before, hr:not(.is-style-wide):not(.is-style-dots)::before {
+        .wp-block-separator:not(.is-style-wide):not(.is-style-dots)::before {
             content: '';
             display: block;
             height: 1px;
@@ -211,13 +221,6 @@
             padding: 4px;
         }
 
-        hr.new1 {
-            border-top: 1px dashed green !important;
-            border: 0;
-            margin-top: 5px !important;
-            margin-bottom: 5px !important;
-            width: 100%;
-        }
 
         .errspan {
             float: right;
@@ -413,11 +416,6 @@
                 box-shadow: 0 .25em 0 0 #747474, 0 4px 9px rgba(0, 0, 0, .75)
             }
 
-
-        hr {
-            text-shadow: 1px 4px #40F2B8C4;
-        }
-
         .container {
             box-shadow: 0 5px 10px 0 rgb(26 160 255);
         }
@@ -532,20 +530,54 @@
 
     <!-- Kaiadmin JS -->
     <script src="../Content/assets/js/kaiadmin.min.js"></script>
+    <script type="text/javascript">
+        function downloadDWGFile(base64File, fileName) {
+            if (!base64File || !fileName) {
+                console.error("File data or file name is missing.");
+                return;
+            }
+
+            var byteCharacters = atob(base64File);
+            var byteArray = new Uint8Array(byteCharacters.length);
+
+
+            for (var i = 0; i < byteCharacters.length; i++) {
+                byteArray[i] = byteCharacters.charCodeAt(i);
+            }
+
+            var blob = new Blob([byteArray], { type: "application/octet-stream" });
+
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
 </head>
 
 
 <body id="bodyMain">
 
     <div class="container-fluid" id="comment_form">
+        <br />
+        <form id="form1" runat="server" enctype="multipart/form-data">
 
-        <form id="form1" runat="server">
             <center>
                 <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">
                     <asp:Label ID="lblPageName" runat="server"></asp:Label>
                     PRODUCT LIST</h2>
             </center>
-            <hr style="border: 1px solid rgb(182, 178, 156);">
+
+            <div class="row">
+                <div class="col-md-10"></div>
+                <div class="col-md-1">
+                    <asp:Button ID="lblBtn" runat="server" CssClass="btn-primary" Text="Back To List" OnClick="lblBtn_Click" Font-Size="17px"></asp:Button>
+                </div>
+            </div>
+            <hr style="border: 1px solid rgb(182, 178, 156); height: 4px;">
             <br />
             <div class="container" style="box-shadow: none; margin-left: 16px;">
                 <div class="row">
@@ -563,14 +595,14 @@
                     </div>
                     <div class="col-md-3">
                         <span>Show Records: 
-               <asp:DropDownList
-                   ID="DropDownList1"
-                   CssClass="form-control"
-                   runat="server"
-                   Style="width: 90px; margin-top: -2px; display: inline-block;"
-                   AutoPostBack="true"
-                   OnTextChanged="DropDownList1_TextChanged">
-               </asp:DropDownList>
+                           <asp:DropDownList
+                               ID="DropDownList1"
+                               CssClass="form-control"
+                               runat="server"
+                               Style="width: 90px; margin-top: -2px; display: inline-block;"
+                               AutoPostBack="true"
+                               OnTextChanged="DropDownList1_TextChanged">
+                           </asp:DropDownList>
                             <b>/</b>
                             <asp:Label ID="lblCount" runat="server" Text="20" Style="display: inline-block;"></asp:Label>
                         </span>
@@ -593,7 +625,7 @@
                                     <Columns>
                                         <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
-                                                <asp:LinkButton runat="server" ID="btnShowDtls" ToolTip="Send to Details" CommandName="ViewDetails" CommandArgument='<%# Eval("JobNo") + "," + Eval("rowmaterial") %>'><i class="fa fa-info-circle" aria-hidden="true" style="font-size: 26px; color: green;"></i></asp:LinkButton>
+                                                <asp:LinkButton runat="server" ID="btnShowDtls" ToolTip="View Sub Products" CommandName="ViewDetails" CommandArgument='<%# Eval("JobNo") + "," + Eval("rowmaterial") %>'><i class="fa fa-info-circle" aria-hidden="true" style="font-size: 26px; color: green;"></i></asp:LinkButton>
                                                 <asp:Label ID="OaNumber" runat="server" Text='<%#Eval("Oanumber")%>' Visible="false"></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
@@ -958,7 +990,6 @@
     </div>
 
     <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
-    <script src="script.js"></script>
 </body>
 
 </html>

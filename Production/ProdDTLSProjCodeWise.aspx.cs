@@ -325,4 +325,9 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
     {
         FillGrid();
     }
+
+    protected void lblBtn_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("ProdListGPWise.aspx");
+    }
 }

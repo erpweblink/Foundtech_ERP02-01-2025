@@ -444,13 +444,13 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 Label ProjectCode = e.Row.FindControl("lblProjectCode") as Label;
-                GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
+                //GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
 
-                if (GVPurchase == null)
-                {
+                //if (GVPurchase == null)
+                //{
 
-                    return;
-                }
+                //    return;
+                //}
 
                 //if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
                 //{

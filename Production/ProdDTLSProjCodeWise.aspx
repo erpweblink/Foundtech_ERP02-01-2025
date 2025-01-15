@@ -526,6 +526,12 @@
             <center>
                 <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">PRODUCTION LIST</h2>
             </center>
+            <div class="row">
+                <div class="col-md-10"></div>
+                <div class="col-md-1">
+                    <asp:Button ID="lblBtn" runat="server" CssClass="btn-primary" Text="Back To List" OnClick="lblBtn_Click" Font-Size="17px"></asp:Button>
+                </div>
+            </div>
             <hr style="border: 1px solid rgb(182, 178, 156);">
             <br />
             <div class="row" style="margin-left: 10px;">
@@ -565,15 +571,15 @@
                 <div class="col-md-9" style="margin-left: 24px;">
                     <div class="row">
                         <div class="col-md-4">
-                            <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true" ></asp:Label><br />
+                            <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true"></asp:Label><br />
                             <asp:Label ID="txtProjectCode" runat="server"></asp:Label>
                         </div>
                         <div class="col-md-4">
-                            <asp:Label ID="lblProjectName" runat="server" Text="Project Name :" Font-Bold="true" ></asp:Label><br />
+                            <asp:Label ID="lblProjectName" runat="server" Text="Project Name :" Font-Bold="true"></asp:Label><br />
                             <asp:Label ID="txtProjectName" runat="server"></asp:Label>
                         </div>
                         <div class="col-md-4">
-                            <asp:Label ID="lblCustomerName" runat="server" Text="Customer Name :" Font-Bold="true" ></asp:Label><br />
+                            <asp:Label ID="lblCustomerName" runat="server" Text="Customer Name :" Font-Bold="true"></asp:Label><br />
                             <asp:Label ID="txtCustoName" runat="server"></asp:Label>
                         </div>
                     </div>
