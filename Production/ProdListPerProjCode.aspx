@@ -14,10 +14,6 @@
     <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.jssocials/1.4.0/jssocials-theme-flat.css">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
-    <link rel="stylesheet" href="Content/assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="Content/assets/css/plugins.min.css" />
-    <link rel="stylesheet" href="Content/assets/css/kaiadmin.min.css" />
-
     <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
     <script>     
         function SuccessResult(msg) {
@@ -67,38 +63,6 @@
             },
         });
     </script>
-
-    <script src="../Content/assets/js/core/jquery-3.7.1.min.js"></script>
-    <script src="../Content/assets/js/core/popper.min.js"></script>
-    <script src="../Content/assets/js/core/bootstrap.min.js"></script>
-
-    <!-- jQuery Scrollbar -->
-    <script src="../Content/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-
-    <!-- Chart JS -->
-    <script src="../Content/assets/js/plugin/chart.js/chart.min.js"></script>
-
-    <!-- jQuery Sparkline -->
-    <script src="../Content/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
-
-    <!-- Chart Circle -->
-    <script src="../Content/assets/js/plugin/chart-circle/circles.min.js"></script>
-
-    <!-- Datatables -->
-    <script src="../Content/assets/js/plugin/datatables/datatables.min.js"></script>
-
-    <!-- Bootstrap Notify -->
-    <script src="../Content/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-
-    <!-- jQuery Vector Maps -->
-    <script src="../Content/assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
-    <script src="../Content/assets/js/plugin/jsvectormap/world.js"></script>
-
-    <!-- Sweet Alert -->
-    <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
-
-    <!-- Kaiadmin JS -->
-    <script src="../Content/assets/js/kaiadmin.min.js"></script>
 
     <script type="text/javascript">
         $(function () {
@@ -295,28 +259,13 @@
 
         @media (min-width: 1200px) {
             .container {
-                max-width: 1250px !important;
+                max-width: 1000px !important;
             }
         }
 
 
         @import url("https://fonts.googleapis.com/css?family=Lato:400,400i,700");
 
-        * {
-            font-family: Lato, sans-serif;
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #F5F5F5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            margin: 50px 0;
-        }
 
         .wrapper {
             width: 80%;
@@ -464,19 +413,12 @@
                 box-shadow: 0 .25em 0 0 #747474, 0 4px 9px rgba(0, 0, 0, .75)
             }
 
-        h2 {
-            /* text-shadow: 1px 4px #40F2B8C4; */
-            /* text-shadow: 2px 2px #000000c4; */
-            /* text-shadow: 1px 4px rgb(227 103 103); */
-        }
 
         hr {
             text-shadow: 1px 4px #40F2B8C4;
-            /* text-shadow: 1px 4px rgb(227 103 103); */
         }
 
         .container {
-            /* box-shadow: 0 5px 10px 0 rgb(26 255 255); */
             box-shadow: 0 5px 10px 0 rgb(26 160 255);
         }
 
@@ -593,9 +535,10 @@
 </head>
 
 
-<body>
+<body id="bodyMain">
 
     <div class="container-fluid" id="comment_form">
+
         <form id="form1" runat="server">
             <center>
                 <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">
@@ -604,40 +547,37 @@
             </center>
             <hr style="border: 1px solid rgb(182, 178, 156);">
             <br />
-            <div class="row">
-                <div class="col-md-9" style="margin-left: 24px;">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true"></asp:Label><br />
-                            <asp:Label ID="txtProjectCode" runat="server"></asp:Label>
-                        </div>
-                        <div class="col-md-4">
-                            <asp:Label ID="lblProjectName" runat="server" Text="Project Name :" Font-Bold="true"></asp:Label><br />
-                            <asp:Label ID="txtProjectName" runat="server"></asp:Label>
-                        </div>
-                        <div class="col-md-4">
-                            <asp:Label ID="lblCustomerName" runat="server" Text="Customer Name :" Font-Bold="true"></asp:Label><br />
-                            <asp:Label ID="txtCustoName" runat="server"></asp:Label>
-                        </div>
+            <div class="container" style="box-shadow: none; margin-left: 16px;">
+                <div class="row">
+                    <div class="col-md-3">
+                        <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true"></asp:Label><br />
+                        <asp:Label ID="txtProjectCode" runat="server"></asp:Label>
+                    </div>
+                    <div class="col-md-3">
+                        <asp:Label ID="lblProjectName" runat="server" Text="Project Name :" Font-Bold="true"></asp:Label><br />
+                        <asp:Label ID="txtProjectName" runat="server"></asp:Label>
+                    </div>
+                    <div class="col-md-3">
+                        <asp:Label ID="lblCustomerName" runat="server" Text="Customer Name :" Font-Bold="true"></asp:Label><br />
+                        <asp:Label ID="txtCustoName" runat="server"></asp:Label>
+                    </div>
+                    <div class="col-md-3">
+                        <span>Show Records: 
+               <asp:DropDownList
+                   ID="DropDownList1"
+                   CssClass="form-control"
+                   runat="server"
+                   Style="width: 90px; margin-top: -2px; display: inline-block;"
+                   AutoPostBack="true"
+                   OnTextChanged="DropDownList1_TextChanged">
+               </asp:DropDownList>
+                            <b>/</b>
+                            <asp:Label ID="lblCount" runat="server" Text="20" Style="display: inline-block;"></asp:Label>
+                        </span>
                     </div>
                 </div>
-
-                <div clss="col-md-3" style="margin-left: 79px;">
-                    <span>Show Records: 
-                             <asp:DropDownList
-                                 ID="DropDownList1"
-                                 CssClass="form-control"
-                                 runat="server"
-                                 Style="width: 90px; margin-top: -2px; display: inline-block;"
-                                 AutoPostBack="true"
-                                 OnTextChanged="DropDownList1_TextChanged">
-                             </asp:DropDownList>
-                        <b>/</b>
-                        <asp:Label ID="lblCount" runat="server" Text="20" Style="display: inline-block;"></asp:Label>
-                    </span>
-
-                </div>
             </div>
+
             <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
             </asp:ToolkitScriptManager>
 
@@ -645,7 +585,6 @@
                 <ContentTemplate>
                     <div class="container-fluid px-4">
                         <div class="row">
-                            <br />
                             <%--<div class="table-responsive text-center">--%>
                             <div class="table table-responsive">
                                 <br />
