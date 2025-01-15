@@ -311,9 +311,19 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
 
             if(Dts.Rows.Count >= 0)
             {
+                string Weight = Dts.Rows[0]["Weight"].ToString();
+                string Length = Dts.Rows[0]["Length"].ToString();
+                if (Weight == "")
+                {
+                    Weight = "0.000";
+                } 
+                if (Length == "")
+                {
+                    Length = "0.000";
+                }
                 DataTable Dta = Cls_Main.Read_Table("select JobNo FROM tbl_Productiondtls WHERE ProjectCode = '" + Dts.Rows[0]["ProjectCode"].ToString() + "' " +
-                    " AND Discription = '" + Dts.Rows[0]["Discription"].ToString() +"' AND Weight = '"+ Dts.Rows[0]["Weight"].ToString() +"'" +
-                    " AND Length = '" + Dts.Rows[0]["Length"].ToString() + "' AND Stage = 'Drawing'");
+                    " AND Discription = '" + Dts.Rows[0]["Discription"].ToString() +"' AND Weight = '"+ Weight +"'" +
+                    " AND Length = '" + Length + "' AND Stage = 'Drawing'");
                 if(Dta.Rows.Count > 0)
                 {
                     foreach (DataRow row in Dta.Rows)
