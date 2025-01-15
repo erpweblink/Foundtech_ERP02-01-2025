@@ -601,35 +601,49 @@
             <hr style="border: 1px solid rgb(182, 178, 156);">
             <br />
             <div class="container" style="box-shadow: none; margin-left: 16px;">
-                <div class="row">
-                    <div class="col-md-3">
-                        <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true"></asp:Label><br />
-                        <asp:Label ID="txtProjectCode" runat="server"></asp:Label>
-                    </div>
-                    <div class="col-md-3">
-                        <asp:Label ID="lblProjectName" runat="server" Text="Project Name :" Font-Bold="true"></asp:Label><br />
-                        <asp:Label ID="txtProjectName" runat="server"></asp:Label>
-                    </div>
-                    <div class="col-md-3">
-                        <asp:Label ID="lblCustomerName" runat="server" Text="Customer Name :" Font-Bold="true"></asp:Label><br />
-                        <asp:Label ID="txtCustoName" runat="server"></asp:Label>
-                    </div>
-                    <div class="col-md-3">
-                        <span>Show Records: 
-                         <asp:DropDownList
-                             ID="DropDownList1"
-                             CssClass="form-control"
-                             runat="server"
-                             Style="width: 90px; margin-top: -2px; display: inline-block;"
-                             AutoPostBack="true"
-                             OnTextChanged="DropDownList1_TextChanged">
-                         </asp:DropDownList>
-                            <b>/</b>
-                            <asp:Label ID="lblCount" runat="server" Text="20" Style="display: inline-block;"></asp:Label>
-                        </span>
-
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true"></asp:Label><br />
+                            <asp:Label ID="txtProjectCode" runat="server"></asp:Label>
+                        </div>
+                        <div class="col-md-2">
+                            <asp:Label ID="lblProjectName" runat="server" Text="Project Name :" Font-Bold="true"></asp:Label><br />
+                            <asp:Label ID="txtProjectName" runat="server"></asp:Label>
+                        </div>
+                        <div class="col-md-2">
+                            <asp:Label ID="lblCustomerName" runat="server" Text="Customer Name :" Font-Bold="true"></asp:Label><br />
+                            <asp:Label ID="txtCustoName" runat="server"></asp:Label>
+                        </div>
                     </div>
                 </div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <span><b>Show Records:</b><br />
+                                <asp:DropDownList
+                                    ID="DropDownList1"
+                                    CssClass="form-control"
+                                    runat="server"
+                                    Style="width: 90px; margin-top: -2px; display: inline-block;"
+                                    AutoPostBack="true"
+                                    OnTextChanged="DropDownList1_TextChanged">
+                                </asp:DropDownList>
+                                <b>/</b>
+                                <asp:Label ID="lblCount" runat="server" Text="20" Style="display: inline-block;"></asp:Label>
+                            </span>
+                        </div>
+                        <div class="col-md-2">
+                            <span><b>Products :</b><br />
+                                <asp:DropDownList ID="txtdropdown" runat="server" CssClass="form-control">
+                                    <asp:ListItem Text="Not Completed" Value="3" Selected="True"></asp:ListItem>
+                                    <asp:ListItem Text="Completed" Value="2"></asp:ListItem>
+                                </asp:DropDownList>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             </div>
             <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
             </asp:ToolkitScriptManager>

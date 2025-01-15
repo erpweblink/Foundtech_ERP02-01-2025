@@ -70,8 +70,8 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         {
             DataTable Dt = Cls_Main.Read_Table("SELECT TOP " + DropDownList1.SelectedValue + " * FROM tbl_ProductionDTLS  AS Pd " +
                 " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
-                " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'" +
-                " ORDER BY PD.Status ASC ");
+                " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "' " +
+                " AND PD.Status <> 2 ORDER BY PD.Status DESC ");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
         }
@@ -80,7 +80,7 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
             DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
                 " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
                 " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'" +
-                " ORDER BY PD.Status ASC ");
+                " AND PD.Status <> 2 ORDER BY PD.Status DESC ");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
         }

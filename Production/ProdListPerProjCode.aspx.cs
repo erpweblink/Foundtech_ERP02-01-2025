@@ -314,9 +314,58 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                 DataTable Dta = Cls_Main.Read_Table("select JobNo FROM tbl_Productiondtls WHERE ProjectCode = '" + Dts.Rows[0]["ProjectCode"].ToString() + "' " +
                     " AND Discription = '" + Dts.Rows[0]["Discription"].ToString() +"' AND Weight = '"+ Dts.Rows[0]["Weight"].ToString() +"'" +
                     " AND Length = '" + Dts.Rows[0]["Length"].ToString() + "' AND Stage = 'Drawing'");
-                foreach (DataRow row in Dta.Rows)
+                if(Dta.Rows.Count > 0)
                 {
-                    string jobno = row["JobNo"].ToString();
+                    foreach (DataRow row in Dta.Rows)
+                    {
+                        string jobno = row["JobNo"].ToString();
+                        Cls_Main.Conn_Open();
+
+                        // Loop through the Request.Files to process the uploaded files
+                        for (int i = 0; i < Request.Files.Count; i++)
+                        {
+                            HttpPostedFile file = Request.Files[i];
+                            if (file != null && file.ContentLength > 0)
+                            {
+                                // Get the file name and save path
+                                string fileName = Path.GetFileName(file.FileName);
+                                string savePath = Server.MapPath("~/Drawings/" + fileName);
+
+                                // Save the file
+                                file.SaveAs(savePath);
+
+                                // Get the corresponding remark for this file
+                                string remark = string.Empty;
+                                string remarkKey = string.Format("fileRemarks_{0}", i); // Generate the key for the remark
+                                if (Request.Form.AllKeys.Contains(remarkKey))
+                                {
+                                    remark = Request.Form[remarkKey];
+                                }
+
+                                // Insert file details and remark into the database
+                                string insertQuery = "INSERT INTO tbl_DrawingDetails (JobNo, FileName,FilePath, Remark,CreatedBy,CreatedOn) VALUES (@JobNo, @FileName,@FilePath, @Remark,@CreatedBy,@CreatedOn)";
+                                using (SqlCommand cmd = new SqlCommand(insertQuery, Cls_Main.Conn))
+                                {
+                                    // Add parameters to prevent SQL injection
+                                    cmd.Parameters.AddWithValue("@JobNo", jobno);  // Ensure JobNo is correctly set
+                                    cmd.Parameters.AddWithValue("@FileName", fileName);
+                                    cmd.Parameters.AddWithValue("@FilePath", savePath);
+                                    cmd.Parameters.AddWithValue("@Remark", remark);
+                                    cmd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
+                                    cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
+                                    // Execute the insert query
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
+                        }
+
+                        // Close the connection (if not managed by Cls_Main)
+                        Cls_Main.Conn_Close();
+                    }
+
+                }
+                else
+                {
                     Cls_Main.Conn_Open();
 
                     // Loop through the Request.Files to process the uploaded files
@@ -345,7 +394,7 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                             using (SqlCommand cmd = new SqlCommand(insertQuery, Cls_Main.Conn))
                             {
                                 // Add parameters to prevent SQL injection
-                                cmd.Parameters.AddWithValue("@JobNo", jobno);  // Ensure JobNo is correctly set
+                                cmd.Parameters.AddWithValue("@JobNo", txtjobno.Text.Trim());  // Ensure JobNo is correctly set
                                 cmd.Parameters.AddWithValue("@FileName", fileName);
                                 cmd.Parameters.AddWithValue("@FilePath", savePath);
                                 cmd.Parameters.AddWithValue("@Remark", remark);
@@ -359,7 +408,9 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
 
                     // Close the connection (if not managed by Cls_Main)
                     Cls_Main.Conn_Close();
+
                 }
+               
                 Cls_Main.Conn_Open();
                 SqlCommand Cmd = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
                 Cmd.Parameters.AddWithValue("@StageNumber", 0);
