@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Office2013.Excel;
+using Org.BouncyCastle.Asn1.Crmf;
 using System;
 using System.Configuration;
 using System.Data;
@@ -306,87 +307,100 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
     {
         try
         {
-            Cls_Main.Conn_Open();
+            DataTable Dts = Cls_Main.Read_Table("SELECT ProjectCode, Discription, Weight, Length FROM tbl_Productiondtls where JobNo='" + txtjobno.Text.Trim() + "'");
 
-            // Loop through the Request.Files to process the uploaded files
-            for (int i = 0; i < Request.Files.Count; i++)
+            if(Dts.Rows.Count >= 0)
             {
-                HttpPostedFile file = Request.Files[i];
-                if (file != null && file.ContentLength > 0)
+                DataTable Dta = Cls_Main.Read_Table("select JobNo FROM tbl_Productiondtls WHERE ProjectCode = '" + Dts.Rows[0]["ProjectCode"].ToString() + "' " +
+                    " AND Discription = '" + Dts.Rows[0]["Discription"].ToString() +"' AND Weight = '"+ Dts.Rows[0]["Weight"].ToString() +"'" +
+                    " AND Length = '" + Dts.Rows[0]["Length"].ToString() + "' AND Stage = 'Drawing'");
+                foreach (DataRow row in Dta.Rows)
                 {
-                    // Get the file name and save path
-                    string fileName = Path.GetFileName(file.FileName);
-                    string savePath = Server.MapPath("~/Drawings/" + fileName);
+                    string jobno = row["JobNo"].ToString();
+                    Cls_Main.Conn_Open();
 
-                    // Save the file
-                    file.SaveAs(savePath);
-
-                    // Get the corresponding remark for this file
-                    string remark = string.Empty;
-                    string remarkKey = string.Format("fileRemarks_{0}", i); // Generate the key for the remark
-                    if (Request.Form.AllKeys.Contains(remarkKey))
+                    // Loop through the Request.Files to process the uploaded files
+                    for (int i = 0; i < Request.Files.Count; i++)
                     {
-                        remark = Request.Form[remarkKey];
+                        HttpPostedFile file = Request.Files[i];
+                        if (file != null && file.ContentLength > 0)
+                        {
+                            // Get the file name and save path
+                            string fileName = Path.GetFileName(file.FileName);
+                            string savePath = Server.MapPath("~/Drawings/" + fileName);
+
+                            // Save the file
+                            file.SaveAs(savePath);
+
+                            // Get the corresponding remark for this file
+                            string remark = string.Empty;
+                            string remarkKey = string.Format("fileRemarks_{0}", i); // Generate the key for the remark
+                            if (Request.Form.AllKeys.Contains(remarkKey))
+                            {
+                                remark = Request.Form[remarkKey];
+                            }
+
+                            // Insert file details and remark into the database
+                            string insertQuery = "INSERT INTO tbl_DrawingDetails (JobNo, FileName,FilePath, Remark,CreatedBy,CreatedOn) VALUES (@JobNo, @FileName,@FilePath, @Remark,@CreatedBy,@CreatedOn)";
+                            using (SqlCommand cmd = new SqlCommand(insertQuery, Cls_Main.Conn))
+                            {
+                                // Add parameters to prevent SQL injection
+                                cmd.Parameters.AddWithValue("@JobNo", jobno);  // Ensure JobNo is correctly set
+                                cmd.Parameters.AddWithValue("@FileName", fileName);
+                                cmd.Parameters.AddWithValue("@FilePath", savePath);
+                                cmd.Parameters.AddWithValue("@Remark", remark);
+                                cmd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
+                                cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
+                                // Execute the insert query
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
                     }
 
-                    // Insert file details and remark into the database
-                    string insertQuery = "INSERT INTO tbl_DrawingDetails (JobNo, FileName,FilePath, Remark,CreatedBy,CreatedOn) VALUES (@JobNo, @FileName,@FilePath, @Remark,@CreatedBy,@CreatedOn)";
-                    using (SqlCommand cmd = new SqlCommand(insertQuery, Cls_Main.Conn))
-                    {
-                        // Add parameters to prevent SQL injection
-                        cmd.Parameters.AddWithValue("@JobNo", txtjobno.Text.Trim());  // Ensure JobNo is correctly set
-                        cmd.Parameters.AddWithValue("@FileName", fileName);
-                        cmd.Parameters.AddWithValue("@FilePath", savePath);
-                        cmd.Parameters.AddWithValue("@Remark", remark);
-                        cmd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
-                        cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
-                        // Execute the insert query
-                        cmd.ExecuteNonQuery();
-                    }
+                    // Close the connection (if not managed by Cls_Main)
+                    Cls_Main.Conn_Close();
+                }
+                Cls_Main.Conn_Open();
+                SqlCommand Cmd = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+                Cmd.Parameters.AddWithValue("@StageNumber", 0);
+                Cmd.Parameters.AddWithValue("@JobNo", txtjobno.Text);
+                Cmd.Parameters.AddWithValue("@InwardQTY", txttotalqty.Text);
+                Cmd.Parameters.AddWithValue("@OutwardQTY", txtoutwardqty.Text);
+                Cmd.Parameters.AddWithValue("@Remark", txtRemarks.Text);
+                if (txttotalqty.Text == txtoutwardqty.Text)
+                {
+                    Cmd.Parameters.AddWithValue("@Status", 2);
+                }
+                else
+                {
+                    Cmd.Parameters.AddWithValue("@Status", 1);
+                }
+                Cmd.Parameters.AddWithValue("@OutwardBy", Session["UserCode"].ToString());
+                Cmd.Parameters.AddWithValue("@OutwardDate", DateTime.Now);
+                Cmd.ExecuteNonQuery();
+                Cls_Main.Conn_Close();
+
+                DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_ProductionDTLS AS PD where JobNo='" + txtjobno.Text + "'and StageNumber>0 ");
+                if (Dt.Rows.Count > 0)
+                {
+                    int StageNumber = Convert.ToInt32(Dt.Rows[0]["StageNumber"].ToString());
+
+                    Cls_Main.Conn_Open();
+                    SqlCommand Cmd1 = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET InwardQTY=@InwardQTY,InwardBy=@InwardBy,InwardDate=@InwardDate,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+                    Cmd1.Parameters.AddWithValue("@StageNumber", StageNumber);
+                    Cmd1.Parameters.AddWithValue("@JobNo", txtjobno.Text);
+                    Cmd1.Parameters.AddWithValue("@Status", 1);
+                    Cmd1.Parameters.AddWithValue("@InwardQTY", txttotalqty.Text);
+                    Cmd1.Parameters.AddWithValue("@InwardBy", Session["UserCode"].ToString());
+                    Cmd1.Parameters.AddWithValue("@InwardDate", DateTime.Now);
+                    Cmd1.ExecuteNonQuery();
+                    Cls_Main.Conn_Close();
                 }
             }
 
-            // Close the connection (if not managed by Cls_Main)
-            Cls_Main.Conn_Close();
-
-            Cls_Main.Conn_Open();
-            SqlCommand Cmd = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
-            Cmd.Parameters.AddWithValue("@StageNumber", 0);
-            Cmd.Parameters.AddWithValue("@JobNo", txtjobno.Text);
-            Cmd.Parameters.AddWithValue("@InwardQTY", txttotalqty.Text);
-            Cmd.Parameters.AddWithValue("@OutwardQTY", txtoutwardqty.Text);
-            Cmd.Parameters.AddWithValue("@Remark", txtRemarks.Text);
-            if (txttotalqty.Text == txtoutwardqty.Text)
-            {
-                Cmd.Parameters.AddWithValue("@Status", 2);
-            }
-            else
-            {
-                Cmd.Parameters.AddWithValue("@Status", 1);
-            }
-            Cmd.Parameters.AddWithValue("@OutwardBy", Session["UserCode"].ToString());
-            Cmd.Parameters.AddWithValue("@OutwardDate", DateTime.Now);
-            Cmd.ExecuteNonQuery();
-            Cls_Main.Conn_Close();
-
-            DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_ProductionDTLS AS PD where JobNo='" + txtjobno.Text + "'and StageNumber>0 ");
-            if (Dt.Rows.Count > 0)
-            {
-                int StageNumber = Convert.ToInt32(Dt.Rows[0]["StageNumber"].ToString());
-
-                Cls_Main.Conn_Open();
-                SqlCommand Cmd1 = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET InwardQTY=@InwardQTY,InwardBy=@InwardBy,InwardDate=@InwardDate,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
-                Cmd1.Parameters.AddWithValue("@StageNumber", StageNumber);
-                Cmd1.Parameters.AddWithValue("@JobNo", txtjobno.Text);
-                Cmd1.Parameters.AddWithValue("@Status", 1);
-                Cmd1.Parameters.AddWithValue("@InwardQTY", txttotalqty.Text);
-                Cmd1.Parameters.AddWithValue("@InwardBy", Session["UserCode"].ToString());
-                Cmd1.Parameters.AddWithValue("@InwardDate", DateTime.Now);
-                Cmd1.ExecuteNonQuery();
-                Cls_Main.Conn_Close();
-            }
-
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send to the Next..!!');", true);
+            string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
+            string url = "ProdListPerProjCode.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue;
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send to the Next..!!', '" + url + "');", true);
         }
         catch
         {
@@ -431,7 +445,10 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
         cmd.ExecuteNonQuery();
         Cls_Main.Conn_Close();
         Cls_Main.Conn_Dispose();
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully..!!');window.location='Drawing.aspx';", true);
+
+        string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
+        string url = "ProdListPerProjCode.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue;
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully..!!', '" + url + "');", true);
     }
     protected void btncancle_Click(object sender, EventArgs e)
     {
@@ -461,5 +478,10 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
     protected void DropDownList1_TextChanged(object sender, EventArgs e)
     {
         FillGrid();
+    }
+
+    protected void lblBtn_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("DrawingDetails.aspx");
     }
 }

@@ -70,7 +70,8 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         {
             DataTable Dt = Cls_Main.Read_Table("SELECT TOP " + DropDownList1.SelectedValue + " * FROM tbl_ProductionDTLS  AS Pd " +
                 " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
-                " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'");
+                " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'" +
+                " ORDER BY PD.Status ASC ");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
         }
@@ -78,7 +79,8 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         {
             DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
                 " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
-                " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'");
+                " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'" +
+                " ORDER BY PD.Status ASC ");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
         }
@@ -283,7 +285,7 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
     }
     public void GetRequestdata(string jobno)
     {
-        DataTable dtpt = Cls_Main.Read_Table("SELECT * FROM tbl_InventoryRequest WHERE JobNo='" + jobno + "' AND IsDeleted=0 AND stages=1");
+        DataTable dtpt = Cls_Main.Read_Table("SELECT * FROM tbl_InventoryRequest WHERE JobNo='" + jobno + "' AND IsDeleted=0 AND stages=2");
         if (dtpt.Rows.Count > 0)
         {
             GVRequest.DataSource = dtpt;
@@ -358,11 +360,17 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
                     cmd.ExecuteNonQuery();
                     Cls_Main.Conn_Close();
                     Cls_Main.Conn_Dispose();
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send to the Next..!!');", true);
+
+                    string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
+                    string url = "ProdListPerProjCode2.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue;
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send to the Next..!!', '" + url + "');", true);
+                   
                 }
                 else
                 {
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please check Outward Quantity is Greater then Inward Quantity..!!');", true);
+                    string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
+                    string url = "ProdListPerProjCode2.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue;
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please check Outward Quantity is Greater then Inward Quantity..!!', '" + url + "');", true);
                 }
             }
             else
@@ -527,7 +535,12 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         cmd.ExecuteNonQuery();
         Cls_Main.Conn_Close();
         Cls_Main.Conn_Dispose();
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully..!!');window.location='PlazmaCutting.aspx';", true);
+
+        GetRequestdata(hdnJobid.Value);
+        //string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
+        //string url = "ProdListPerProjCode.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue;
+        //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully..!!', '" + url + "');", true);
+
     }
 
     protected void btncancle_Click(object sender, EventArgs e)
@@ -604,7 +617,7 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
     {
         try
         {
-            DataTable dtpt = Cls_Main.Read_Table("select SUM(CAST(InwardQty AS FLOAT)) AS Quantity from tbl_InwardData WHERE RowMaterial='" + txtRMC.Text.Trim() + "' AND Thickness='" + txtThickness.Text.Trim() + "' AND Width='" + txtwidth.Text.Trim() + "' AND Length='" + txtlength.Text.Trim() + "' AND IsDeleted=0");
+            DataTable dtpt = Cls_Main.Read_Table("select SUM(CAST(InwardQty AS FLOAT)) AS Quantity from tbl_InwardData WHERE RowMaterial='" + txtRMC.Text.Trim() + "' AND TRY_CAST(Thickness AS FLOAT)='" + txtThickness.Text.Trim() + "' AND TRY_CAST(Width AS FLOAT)='" + txtwidth.Text.Trim() + "' AND TRY_CAST(Length AS FLOAT)='" + txtlength.Text.Trim() + "' AND IsDeleted=0");
             if (dtpt.Rows.Count > 0)
             {
                 txtAvilableqty.Text = dtpt.Rows[0]["Quantity"] != DBNull.Value ? dtpt.Rows[0]["Quantity"].ToString() : "0";
@@ -655,6 +668,11 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         {
             txtAvilableqty.Text = "";
         }
+    }
+
+    protected void lblBtn_Click(object sender, EventArgs e)
+    {
+        Response.Redirect(Session["Stage"].ToString() + ".aspx");
     }
 
 }
