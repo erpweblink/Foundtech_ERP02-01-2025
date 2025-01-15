@@ -562,7 +562,7 @@
             <br />
             <br />
             <div class="row">
-                <div class="col-md-9" style="border: 2px solid;margin-left: 24px;">
+                <div class="col-md-9" style="margin-left: 24px;">
                     <div class="row">
                         <div class="col-md-4">
                             <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true" ></asp:Label><br />

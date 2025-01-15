@@ -49,7 +49,7 @@ public partial class Production_Painting : System.Web.UI.Page
 
     protected void GVPurchase_RowCommand(object sender, GridViewCommandEventArgs e)
     {
- 
+
         if (e.CommandName == "Rowwarehouse")
         {
             //this.ModalPopupExtender1.Show();
@@ -94,7 +94,7 @@ public partial class Production_Painting : System.Web.UI.Page
                 B = 0;
             }
 
-            
+
             txtpending.Text = (A - B).ToString();
             txtoutwardqty.Text = txtpending.Text;
             this.ModalPopupHistory.Show();
@@ -241,25 +241,25 @@ public partial class Production_Painting : System.Web.UI.Page
                     string fileExtension = Path.GetExtension(fileName);
 
                     if (fileExtension == ".pdf")
- {
-     //Old Code 
-     Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
- }
- else
- {
-     //New Code by Nikhil 04-01-2025
-     string filePath = Server.MapPath("~/Drawings/" + fileName);
+                    {
+                        //Old Code 
+                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
+                    }
+                    else
+                    {
+                        //New Code by Nikhil 04-01-2025
+                        string filePath = Server.MapPath("~/Drawings/" + fileName);
 
-     if (File.Exists(filePath))
-     {
-         byte[] fileBytes = File.ReadAllBytes(filePath);
-         string base64File = Convert.ToBase64String(fileBytes);
-         string safeBase64File = base64File.Replace("'", @"\'");
-         string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
-         ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
+                        if (File.Exists(filePath))
+                        {
+                            byte[] fileBytes = File.ReadAllBytes(filePath);
+                            string base64File = Convert.ToBase64String(fileBytes);
+                            string safeBase64File = base64File.Replace("'", @"\'");
+                            string script = "downloadDWGFile('" + safeBase64File + "', '" + fileName + "');";
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "DownloadDWG", script, true);
 
-     }
- }
+                        }
+                    }
                 }
                 else
                 {
@@ -295,7 +295,7 @@ public partial class Production_Painting : System.Web.UI.Page
                     Cls_Main.Conn_Close();
                     Cls_Main.Conn_Dispose();
 
-                   
+
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send to the Next..!!');", true);
                 }
                 else
@@ -338,7 +338,7 @@ public partial class Production_Painting : System.Web.UI.Page
                     Cls_Main.Conn_Close();
                     Cls_Main.Conn_Dispose();
 
-                  
+
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send Back..!!');", true);
                 }
 
@@ -488,29 +488,29 @@ public partial class Production_Painting : System.Web.UI.Page
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 Label ProjectCode = e.Row.FindControl("lblProjectCode") as Label;
-                GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
+                //GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
 
-                if (GVPurchase == null)
-                {
+                //if (GVPurchase == null)
+                //{
 
-                    return;
-                }
+                //    return;
+                //}
 
-                if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
-                {
-                    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
-                        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
-                        " WHERE Pd.Stage = 'Painting' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
-                    if (data != null && data.Rows.Count > 0)
-                    {
-                        GVPurchase.DataSource = data;
-                        GVPurchase.DataBind();
-                    }
-                    else
-                    {
-                        GVPurchase.Visible = false;
-                    }
-                }
+                //if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
+                //{
+                //    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
+                //        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+                //        " WHERE Pd.Stage = 'Painting' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
+                //    if (data != null && data.Rows.Count > 0)
+                //    {
+                //        GVPurchase.DataSource = data;
+                //        GVPurchase.DataBind();
+                //    }
+                //    else
+                //    {
+                //        GVPurchase.Visible = false;
+                //    }
+                //}
 
                 Label JobNo = e.Row.FindControl("lblProjectCode") as Label;
 
@@ -730,6 +730,12 @@ public partial class Production_Painting : System.Web.UI.Page
         {
             string fileName = Path.GetFileName(e.CommandArgument.ToString());
             Response.Redirect("~/PDF_Files/" + fileName);
+        }
+        if (e.CommandName == "ViewDetails")
+        {
+            string Page = "Painting";
+            string encryptedValue = objcls.encrypt(e.CommandArgument.ToString());
+            Response.Redirect("ProdListPerProjCode2.aspx?ID=" + Page + "&EncryptedValue=" + encryptedValue);
         }
     }
 }

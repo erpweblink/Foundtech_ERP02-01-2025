@@ -40,7 +40,7 @@ public partial class Production_Packing : System.Web.UI.Page
         DataTable Dt = Cls_Main.Read_Table("SELECT OH.PdfFilePath, PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
                 "  SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY,SUM(CAST(OutwardQty AS INT)) AS OutwardQty " +
                 " FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo=PD.JobNo " +
-                " INNER JOIN tbl_orderacceptancehdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Packaging' and PD.Status < 2 " +
+                " INNER JOIN tbl_orderacceptancehdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Quality' and PD.Status < 2 " +
                 " GROUP BY  PD.ProjectCode, PD.ProjectName, PH.CustomerName, OH.PdfFilePath " +
                 " ORDER BY PD.ProjectCode desc ");
         MainGridLoad.DataSource = Dt;
@@ -323,7 +323,7 @@ public partial class Production_Packing : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@PendingQty", Convert.ToDouble(txtpending.Text));
                     cmd.Parameters.AddWithValue("@Remark", txtRemarks.Text);
                     cmd.Parameters.AddWithValue("@UserCode", Session["UserCode"].ToString());
-                    // cmd.ExecuteNonQuery();
+                     cmd.ExecuteNonQuery();
                     Cls_Main.Conn_Close();
                     Cls_Main.Conn_Dispose();
 
@@ -517,29 +517,29 @@ public partial class Production_Packing : System.Web.UI.Page
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 Label ProjectCode = e.Row.FindControl("lblProjectCode") as Label;
-                GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
+                //GridView GVPurchase = e.Row.FindControl("GVPurchase") as GridView;
 
-                if (GVPurchase == null)
-                {
+                //if (GVPurchase == null)
+                //{
 
-                    return;
-                }
+                //    return;
+                //}
 
-                if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
-                {
-                    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
-                        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
-                        " WHERE Pd.Stage = 'Packaging' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
-                    if (data != null && data.Rows.Count > 0)
-                    {
-                        GVPurchase.DataSource = data;
-                        GVPurchase.DataBind();
-                    }
-                    else
-                    {
-                        GVPurchase.Visible = false;
-                    }
-                }
+                //if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
+                //{
+                //    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
+                //        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+                //        " WHERE Pd.Stage = 'Quality' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
+                //    if (data != null && data.Rows.Count > 0)
+                //    {
+                //        GVPurchase.DataSource = data;
+                //        GVPurchase.DataBind();
+                //    }
+                //    else
+                //    {
+                //        GVPurchase.Visible = false;
+                //    }
+                //}
                 Label JobNo = e.Row.FindControl("lblProjectCode") as Label;
 
                 if (JobNo != null)
@@ -630,7 +630,7 @@ public partial class Production_Packing : System.Web.UI.Page
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter("SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY  FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-            " Where PD.Stage = 'Packaging' AND PD.Status < 2 AND PH.CustomerName = '" + company + "' " +
+            " Where PD.Stage = 'Quality' AND PD.Status < 2 AND PH.CustomerName = '" + company + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
             sad.Fill(dt);
@@ -688,7 +688,7 @@ public partial class Production_Packing : System.Web.UI.Page
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY  FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-            " Where PD.Stage = 'Packaging' AND PD.Status < 2 AND PH.ProjectCode = '" + Cpono + "' " +
+            " Where PD.Stage = 'Quality' AND PD.Status < 2 AND PH.ProjectCode = '" + Cpono + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
             sad.Fill(dt);
@@ -742,7 +742,7 @@ public partial class Production_Packing : System.Web.UI.Page
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty  FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-            " Where PD.Stage = 'Packaging' AND PD.Status < 2 AND PH.ProjectName = '" + GST + "' " +
+            " Where PD.Stage = 'Quality' AND PD.Status < 2 AND PH.ProjectName = '" + GST + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc ", Cls_Main.Conn);
             sad.Fill(dt);
@@ -758,6 +758,12 @@ public partial class Production_Packing : System.Web.UI.Page
         {
             string fileName = Path.GetFileName(e.CommandArgument.ToString());
             Response.Redirect("~/PDF_Files/" + fileName);
+        }
+        if (e.CommandName == "ViewDetails")
+        {
+            string Page = "Quality";
+            string encryptedValue = objcls.encrypt(e.CommandArgument.ToString());
+            Response.Redirect("ProdListPerProjCode2.aspx?ID=" + Page + "&EncryptedValue=" + encryptedValue);
         }
     }
 }

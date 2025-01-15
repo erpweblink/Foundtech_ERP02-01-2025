@@ -524,10 +524,28 @@
     <div class="container-fluid" id="comment_form">
         <form id="form1" runat="server">
             <center>
-                <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2"> SUB PRODUCT LIST</h2>
+                <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">SUB PRODUCT LIST</h2>
             </center>
             <hr style="border: 1px solid rgb(182, 178, 156);">
             <br />
+            <div class="row">
+                <div class="col-md-3">
+                    <asp:Label ID="lblProjectcode" runat="server" Text="Project Code :" Font-Bold="true"></asp:Label><br />
+                    <asp:Label ID="txtProjectCode" runat="server"></asp:Label>
+                </div>
+                <div class="col-md-3">
+                    <asp:Label ID="lblProjectName" runat="server" Text="Project Name :" Font-Bold="true"></asp:Label><br />
+                    <asp:Label ID="txtProjectName" runat="server"></asp:Label>
+                </div>
+                <div class="col-md-3">
+                    <asp:Label ID="lblCustomerName" runat="server" Text="Customer Name :" Font-Bold="true"></asp:Label><br />
+                    <asp:Label ID="txtCustoName" runat="server"></asp:Label>
+                </div>
+                <div class="col-md-3">
+                    <asp:Label ID="lblProductName" runat="server" Text="Product Name :" Font-Bold="true"></asp:Label><br />
+                    <asp:Label ID="txtProductName" runat="server"></asp:Label>
+                </div>
+            </div>
             <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
             </asp:ToolkitScriptManager>
 
@@ -541,20 +559,14 @@
                             <%--<div class="table-responsive text-center">--%>
                             <div class="table table-responsive">
                                 <br />
-                                <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="id" Width="100%" 
-                                     CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
+                                <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="id" Width="100%"
+                                    CssClass="display table table-striped table-hover" AutoGenerateColumns="false">
                                     <Columns>
                                         <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblsno" runat="server" Text='<%# Container.DataItemIndex+1 %>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Product Name" HeaderStyle-CssClass="gvhead">
-                                            <ItemTemplate>
-                                                <asp:Label ID="ProductName" runat="server" Text='<%#Eval("ProductName")%>'></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-
                                         <asp:TemplateField HeaderText="Sub Product" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
                                                 <asp:Label ID="SubProd" runat="server" Text='<%#Eval("SubProductname")%>'></asp:Label>
