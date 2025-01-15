@@ -416,7 +416,12 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             bool isValidDecimal = Decimal.TryParse(lblWeight, out parsedWeight);
                             if (!isValidDecimal || parsedWeight < 0.00M)
                             {
-                                lblWeight = "0.00";
+                                lblWeight = "0.000";
+                            }
+                            else
+                            {
+                                parsedWeight = Math.Round(parsedWeight, 3, MidpointRounding.AwayFromZero);
+                                lblWeight = parsedWeight.ToString("0.000");
                             }
 
                             string lblLength = (grd1.FindControl("lblLength") as Label).Text;
@@ -424,15 +429,24 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             bool isValidLength = Decimal.TryParse(lblLength, out parsedLength);
                             if (!isValidLength || parsedLength < 0.00M)
                             {
-                                lblLength = "0.00";
+                                lblLength = "0.000";
                             }
-
+                            else
+                            {
+                                parsedLength = Math.Round(parsedLength, 3, MidpointRounding.AwayFromZero);
+                                lblLength = parsedWeight.ToString("0.000");
+                            }
                             string lblTotWeight = (grd1.FindControl("lblTotalWeight") as Label).Text;
                             decimal parsedTotWeight;
                             bool isValidTotWeight = Decimal.TryParse(lblTotWeight, out parsedTotWeight);
                             if (!isValidLength || parsedTotWeight < 0.00M)
                             {
-                                lblTotWeight = "0.00";
+                                lblTotWeight = "0.000";
+                            }
+                            else
+                            {
+                                parsedTotWeight = Math.Round(parsedTotWeight, 3, MidpointRounding.AwayFromZero);
+                                lblTotWeight = parsedWeight.ToString("0.000");
                             }
 
 
@@ -573,7 +587,12 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             bool isValidDecimal = Decimal.TryParse(lblWeight, out parsedWeight);
                             if (!isValidDecimal || parsedWeight < 0.00M)
                             {
-                                lblWeight = "0.00";
+                                lblWeight = "0.000";
+                            }
+                            else
+                            {
+                                parsedWeight = Math.Round(parsedWeight, 3, MidpointRounding.AwayFromZero);
+                                lblWeight = parsedWeight.ToString("0.000");
                             }
 
                             string lblLength = (grd1.FindControl("lblLength") as Label).Text;
@@ -581,18 +600,25 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             bool isValidLength = Decimal.TryParse(lblLength, out parsedLength);
                             if (!isValidLength || parsedLength < 0.00M)
                             {
-                                lblLength = "0.00";
+                                lblLength = "0.000";
                             }
-
+                            else
+                            {
+                                parsedLength = Math.Round(parsedLength, 3, MidpointRounding.AwayFromZero);
+                                lblLength = parsedWeight.ToString("0.000");
+                            }
                             string lblTotWeight = (grd1.FindControl("lblTotalWeight") as Label).Text;
                             decimal parsedTotWeight;
                             bool isValidTotWeight = Decimal.TryParse(lblTotWeight, out parsedTotWeight);
                             if (!isValidLength || parsedTotWeight < 0.00M)
                             {
-                                lblTotWeight = "0.00";
+                                lblTotWeight = "0.000";
                             }
-
-
+                            else
+                            {
+                                parsedTotWeight = Math.Round(parsedTotWeight, 3, MidpointRounding.AwayFromZero);
+                                lblTotWeight = parsedWeight.ToString("0.000");
+                            }
 
 
                             Cls_Main.Conn_Open();
