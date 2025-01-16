@@ -1,4 +1,4 @@
-﻿using System;
+
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -32,9 +32,9 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
                     for (int i = 0; i < 4; i++)
                     {
                         int year = currentYear + (i * 25);
-                        DropDownList1.Items.Add(new ListItem(year.ToString(), year.ToString()));
+                        DropDownList1.Items.Add(new System.Web.UI.WebControls.ListItem(year.ToString(), year.ToString()));
                     }
-                    DropDownList1.Items.Add(new ListItem("ALL", "ALL"));
+                    DropDownList1.Items.Add(new System.Web.UI.WebControls.ListItem("ALL", "ALL"));
                     DropDownList1.SelectedValue = currentYear.ToString();
                     FillGrid();
                 }
@@ -202,6 +202,7 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
                 Label lblStatus = e.Row.FindControl("Status") as Label;
                 LinkButton btnWare = e.Row.FindControl("btnwarrehouse") as LinkButton;
                 LinkButton btnEdit = e.Row.FindControl("btnEdit") as LinkButton;
+                LinkButton btndtls = e.Row.FindControl("btnShowDtls") as LinkButton;
 
                 if (lblStatus != null)
                 {
@@ -233,6 +234,7 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
                 {
                     btnWare.Visible = false;
                     btnEdit.Style["margin-left"] = "28px";
+                    btndtls.Visible = false;
                 }
                 else
                 {
@@ -726,7 +728,12 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
 
     protected void lblBtn_Click(object sender, EventArgs e)
     {
-        Response.Redirect(Session["Stage"].ToString() + ".aspx");
+        string pageName = Session["Stage"].ToString();
+        if (pageName == "QUALITY")
+        {
+            pageName = "Packing";
+        }
+        Response.Redirect(pageName + ".aspx");
     }
 
     protected void txtdropdown_TextChanged(object sender, EventArgs e)
