@@ -4,7 +4,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 
     <link href="../Content1/css/styles.css" rel="stylesheet" />
-    
+
     <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
     <script>     
         function SuccessResult(msg) {
@@ -33,8 +33,8 @@
                 window.location.href = "ReturnInventory.aspx";
             });
         };
-    </script> 
-  
+    </script>
+
     <style>
         .spncls {
             color: #f20707 !important;
@@ -217,7 +217,7 @@
                 max-width: 1250px !important;
             }
         }
-    </style>  
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <form id="form1" runat="server">
@@ -237,7 +237,7 @@
                                     <div class="col-9 col-md-10">
                                         <h4 class="mt-4 "><b>RETURN INVENTORY LIST</b></h4>
                                     </div>
-                                  <%--  <div class="col-3 col-md-2 mt-4">
+                                    <%--  <div class="col-3 col-md-2 mt-4">
                                         <asp:Button ID="btnCreate" CssClass="form-control btn btn-warning" OnClick="btnCreate_Click" runat="server" Text="Create" />
                                     </div>--%>
                                 </div>
@@ -246,7 +246,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div style="margin-top: 14px;">
-                                             <asp:Label ID="lblnumber" Font-Bold="true" Visible="false" runat="server"></asp:Label>
+                                            <asp:Label ID="lblnumber" Font-Bold="true" Visible="false" runat="server"></asp:Label>
                                             <asp:Label ID="Label17" Font-Bold="true" runat="server" Text="Row Material :"></asp:Label>
                                             <asp:TextBox ID="txtRowMaterial" CssClass="form-control" placeholder="Search Row Material " runat="server" OnTextChanged="txtRowMaterial_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
                                             <asp:AutoCompleteExtender ID="AutoCompleteExtender4" runat="server" CompletionListCssClass="completionList"
@@ -331,7 +331,7 @@
                                                             <asp:Label ID="Size" runat="server" Text='<%#Eval("Size")%>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                               <%--                     <asp:TemplateField HeaderText="ACTION" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="120">
+                                                    <%--                     <asp:TemplateField HeaderText="ACTION" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="120">
                                                         <ItemTemplate>
                                                            
                                                             <asp:LinkButton ID="btnEdit" runat="server" Height="27px" ToolTip="Edit Inward record" CausesValidation="false" CommandName="RowEdit" CommandArgument='<%# Container.DataItemIndex %>'><i class='fas fa-edit' style='font-size:24px;color: blue;'></i></asp:LinkButton>
@@ -374,7 +374,7 @@
                                                             CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetRMCList"
                                                             TargetControlID="txtrowmetarial">
                                                         </asp:AutoCompleteExtender>
-                                                    </div>                                               
+                                                    </div>
                                                     <div class="col-md-6 col-12 mb-3">
                                                         <asp:Label ID="Label15" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Thickness:</asp:Label>
 
@@ -393,11 +393,18 @@
                                                         <asp:TextBox ID="txtlength" CssClass="form-control" placeholder="Length" AutoPostBack="true" OnTextChanged="txtlength_TextChanged" TextMode="Number" runat="server"></asp:TextBox>
                                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator8" runat="server" ValidationGroup="1" ErrorMessage="Please Enter length" ControlToValidate="txtlength" ForeColor="Red"></asp:RequiredFieldValidator>
                                                     </div>
-                                                    <div class="col-md-6 col-12 mb-3">
+                                                    <div class="col-md-6 col-12 mb-3" id="totalqty" runat="server">
                                                         <asp:Label ID="Label19" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Total QTY:</asp:Label>
                                                         <asp:TextBox ID="txtTotalQty" CssClass="form-control" ReadOnly="true" placeholder="Enter Total Qty" runat="server"></asp:TextBox>
 
                                                     </div>
+                                                    <div class="col-md-6 col-12 mb-3" id="Weight" runat="server" visible="false">
+                                                        <asp:Label ID="Label8" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Weight:</asp:Label>
+                                                        <asp:TextBox ID="txtWeights" CssClass="form-control" placeholder="Enter Weight" runat="server"></asp:TextBox>
+                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator9" runat="server" Display="Dynamic" ErrorMessage="Please Enter Weight"
+                                                            ControlToValidate="txtWeights" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                                    </div>
+
                                                     <div class="col-md-6 col-12 mb-3">
                                                         <asp:Label ID="Label9" runat="server" Font-Bold="true" CssClass="form-label">Inward QTY:</asp:Label>
                                                         <asp:TextBox ID="txtinwardqantity" CssClass="form-control" AutoPostBack="true" OnTextChanged="txtinwardqantity_TextChanged" TextMode="Number" placeholder="Enter Inward Qantity" runat="server"></asp:TextBox>

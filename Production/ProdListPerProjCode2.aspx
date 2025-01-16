@@ -895,6 +895,17 @@
                                             </div>
                                         </div>
                                         <br />
+                                        <center id="dropdownEntry" runat="server">
+                                            <span>
+                                                <asp:Label ID="lblDropDown" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Entry</asp:Label>
+                                                <asp:DropDownList ID="txtdropEntry" runat="server" CssClass="form-control" Style="border: 2px solid #00e7ff; width: 154px;" OnTextChanged="txtdropEntry_TextChanged" AutoPostBack="True">
+                                                    <asp:ListItem Text="---Please Select---" Value="0" Selected="True"></asp:ListItem>
+                                                    <asp:ListItem Text="Regular Entry" Value="1"></asp:ListItem>
+                                                    <asp:ListItem Text="Plate Entry" Value="2"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </span>
+                                        </center>
+                                        <br />
                                         <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">
                                             <div class="row">
                                                 <div class="col-md-6 col-12 mb-3">
@@ -935,11 +946,17 @@
                                                     <asp:TextBox ID="txtlength" CssClass="form-control" placeholder="Length" AutoPostBack="true" OnTextChanged="txtlength_TextChanged" TextMode="Number" runat="server"></asp:TextBox>
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator8" runat="server" ValidationGroup="1" ErrorMessage="Please Enter length" ControlToValidate="txtlength" ForeColor="Red"></asp:RequiredFieldValidator>
                                                 </div>
-                                                <div class="col-md-6 col-12 mb-3" runat="server">
+                                                <div class="col-md-6 col-12 mb-3" id="totalqty" runat="server">
                                                     <asp:Label ID="Label7" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Available Quantity:</asp:Label>
-
                                                     <asp:TextBox ID="txtAvilableqty" CssClass="form-control" Font-Bold="true" placeholder="Available Quantity" ReadOnly="true" runat="server"></asp:TextBox>
                                                 </div>
+                                                <div class="col-md-6 col-12 mb-3" id="Weight" runat="server" visible="false">
+                                                    <asp:Label ID="Label8" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Weight:</asp:Label>
+                                                    <asp:TextBox ID="txtWeights" CssClass="form-control" placeholder="Enter Weight" runat="server"></asp:TextBox>
+                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator9" runat="server" Display="Dynamic" ErrorMessage="Please Enter Weight"
+                                                        ControlToValidate="txtWeights" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                                </div>
+
                                                 <div class="col-md-6 col-12 mb-3">
                                                     <asp:Label ID="Label10" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Need QTY:</asp:Label>
 
@@ -950,7 +967,7 @@
                                                 <div class="col-md-6 col-12 mb-3">
                                                     <asp:Label ID="Label13" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Weight:</asp:Label>
 
-                                                    <asp:TextBox ID="Txtweight" CssClass="form-control" placeholder="Weight" TextMode="Number" runat="server"></asp:TextBox>
+                                                    <asp:TextBox ID="txtWeight" CssClass="form-control" placeholder="Weight" TextMode="Number" runat="server"></asp:TextBox>
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ValidationGroup="1" ErrorMessage="Please Enter Weight" ControlToValidate="Txtweight" ForeColor="Red"></asp:RequiredFieldValidator>
                                                 </div>
 
@@ -964,17 +981,17 @@
 
                                                     <div class="col-md-12" style="margin-top: 18px; text-align: center">
                                                         <asp:LinkButton runat="server" ID="btnWarehousedata" ValidationGroup="1" class="btn btn-success" OnClick="btnWarehousedata_Click">
-                                     <span class="btn-label">
-                                         <i class="fa fa-check"></i>
-                                     </span>
-                                    Send Request
+                                                         <span class="btn-label">
+                                                             <i class="fa fa-check"></i>
+                                                         </span>
+                                                        Send Request
                                                         </asp:LinkButton>
-                                                        <asp:LinkButton runat="server" ID="btncancle" CausesValidation="false" class="btn btn-danger" OnClick="btncancle_Click">
-                                     <span class="btn-label">
-                                         <i class="fas fa-times"></i>
-                                     </span>
-                                    Cancel
-                                                        </asp:LinkButton>
+                                                        <%-- <asp:LinkButton runat="server" ID="btncancle" CausesValidation="false" class="btn btn-danger" OnClick="btncancle_Click">
+                                                         <span class="btn-label">
+                                                             <i class="fas fa-times"></i>
+                                                         </span>
+                                                        Cancel
+                                                        </asp:LinkButton>--%>
                                                     </div>
                                                 </div>
 
@@ -1066,7 +1083,12 @@
                                                                     <asp:Label ID="Length" runat="server" Text='<%#Eval("Length")%>'></asp:Label>
                                                                 </ItemTemplate>
                                                             </asp:TemplateField>
-                                                            <asp:TemplateField HeaderText="Weight (Kg)">
+                                                            <asp:TemplateField HeaderText="Weight">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="PerWeight" runat="server" Text='<%#Eval("PerWeight")%>'></asp:Label>
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText=" Total Weight (Kg)">
                                                                 <ItemTemplate>
                                                                     <asp:Label ID="Weight" runat="server" Text='<%#Eval("Weight")%>'></asp:Label>
                                                                 </ItemTemplate>
@@ -1113,6 +1135,18 @@
         <br>
     </div>
 
+
+
+    <%--    <button onclick="goBack()" class="btn btn-danger">Go Back</button>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>--%>
 </body>
+
+
+
 
 </html>

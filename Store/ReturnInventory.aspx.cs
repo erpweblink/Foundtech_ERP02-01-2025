@@ -1,16 +1,8 @@
-﻿
-using DocumentFormat.OpenXml.Office2010.Excel;
-using Org.BouncyCastle.Asn1.X509;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -55,14 +47,40 @@ public partial class Store_ReturnInventory : System.Web.UI.Page
 
         if (dt.Rows.Count > 0)
         {
-            lblnumber.Text = dt.Rows[0]["RequestNo"].ToString();
-            txtrowmetarial.Text = dt.Rows[0]["RowMaterial"].ToString();
-            txtThickness.Text = dt.Rows[0]["Thickness"].ToString();
-            txtwidth.Text = dt.Rows[0]["Width"].ToString();
-            txtlength.Text = dt.Rows[0]["Length"].ToString();
-            txtTotalQty.Text = dt.Rows[0]["APPQuantity"].ToString();
-            
-            txtinwardqantity.Text = dt.Rows[0]["APPQuantity"].ToString();
+            string weights = dt.Rows[0]["PerWeight"].ToString();
+            if(weights != "")
+            {
+                lblnumber.Text = dt.Rows[0]["RequestNo"].ToString();
+                txtrowmetarial.Text = dt.Rows[0]["RowMaterial"].ToString();
+                txtThickness.Text = dt.Rows[0]["Thickness"].ToString();
+                txtThickness.Enabled = false;
+                txtwidth.Text = dt.Rows[0]["Width"].ToString();
+                txtWeight.Enabled = false;
+                txtlength.Text = dt.Rows[0]["Length"].ToString();
+                txtlength.Enabled = false;
+                totalqty.Visible = false;
+                Weight.Visible = true;
+                txtTotalQty.Text = dt.Rows[0]["APPQuantity"].ToString();
+                txtinwardqantity.Text = dt.Rows[0]["APPQuantity"].ToString();
+                txtWeights.Text = dt.Rows[0]["PerWeight"].ToString();
+            }
+            else
+            {
+                lblnumber.Text = dt.Rows[0]["RequestNo"].ToString();
+                txtrowmetarial.Text = dt.Rows[0]["RowMaterial"].ToString();
+                txtThickness.Text = dt.Rows[0]["Thickness"].ToString();
+                txtThickness.Enabled = false;
+                txtwidth.Text = dt.Rows[0]["Width"].ToString();
+                txtWeight.Enabled = false;
+                txtlength.Text = dt.Rows[0]["Length"].ToString();
+                txtlength.Enabled = false;
+                totalqty.Visible = true;
+                Weight.Visible = false;
+                txtTotalQty.Text = dt.Rows[0]["APPQuantity"].ToString();
+                txtinwardqantity.Text = dt.Rows[0]["APPQuantity"].ToString();
+                txtWeights.Text = dt.Rows[0]["PerWeight"].ToString();
+            }
+
 
         }
 
@@ -323,7 +341,6 @@ public partial class Store_ReturnInventory : System.Web.UI.Page
         }
         else
         {
-            
             cmd.Parameters.AddWithValue("@Mode", "InseartReturnInwarddata");
             cmd.Parameters.AddWithValue("@InwardQty", txtinwardqantity.Text);
             cmd.Parameters.AddWithValue("@Thickness", txtThickness.Text);
