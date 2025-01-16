@@ -683,4 +683,32 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         Response.Redirect(pageName + ".aspx");
     }
 
+
+        
+        
+   
+
+    protected void txtdropdown_TextChanged(object sender, EventArgs e)
+    {
+        string val = txtdropdown.SelectedValue;
+        if(val == "2")
+        {
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_ProductionDTLS  AS Pd " +
+             " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+             " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "' " +
+             " AND PD.Status = '"+val+"' ");
+            GVPurchase.DataSource = Dt;
+            GVPurchase.DataBind();
+        }
+        else
+        {
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
+             " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+             " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'" +
+             " AND PD.Status <> 2 ORDER BY PD.Status DESC ");
+            GVPurchase.DataSource = Dt;
+            GVPurchase.DataBind();
+
+        }
+    }
 }
