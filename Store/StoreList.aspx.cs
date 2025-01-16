@@ -113,6 +113,7 @@ public partial class Store_StoreList : System.Web.UI.Page
 
         }
 
+
     }
 
     public void GetAvailableDetals(string RowMaterial, string Thickness, string Width, string Length, string NeedQty, string Weight)

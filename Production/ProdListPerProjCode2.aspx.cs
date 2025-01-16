@@ -1,13 +1,8 @@
-﻿using DocumentFormat.OpenXml.Office2013.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
-using System;
-using System.Collections.Generic;
+
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -100,6 +95,20 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
             GridViewRow row = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
             GridView gvPurchase = (GridView)row.FindControl("GVPurchase");
             hdnJobid.Value = ((Label)row.FindControl("jobno")).Text;
+            txtRMC.Enabled = false;
+            txtThickness.Enabled = false;
+            txtwidth.Enabled = false;
+            txtlength.Enabled = false;
+            txtDescription.Enabled = false;
+            txtneedqty.Enabled = false;
+            btnWarehousedata.Visible = false;
+            Weight.Visible = false;
+            totalqty.Visible = true;
+            txtWeight.Enabled = false;
+            txtWeights.Text = "";
+            txtThickness.Text = "";
+            txtwidth.Text = "";
+            txtlength.Text = "";
             GetRequestdata(hdnJobid.Value);
 
         }
@@ -293,7 +302,37 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         {
             GVRequest.DataSource = dtpt;
             GVRequest.DataBind();
-
+            
+            if(txtdropEntry.SelectedValue == "1")
+            {
+                txtRMC.Text = "";
+                txtWeights.Text = "";
+                txtWeight.Text = "";
+                txtneedqty.Text = "";
+                txtDescription.Text = "";
+            }else if(txtdropEntry.SelectedValue == "2")
+            {
+                txtRMC.Text = "";
+                txtWeights.Text = "";
+                txtThickness.Text = "";
+                txtwidth.Text = "";
+                txtlength.Text = "";
+                txtWeight.Text = "";
+                txtneedqty.Text = "";
+                txtDescription.Text = "";
+            }
+            else
+            {
+                txtRMC.Text = "";
+                txtWeights.Text = "";
+                txtThickness.Text = "";
+                txtwidth.Text = "";
+                txtlength.Text = "";
+                txtWeight.Text = "";
+                txtneedqty.Text = "";
+                txtDescription.Text = "";
+            }
+           
         }
     }
 
@@ -533,11 +572,13 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@AvailableSize", txtAvailablesize.Text);
         cmd.Parameters.AddWithValue("@RowMaterial", txtRMC.Text);
         cmd.Parameters.AddWithValue("@JobNo", hdnJobid.Value);
-        cmd.Parameters.AddWithValue("@Weight", Txtweight.Text);
+        cmd.Parameters.AddWithValue("@Weight", txtWeight.Text);
+        cmd.Parameters.AddWithValue("@PerWeight", txtWeights.Text);
         cmd.Parameters.AddWithValue("@stages", 2);
         cmd.ExecuteNonQuery();
         Cls_Main.Conn_Close();
         Cls_Main.Conn_Dispose();
+
 
         GetRequestdata(hdnJobid.Value);
         //string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
@@ -620,35 +661,47 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
     {
         try
         {
-            DataTable dtpt = Cls_Main.Read_Table("select SUM(CAST(InwardQty AS FLOAT)) AS Quantity from tbl_InwardData WHERE RowMaterial='" + txtRMC.Text.Trim() + "' AND TRY_CAST(Thickness AS FLOAT)='" + txtThickness.Text.Trim() + "' AND TRY_CAST(Width AS FLOAT)='" + txtwidth.Text.Trim() + "' AND TRY_CAST(Length AS FLOAT)='" + txtlength.Text.Trim() + "' AND IsDeleted=0");
-            if (dtpt.Rows.Count > 0)
+            if (txtWeights.Text == "")
             {
-                txtAvilableqty.Text = dtpt.Rows[0]["Quantity"] != DBNull.Value ? dtpt.Rows[0]["Quantity"].ToString() : "0";
+                if (txtThickness.Text != "" && txtwidth.Text != "" && txtlength.Text != "" && txtneedqty.Text != "")
+                {
+                    double thickness = Convert.ToDouble(txtThickness.Text);
+                    double width = Convert.ToDouble(txtwidth.Text);
+                    double length = Convert.ToDouble(txtlength.Text);
+                    double Quantity = Convert.ToDouble(txtneedqty.Text);
 
+                    // Ensure inputs are non-negative
+                    if (thickness <= 0 || width <= 0 || length <= 0)
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please enter positive values for thickness, width, and length...!!');", true);
+
+                    }
+
+                    // Calculate weight in kilograms
+                    double weight = length / 1000 * width / 1000 * thickness * 7.85;
+                    double totalweight = weight * Quantity;
+                    // Display the calculated weight
+                    txtWeight.Text = totalweight.ToString();
+                }
             }
             else
             {
-
-            }
-            if (txtThickness.Text != "" && txtwidth.Text != "" && txtlength.Text != "")
-            {
-                double thickness = Convert.ToDouble(txtThickness.Text);
-                double width = Convert.ToDouble(txtwidth.Text);
-                double length = Convert.ToDouble(txtlength.Text);
-                double Quantity = string.IsNullOrEmpty(txtneedqty.Text) ? 0 : Convert.ToDouble(txtneedqty.Text);
-
-                // Ensure inputs are non-negative
-                if (thickness <= 0 || width <= 0 || length <= 0)
+                if (txtWeights.Text != "" && txtneedqty.Text != "")
                 {
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please enter positive values for thickness, width, and length...!!');", true);
 
+                    double PerWeight = Convert.ToDouble(txtWeights.Text);
+                    double Quantity = Convert.ToDouble(txtneedqty.Text);
+
+                    // Ensure inputs are non-negative
+                    if (PerWeight <= 0)
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please enter positive values for thickness, width, and length...!!');", true);
+                    }
+                    double totalweight = PerWeight * Quantity;
+                    // Display the calculated weight
+                    txtWeight.Text = totalweight.ToString();
                 }
 
-                // Calculate weight in kilograms
-                double weight = length / 1000 * width / 1000 * thickness * 7.85;
-                double totalweight = weight * Quantity;
-                // Display the calculated weight
-                Txtweight.Text = totalweight.ToString();
             }
 
         }
@@ -706,4 +759,76 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
 
         }
     }
+    protected void txtdropEntry_TextChanged(object sender, EventArgs e)
+    {
+        string val = txtdropEntry.SelectedValue;
+        if (val == "1")
+        {
+            txtRMC.Enabled = true;
+            txtThickness.Enabled = false;
+            txtThickness.Text = "0";
+            txtwidth.Enabled = false;
+            txtwidth.Text = "0";
+            txtlength.Enabled = false;
+            txtlength.Text = "0";
+            txtneedqty.Enabled = true;
+            txtDescription.Enabled = true;
+            btnWarehousedata.Visible = true;
+
+            txtWeight.Enabled = false;
+
+            totalqty.Visible = false;
+            Weight.Visible = true;
+
+            txtWeights.Text = "";
+
+            txtWeight.Text = "";
+       
+        }
+        else if (val == "2")
+        {
+          
+            txtDescription.Enabled = true;
+            txtRMC.Enabled = true;
+            txtThickness.Enabled = true;
+            txtThickness.Text = "";
+            txtwidth.Enabled = true;
+            txtwidth.Text = "";
+            txtlength.Enabled = true;
+            txtlength.Text = "";
+            txtneedqty.Enabled = true;
+            txtDescription.Enabled = true;
+            btnWarehousedata.Visible = true;
+
+            txtWeight.Enabled = false;
+
+            Weight.Visible = false;
+            totalqty.Visible = true;
+
+            txtWeights.Text = "";
+
+            txtWeight.Text = "";
+        }
+        else
+        {
+            txtRMC.Enabled = false;
+            txtThickness.Enabled = false;
+            txtwidth.Enabled = false;
+            txtlength.Enabled = false;
+            txtDescription.Enabled = false;
+            txtneedqty.Enabled = false;
+            btnWarehousedata.Visible = false;
+            txtWeight.Enabled = false;
+            Weight.Visible = false;
+            totalqty.Visible = true;
+            txtWeights.Text = "";
+            txtThickness.Text = "";
+            txtwidth.Text = "";
+            txtlength.Text = "";
+            txtWeight.Text = "";
+            txtneedqty.Text = "";
+        }
+
+    }
+
 }

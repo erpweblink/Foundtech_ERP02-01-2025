@@ -4,11 +4,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
 using System.Web.UI;
@@ -101,21 +96,59 @@ public partial class Store_InwardEntry : System.Web.UI.Page
             divinwardform.Visible = true;
             divtabl.Visible = false;                  
             txtrowmetarial.Enabled = false;
+            txtcompanyname.Enabled = false;
+            dropdownEntry.Visible = false;
             int rowIndex = Convert.ToInt32(e.CommandArgument);
             GridViewRow row = GVPurchase.Rows[rowIndex];
-            txtcompanyname.Text = ((Label)row.FindControl("CustomerName")).Text;
-            txtrowmetarial.Text = ((Label)row.FindControl("MaterialName")).Text;
-            txtThickness.Text = ((Label)row.FindControl("Thickness")).Text;
-            txtwidth.Text = ((Label)row.FindControl("Width")).Text;
-            txtlength.Text = ((Label)row.FindControl("Length")).Text;
+            double wei;
+            string PerWeight = ((Label)row.FindControl("PerWeights")).Text;
+            if ( PerWeight != "")
+            {
+                wei = Convert.ToDouble(PerWeight);
+            }
+            else{
+                wei = 0;
+            }
+            if(wei <= 0)
+            {
+                txtcompanyname.Text = ((Label)row.FindControl("CustomerName")).Text;
+                txtrowmetarial.Text = ((Label)row.FindControl("MaterialName")).Text;
+                txtThickness.Text = ((Label)row.FindControl("Thickness")).Text;
+                txtwidth.Text = ((Label)row.FindControl("Width")).Text;
+                txtlength.Text = ((Label)row.FindControl("Length")).Text;
 
-            txtTotalQty.Text = ((Label)row.FindControl("InwardQty")).Text;
-            txtinwardqantity.Text = ((Label)row.FindControl("InwardQty")).Text;
-            txtWeight.Text = ((Label)row.FindControl("Weight")).Text;
+                txtTotalQty.Text = ((Label)row.FindControl("InwardQty")).Text;
+                txtinwardqantity.Text = ((Label)row.FindControl("InwardQty")).Text;
+                txtWeight.Text = ((Label)row.FindControl("Weight")).Text;
+                txtDescription.Enabled = true;
+                txtSize.Text = ((Label)row.FindControl("Size")).Text;
+                hdnid.Value = ((Label)row.FindControl("Inwardno")).Text;
+                btnsavedata.Text = "Update";
+            }
+            else
+            {
+               
+                txtWeights.Text = ((Label)row.FindControl("PerWeights")).Text;
+                txtcompanyname.Text = ((Label)row.FindControl("CustomerName")).Text;
+                txtrowmetarial.Text = ((Label)row.FindControl("MaterialName")).Text;
+                txtThickness.Text = ((Label)row.FindControl("Thickness")).Text;
+                txtThickness.Enabled = false;
+                txtwidth.Text = ((Label)row.FindControl("Width")).Text;
+                txtwidth.Enabled = false;
+                txtlength.Text = ((Label)row.FindControl("Length")).Text;
+                txtlength.Enabled = false;
+                totalqty.Visible = false;
+                txtinwardqantity.Text = ((Label)row.FindControl("InwardQty")).Text;
+                txtWeight.Text = ((Label)row.FindControl("Weight")).Text;
+                Weight.Visible = true;
+                txtSize.Text = ((Label)row.FindControl("Size")).Text;
+                txtSize.Enabled = false;
+                txtDescription.Enabled = true;
+                hdnid.Value = ((Label)row.FindControl("Inwardno")).Text;
+                btnsavedata.Text = "Update";
+            }
 
-            txtSize.Text = ((Label)row.FindControl("Size")).Text;
-            hdnid.Value = ((Label)row.FindControl("Inwardno")).Text;
-            btnsavedata.Text = "Update";
+            
         }
         if (e.CommandName == "RowDelete")
         {
@@ -213,12 +246,19 @@ public partial class Store_InwardEntry : System.Web.UI.Page
     {
         divinwardform.Visible = true;
         divtabl.Visible = false;
-        txtrowmetarial.Enabled = true;
+        txtcompanyname.Enabled = false;
+        txtrowmetarial.Enabled = false;
+        txtSize.Enabled = false;
+        txtThickness.Enabled = false;
+        txtwidth.Enabled = false;
+        txtlength.Enabled = false;
+        txtinwardqantity.Enabled = false;
+        txtDescription.Enabled = false;
+        btnsavedata.Visible = false;
+
         txtrowmetarial.Text = "";
         txtTotalQty.Text = "";
         txtSize.Text = "";
-        txtSize.Enabled = true;
-        txtrowmetarial.Enabled = true;
         hdnid.Value = "";
     }
 
@@ -238,11 +278,15 @@ public partial class Store_InwardEntry : System.Web.UI.Page
         if (btnsavedata.Text == "Update")
         {
             cmd.Parameters.AddWithValue("@Mode", "UpdateInwarddata");
-            Double Total = Convert.ToDouble(txtTotalQty.Text) + Convert.ToDouble(txtinwardqantity.Text);
+           // Double Total = Convert.ToDouble(txtTotalQty.Text) + Convert.ToDouble(txtinwardqantity.Text);
             cmd.Parameters.AddWithValue("@InwardNo", hdnid.Value);
-            cmd.Parameters.AddWithValue("@InwardQty", txtinwardqantity.Text);        
+            cmd.Parameters.AddWithValue("@InwardQty", txtinwardqantity.Text);
+            cmd.Parameters.AddWithValue("@Size", txtSize.Text);
+            cmd.Parameters.AddWithValue("@Thickness", txtThickness.Text);
+            cmd.Parameters.AddWithValue("@Width", txtwidth.Text);
             cmd.Parameters.AddWithValue("@Length", txtlength.Text);
-            cmd.Parameters.AddWithValue("@Weight", txtWeight.Text);           
+            cmd.Parameters.AddWithValue("@Weight", txtWeight.Text);
+            cmd.Parameters.AddWithValue("@PerWeight", txtWeights.Text);
         }
         else
         {
@@ -256,6 +300,7 @@ public partial class Store_InwardEntry : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@CustomerName", txtcompanyname.Text);
             cmd.Parameters.AddWithValue("@InwardNo", DBNull.Value);
             cmd.Parameters.AddWithValue("@Weight", txtWeight.Text);
+            cmd.Parameters.AddWithValue("@PerWeight", txtWeights.Text);
         }
 
         cmd.ExecuteNonQuery();
@@ -472,7 +517,7 @@ public partial class Store_InwardEntry : System.Web.UI.Page
 
     protected void txtrowmetarial_TextChanged(object sender, EventArgs e)
     {
-        Getdata();
+        //Getdata();
 
     }
 
@@ -493,26 +538,49 @@ public partial class Store_InwardEntry : System.Web.UI.Page
 
     protected void txtinwardqantity_TextChanged(object sender, EventArgs e)
     {
-        if (txtThickness.Text != "" && txtwidth.Text != "" && txtlength.Text != "" && txtinwardqantity.Text != "")
+        if(txtWeights.Text == "")
         {
-            double thickness = Convert.ToDouble(txtThickness.Text);
-            double width = Convert.ToDouble(txtwidth.Text);
-            double length = Convert.ToDouble(txtlength.Text);
-            double Quantity = Convert.ToDouble(txtinwardqantity.Text);
-
-            // Ensure inputs are non-negative
-            if (thickness <= 0 || width <= 0 || length <= 0)
+            if (txtThickness.Text != "" && txtwidth.Text != "" && txtlength.Text != "" && txtinwardqantity.Text != "")
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please enter positive values for thickness, width, and length...!!');", true);
+                double thickness = Convert.ToDouble(txtThickness.Text);
+                double width = Convert.ToDouble(txtwidth.Text);
+                double length = Convert.ToDouble(txtlength.Text);
+                double Quantity = Convert.ToDouble(txtinwardqantity.Text);
 
+                // Ensure inputs are non-negative
+                if (thickness <= 0 || width <= 0 || length <= 0)
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please enter positive values for thickness, width, and length...!!');", true);
+
+                }
+
+                // Calculate weight in kilograms
+                double weight = length / 1000 * width / 1000 * thickness * 7.85;
+                double totalweight = weight * Quantity;
+                // Display the calculated weight
+                txtWeight.Text = totalweight.ToString();
+            }
+        }
+        else
+        {
+            if ( txtWeights.Text != "" && txtinwardqantity.Text != "")
+            {
+               
+                double PerWeight = Convert.ToDouble(txtWeights.Text);
+                double Quantity = Convert.ToDouble(txtinwardqantity.Text);
+
+                // Ensure inputs are non-negative
+                if (PerWeight <= 0 )
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please enter positive values for thickness, width, and length...!!');", true);
+                }
+                double totalweight = PerWeight * Quantity;
+                // Display the calculated weight
+                txtWeight.Text = totalweight.ToString();
             }
 
-            // Calculate weight in kilograms
-            double weight = length / 1000 * width / 1000 * thickness * 7.85;
-            double totalweight = weight * Quantity;
-            // Display the calculated weight
-            txtWeight.Text = totalweight.ToString();
         }
+       
     }
 
 
@@ -553,6 +621,91 @@ public partial class Store_InwardEntry : System.Web.UI.Page
     protected void txtcustomersearch_TextChanged(object sender, EventArgs e)
     {
         FillGrid();
+
+    }
+
+    protected void txtdropEntry_TextChanged(object sender, EventArgs e)
+    {
+        string val = txtdropEntry.SelectedValue;
+        if(val == "1")
+        {
+            txtcompanyname.Enabled = true;
+            txtrowmetarial.Enabled = true;
+            txtSize.Enabled = false;
+            txtSize.Text = "0";
+            txtThickness.Enabled = false;
+            txtThickness.Text = "0";
+            txtwidth.Enabled = false;
+            txtwidth.Text = "0";
+            txtlength.Enabled = false;
+            txtlength.Text = "0";
+            txtinwardqantity.Enabled = true;
+            txtDescription.Enabled = true;
+            btnsavedata.Visible = true;
+
+            Weight.Visible = true;
+            totalqty.Visible = false;
+            
+            txtTotalQty.Text = "";
+            txtWeights.Text = "";
+            txtinwardqantity.Text = "";
+            txtWeight.Text = "";
+            txtrowmetarial.Text = "";
+            hdnid.Value = "";
+
+        }
+        else if(val == "2")
+        {
+            txtcompanyname.Enabled = true;
+            txtrowmetarial.Enabled = true;
+            txtSize.Enabled = true;
+            txtSize.Text = "";
+            txtThickness.Enabled = true;
+            txtThickness.Text = "";
+            txtwidth.Enabled = true;
+            txtwidth.Text = "";
+            txtlength.Enabled = true;
+            txtlength.Text = "";
+            txtinwardqantity.Enabled = true;
+            txtDescription.Enabled = true;
+            btnsavedata.Visible = true;
+
+            Weight.Visible = false;
+            totalqty.Visible = true;
+
+            txtTotalQty.Text = "";
+            txtinwardqantity.Text = "";
+            txtWeight.Text = "";
+            txtrowmetarial.Text = "";
+            hdnid.Value = "";
+        }
+        else
+        {
+            divinwardform.Visible = true;
+            divtabl.Visible = false;
+            txtcompanyname.Enabled = false;
+            txtrowmetarial.Enabled = false;
+            txtSize.Enabled = false;
+            txtThickness.Enabled = false;
+            txtwidth.Enabled = false;
+            txtlength.Enabled = false;
+            txtinwardqantity.Enabled = false;
+            txtDescription.Enabled = false;
+            btnsavedata.Visible = false;
+            Weight.Visible = false;
+            totalqty.Visible = true;
+
+            txtrowmetarial.Text = "";
+            txtTotalQty.Text = "";
+            txtWeights.Text = "";
+            txtSize.Text = "";
+            txtThickness.Text = "";
+            txtwidth.Text = "";
+            txtinwardqantity.Text = "";
+            txtWeight.Text = "";
+            txtlength.Text = "";
+            hdnid.Value = "";
+        }
 
     }
 }
