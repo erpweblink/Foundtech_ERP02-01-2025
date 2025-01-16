@@ -242,6 +242,7 @@
                                     </div>--%>
                                 </div>
                                 <hr />
+
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div style="margin-top: 14px;">

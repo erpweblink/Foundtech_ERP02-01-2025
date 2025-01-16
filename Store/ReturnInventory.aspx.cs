@@ -61,6 +61,7 @@ public partial class Store_ReturnInventory : System.Web.UI.Page
             txtwidth.Text = dt.Rows[0]["Width"].ToString();
             txtlength.Text = dt.Rows[0]["Length"].ToString();
             txtTotalQty.Text = dt.Rows[0]["APPQuantity"].ToString();
+            
             txtinwardqantity.Text = dt.Rows[0]["APPQuantity"].ToString();
 
         }

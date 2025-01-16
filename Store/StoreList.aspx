@@ -11,6 +11,7 @@
             swal("Success", msg, {
                 icon: "success",
                 buttons: {
+
                     confirm: {
                         className: "btn btn-success",
                         TimeRanges: "5000",

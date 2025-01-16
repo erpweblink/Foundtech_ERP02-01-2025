@@ -536,6 +536,7 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         Cls_Main.Conn_Close();
         Cls_Main.Conn_Dispose();
 
+
         GetRequestdata(hdnJobid.Value);
         //string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
         //string url = "ProdListPerProjCode.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue;
