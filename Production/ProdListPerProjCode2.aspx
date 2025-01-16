@@ -280,7 +280,6 @@
         }
 
         .container {
-
             background-color: white;
             color: black;
             border-radius: 20px;
