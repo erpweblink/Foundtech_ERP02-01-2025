@@ -683,11 +683,6 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         Response.Redirect(pageName + ".aspx");
     }
 
-
-        
-        
-   
-
     protected void txtdropdown_TextChanged(object sender, EventArgs e)
     {
         string val = txtdropdown.SelectedValue;
