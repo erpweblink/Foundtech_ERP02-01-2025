@@ -401,7 +401,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                         cmd.Parameters.AddWithValue("@Action", "Save");
-                       cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
                         Cls_Main.Conn_Dispose();
 
@@ -480,7 +480,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             cmdd.Parameters.AddWithValue("@lblTotWeight", lblTotWeight);
                             cmdd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
                             cmdd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
-                           cmdd.ExecuteNonQuery();
+                            cmdd.ExecuteNonQuery();
                             Cls_Main.Conn_Close();
                         }
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Order Acceptance Save Successfully..!!');window.location='OAList.aspx'; ", true);
@@ -559,7 +559,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                         cmd.Parameters.AddWithValue("@Action", "Update");
-                      //  cmd.ExecuteNonQuery();
+                        //  cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
 
 
@@ -659,7 +659,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             {
                                 string idValue = dr["id"].ToString();
                                 string productValue = dr["ProductName"].ToString();
-                                DataTable Dt2 = Cls_Main.Read_Table("SELECT * FROM [tbl_SubProducts] WHERE Pono='" + idValue + "' AND ProductName = '"+ productValue +"'");
+                                DataTable Dt2 = Cls_Main.Read_Table("SELECT * FROM [tbl_SubProducts] WHERE Pono='" + idValue + "' AND ProductName = '" + productValue + "'");
                                 if (Dt2.Rows.Count > 0)
                                 {
                                     string SubProductName = Dt2.Rows[0]["ProductName"].ToString();
@@ -668,18 +668,18 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                                     {
                                         string newId = Dt3.Rows[0]["Id"].ToString();
                                         string Name = Dt3.Rows[0]["ProductName"].ToString();
-                                        if(SubProductName == Name)
+                                        if (SubProductName == Name)
                                         {
                                             con.Open();
-                                            SqlCommand smd = new SqlCommand("UPDATE [tbl_SubProducts] SET pono = '" + newId + "' where ProductName = '" + Name + "' ",con);
-                                           smd.ExecuteNonQuery();
+                                            SqlCommand smd = new SqlCommand("UPDATE [tbl_SubProducts] SET pono = '" + newId + "' where ProductName = '" + Name + "' ", con);
+                                            smd.ExecuteNonQuery();
                                             con.Close();
                                         }
                                     }
 
                                 }
                             }
-                           
+
 
                             // End code
                             Cls_Main.Conn_Close();
@@ -1325,6 +1325,13 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                 int Count = 1;
                 for (int row = 2; row <= rowCount; row++)
                 {
+                    if (worksheet.Cells[row, 2].Text == "" && worksheet.Cells[row, 3].Text == ""
+                      && worksheet.Cells[row, 4].Text == "" && worksheet.Cells[row, 5].Text == ""
+                      && worksheet.Cells[row, 6].Text == "" && worksheet.Cells[row, 7].Text == "")
+                    {
+                        break;
+                    }
+
                     DataRow dataRow = Dt.NewRow();
                     dataRow["id"] = Count;
                     dataRow["Productname"] = worksheet.Cells[row, 2].Text;
