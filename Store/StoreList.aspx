@@ -4,7 +4,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 
     <link href="../Content1/css/styles.css" rel="stylesheet" />
-    
+
     <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
     <script>     
         function SuccessResult(msg) {
@@ -34,7 +34,7 @@
                 window.location.href = "StoreList.aspx";
             });
         };
-    </script> 
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         .spncls {
@@ -298,6 +298,11 @@
                                                         <asp:Label ID="NeedQty" runat="server" Text='<%#Eval("NeedQty")%>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Weight">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="PerWeight" runat="server" Text='<%#Eval("PerWeight")%>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Need Weight">
                                                     <ItemTemplate>
                                                         <asp:Label ID="Weight" runat="server" Text='<%#Eval("Weight")%>'></asp:Label>
@@ -355,7 +360,7 @@
                                                             <asp:Label ID="Label1" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Stock/RM:</asp:Label>
                                                             <asp:TextBox ID="txtRMC" CssClass="form-control" placeholder="Search Stock/RM" ReadOnly="true" runat="server" Width="100%"></asp:TextBox>
                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ValidationGroup="1" ErrorMessage="Please Enter Stock/RM" ControlToValidate="txtRMC" ForeColor="Red"></asp:RequiredFieldValidator>
-                                                     
+
                                                         </div>
                                                         <div class="col-md-6 col-12 mb-3">
                                                             <asp:Label ID="Label6" runat="server" Font-Bold="true" CssClass="form-label">Available Quantity:</asp:Label>
@@ -364,7 +369,7 @@
 
                                                         <div class="col-md-6 col-12 mb-3">
                                                             <asp:Label ID="Label16" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Approve Quantity:</asp:Label>
-                                                            <asp:TextBox ID="txtApprovQuantity" CssClass="form-control" runat="server" AutoPostBack="true" OnTextChanged="txtneedqty_TextChanged" Placeholder="Enter Quantity"></asp:TextBox>
+                                                            <asp:TextBox ID="txtApprovQuantity" CssClass="form-control" runat="server" Placeholder="Enter Quantity"></asp:TextBox>
                                                         </div>
                                                         <div class="col-md-6 col-12 mb-3">
                                                             <asp:Label ID="Label15" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Thickness:</asp:Label>
@@ -383,12 +388,17 @@
 
                                                             <asp:TextBox ID="txtlength" CssClass="form-control" placeholder="Length" AutoPostBack="true" OnTextChanged="txtlength_TextChanged" TextMode="Number" runat="server"></asp:TextBox>
                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator8" runat="server" ValidationGroup="1" ErrorMessage="Please Enter length" ControlToValidate="txtlength" ForeColor="Red"></asp:RequiredFieldValidator>
-                                                        </div>                               
+                                                        </div>
+                                                        <div class="col-md-6 col-12 mb-3" id="PerWeightVi" runat="server" visible="false">
+                                                            <asp:Label ID="Label19" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Weight:</asp:Label>
+                                                            <asp:TextBox ID="txtPerWeight" CssClass="form-control" placeholder="Weight" AutoPostBack="true"  OnTextChanged="txtneedqty_TextChanged" TextMode="Number" runat="server"></asp:TextBox>
+                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator10" runat="server" ValidationGroup="1" ErrorMessage="Please Enter length" ControlToValidate="txtlength" ForeColor="Red"></asp:RequiredFieldValidator>
+                                                        </div>
 
                                                         <div class="col-md-6 col-12 mb-3">
-                                                            <asp:Label ID="Label13" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Weight:</asp:Label>
+                                                            <asp:Label ID="Label13" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Total Weight:</asp:Label>
 
-                                                            <asp:TextBox ID="Txtweight" CssClass="form-control" placeholder="Weight" TextMode="Number" runat="server"></asp:TextBox>
+                                                            <asp:TextBox ID="Txtweight" CssClass="form-control" placeholder="Total Weight" TextMode="Number" runat="server"></asp:TextBox>
                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ValidationGroup="1" ErrorMessage="Please Enter Weight" ControlToValidate="Txtweight" ForeColor="Red"></asp:RequiredFieldValidator>
                                                         </div>
                                                         <div class="col-md-12" runat="server" id="dvbuttion">

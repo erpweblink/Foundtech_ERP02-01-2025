@@ -176,6 +176,28 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             string fileName = Path.GetFileName(e.CommandArgument.ToString());
             Response.Redirect("~/PDF_Files/" + fileName);
         }
+        if(e.CommandName == "RowClose")
+        {
+            SqlCommand Cmd = new SqlCommand("DELETE [tbl_OrderAcceptanceHdr] WHERE pono=@ID", Cls_Main.Conn);
+            Cmd.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
+            Cmd.ExecuteNonQuery();
+
+            SqlCommand Cmd1 = new SqlCommand("DELETE [tbl_OrderAcceptancedtls] WHERE pono=@ID", Cls_Main.Conn);
+            Cmd1.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
+            Cmd1.ExecuteNonQuery();
+
+            SqlCommand Cmd2 = new SqlCommand("DELETE [tbl_ProductionHDR] WHERE oanumber=@ID", Cls_Main.Conn);
+            Cmd2.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
+            Cmd2.ExecuteNonQuery();
+
+           SqlCommand Cmd3 = new SqlCommand("DELETE [tbl_ProductionDtls] WHERE oanumber=@ID", Cls_Main.Conn);
+            Cmd3.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
+            Cmd3.ExecuteNonQuery();
+
+          
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Order Closed Successfully..!!')", true);
+            FillGrid();
+        }
     }
 
     protected void GVPurchase_PageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -191,6 +213,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
         {
             LinkButton btnEdit = e.Row.FindControl("btnEdit") as LinkButton;
             LinkButton btnDelete = e.Row.FindControl("btnDelete") as LinkButton;
+            LinkButton btnClose = e.Row.FindControl("btnCancel") as LinkButton;
 
             Label JobNo = e.Row.FindControl("Pono") as Label;
 
@@ -224,12 +247,16 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                 }
 
             }
+            DataTable Dtas = new DataTable();
+            SqlDataAdapter Sda = new SqlDataAdapter("Select * from tbl_ProductionDtls where Oanumber='" + JobNo.Text + "'", con);
+            Sda.Fill(Dtas);
+            if (Dtas.Rows.Count > 0)
+            {
+                btnClose.Visible = true;
+            }
 
 
-
-
-
-            string empcode = Session["UserCode"].ToString();
+                string empcode = Session["UserCode"].ToString();
             DataTable Dt = new DataTable();
             SqlDataAdapter Sd = new SqlDataAdapter("Select ID from tbl_UserMaster where UserCode='" + empcode + "'", con);
             Sd.Fill(Dt);
