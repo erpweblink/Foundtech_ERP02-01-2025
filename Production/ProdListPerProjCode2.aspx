@@ -746,6 +746,7 @@
                     </div>
 
 
+                    <%-- First Pop up --%>
                     <asp:Button ID="btnhist" runat="server" Style="display: none" />
                     <asp:ModalPopupExtender ID="ModalPopupHistory" runat="server" TargetControlID="btnhist"
                         PopupControlID="PopupHistoryDetail" OkControlID="Closepophistory" />
@@ -796,6 +797,11 @@
                                                         <asp:Label ID="Label3" runat="server" Font-Bold="true" CssClass="form-label">Remarks:</asp:Label>
                                                         <asp:TextBox ID="txtRemarks" CssClass="form-control" placeholder="Enter Remark" TextMode="MultiLine" runat="server"></asp:TextBox>
                                                     </div>
+                                                    <div class="col-md-6 col-12 mb-3" id="AttachmentID" runat="server" visible="false">
+                                                        <asp:Label ID="Label19" runat="server" Font-Bold="true" CssClass="form-label">Upload File:</asp:Label>
+                                                        <asp:FileUpload ID="AttachmentUpload" runat="server" CssClass="form-control" />
+                                                        <asp:Label ID="lblfile1" runat="server" Font-Bold="true" ForeColor="blue" Text=""></asp:Label>
+                                                    </div>
 
                                                     <div class="col-md-12" style="margin-top: 18px; text-align: center">
                                                         <asp:LinkButton runat="server" ID="btnsendtoback" class="btn btn-warning" OnClick="btnsendtoback_Click" OnClientClick="this.style.display='none';">
@@ -823,7 +829,10 @@
                             <div class="col-md-3"></div>
                         </div>
                     </aspanel>
+                    <%-- End pop up  --%>
 
+
+                    <%-- Second pop Up  --%>
                     <asp:Button ID="Button1" runat="server" Style="display: none" />
                     <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="Button1"
                         PopupControlID="PopupHistoryDetail1" OkControlID="Closepophistory1" />
@@ -843,7 +852,7 @@
                                         <asp:Label ID="lblJobNo" runat="server" Font-Bold="true" Text="Job No : "></asp:Label>
                                         <asp:Label ID="lblJobNumb" runat="server"></asp:Label>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <asp:Label ID="lblProductName" runat="server" Font-Bold="true" Text="Product Name : "></asp:Label>
+                                        <asp:Label ID="lblProductName" runat="server" Font-Bold="true" Text="Product Name : "></asp:Label>
                                         <asp:Label ID="lblProdName" runat="server"></asp:Label>
                                         <br />
                                         <br />
@@ -870,6 +879,7 @@
                         </div>
                     </aspanel>
                     <%-- End second Panel --%>
+
 
                     <%-- Third PopUp --%>
                     <div class="row">

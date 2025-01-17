@@ -369,6 +369,7 @@
                                                             <asp:LinkButton runat="server" ID="btnPdfFile" ToolTip="Show drawings" CausesValidation="false" CommandName="PdfDownload" CommandArgument='<%# Eval("PdfFilePath") %>'><i class="fas fa-folder-open"  style="font-size: 26px;"></i></i></asp:LinkButton>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
+
                                                 </Columns>
                                             </asp:GridView>
                                         </div>

@@ -87,7 +87,6 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
     {
         if (e.CommandName == "Rowwarehouse")
         {
-
             DivWarehouse.Visible = true;
             divtable.Visible = false;
             string rowIndex = e.CommandArgument.ToString();
@@ -154,6 +153,10 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
             else
             {
                 btnsendtoback.Visible = false;
+            }
+            if (Session["Stage"].ToString() == "QUALITY")
+            {
+                AttachmentID.Visible = true;
             }
             this.ModalPopupHistory.Show();
         }
@@ -361,6 +364,45 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         {
             if (txtoutwardqty.Text != null && txtoutwardqty.Text != "" && txtpending.Text != "")
             {
+
+                if (AttachmentUpload.HasFile)
+                {
+                    string fileName = Path.GetFileName(AttachmentUpload.PostedFile.FileName);
+                    byte[] fileContent;
+                    using (Stream fs = AttachmentUpload.PostedFile.InputStream)
+                    {
+                        using (BinaryReader br = new BinaryReader(fs))
+                        {
+                            fileContent = br.ReadBytes((int)fs.Length);
+                        }
+                    }
+
+                    lblfile1.Text = fileName;
+                    string fileExtension = Path.GetExtension(fileName);
+                    string fileBaseName = Path.GetFileNameWithoutExtension(fileName);
+
+                    //string[] pdffilename = lblfile1.Text.Split('.');
+                    //string pdffilename1 = pdffilename[0];
+                    //string filenameExt = pdffilename[1];
+
+                    string filePath = Server.MapPath("~/Drawings/") + fileBaseName + fileExtension;
+
+                    // Save the file to the specified path
+                    System.IO.File.WriteAllBytes(filePath, fileContent);
+
+
+                    con.Open();
+                    SqlCommand cmd = new SqlCommand(" UPDATE tbl_ProductionHDR SET FilePath = @filePath,FileAddedBy = @createdby," +
+                        " FileAddedDate = @createdon WHERE JobNo = @jobNo ", con);
+                    cmd.Parameters.AddWithValue("@jobNo", txtjobno.Text);
+                    cmd.Parameters.AddWithValue("@filePath", fileName);
+                    cmd.Parameters.AddWithValue("@createdby", Session["usercode"].ToString());
+                    cmd.Parameters.AddWithValue("@createdon", DateTime.Now);
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+
+
                 if (Convert.ToDouble(txtpending.Text) + 1 > Convert.ToDouble(txtoutwardqty.Text))
                 {
                     int number = 0;
@@ -387,7 +429,7 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
                     {
                         number = 6;
                     }
-                   
+
                     Cls_Main.Conn_Open();
                     SqlCommand cmd = new SqlCommand("DB_Foundtech.ManageProductionDetails", Cls_Main.Conn);
                     cmd.CommandType = CommandType.StoredProcedure;
@@ -763,13 +805,7 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         }
         else
         {
-            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
-             " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
-             " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'" +
-             " AND PD.Status <> 2 ORDER BY PD.Status DESC ");
-            GVPurchase.DataSource = Dt;
-            GVPurchase.DataBind();
-
+            FillGrid();
         }
     }
     protected void txtdropEntry_TextChanged(object sender, EventArgs e)
