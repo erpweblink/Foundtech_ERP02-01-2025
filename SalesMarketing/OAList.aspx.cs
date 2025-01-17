@@ -178,6 +178,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
         }
         if(e.CommandName == "RowClose")
         {
+            Cls_Main.Conn_Open();
             SqlCommand Cmd = new SqlCommand("DELETE [tbl_OrderAcceptanceHdr] WHERE pono=@ID", Cls_Main.Conn);
             Cmd.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
             Cmd.ExecuteNonQuery();
@@ -194,7 +195,8 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             Cmd3.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
             Cmd3.ExecuteNonQuery();
 
-          
+            Cls_Main.Conn_Close();
+
             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Order Closed Successfully..!!')", true);
             FillGrid();
         }
