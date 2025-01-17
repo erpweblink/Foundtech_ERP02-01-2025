@@ -47,7 +47,7 @@ public partial class Store_ReturnInventory : System.Web.UI.Page
 
         if (dt.Rows.Count > 0)
         {
-            string weights = dt.Rows[0]["PerWeight"].ToString();
+            string weights = dt.Rows[0]["APPPerWeight"].ToString();
             if(weights != "")
             {
                 lblnumber.Text = dt.Rows[0]["RequestNo"].ToString();
@@ -55,30 +55,32 @@ public partial class Store_ReturnInventory : System.Web.UI.Page
                 txtThickness.Text = dt.Rows[0]["Thickness"].ToString();
                 txtThickness.Enabled = false;
                 txtwidth.Text = dt.Rows[0]["Width"].ToString();
-                txtWeight.Enabled = false;
+                txtwidth.Enabled = false;
                 txtlength.Text = dt.Rows[0]["Length"].ToString();
                 txtlength.Enabled = false;
                 totalqty.Visible = false;
                 Weight.Visible = true;
+                txtWeight.Enabled = false;
                 txtTotalQty.Text = dt.Rows[0]["APPQuantity"].ToString();
                 txtinwardqantity.Text = dt.Rows[0]["APPQuantity"].ToString();
-                txtWeights.Text = dt.Rows[0]["PerWeight"].ToString();
+                txtWeights.Text = dt.Rows[0]["APPPerWeight"].ToString();
             }
             else
             {
                 lblnumber.Text = dt.Rows[0]["RequestNo"].ToString();
                 txtrowmetarial.Text = dt.Rows[0]["RowMaterial"].ToString();
                 txtThickness.Text = dt.Rows[0]["Thickness"].ToString();
-                txtThickness.Enabled = false;
+                txtThickness.Enabled = true;
                 txtwidth.Text = dt.Rows[0]["Width"].ToString();
-                txtWeight.Enabled = false;
+                txtwidth.Enabled = true;
                 txtlength.Text = dt.Rows[0]["Length"].ToString();
-                txtlength.Enabled = false;
+                txtlength.Enabled = true;
                 totalqty.Visible = true;
                 Weight.Visible = false;
+                txtWeight.Enabled = false;
                 txtTotalQty.Text = dt.Rows[0]["APPQuantity"].ToString();
                 txtinwardqantity.Text = dt.Rows[0]["APPQuantity"].ToString();
-                txtWeights.Text = dt.Rows[0]["PerWeight"].ToString();
+                txtWeights.Text = dt.Rows[0]["APPPerWeight"].ToString();
             }
 
 
@@ -338,6 +340,7 @@ public partial class Store_ReturnInventory : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@InwardNo", txtInwardno.Text);
             cmd.Parameters.AddWithValue("@Weight", txtWeight.Text);
             cmd.Parameters.AddWithValue("@Number", lblnumber.Text);
+            cmd.Parameters.AddWithValue("@PerWeight", txtWeights.Text);
         }
         else
         {
@@ -350,6 +353,7 @@ public partial class Store_ReturnInventory : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@InwardNo", txtInwardno.Text);
             cmd.Parameters.AddWithValue("@Weight", txtWeight.Text);
             cmd.Parameters.AddWithValue("@Number", lblnumber.Text);
+            cmd.Parameters.AddWithValue("@PerWeight", txtWeights.Text);
         }
 
 
@@ -588,26 +592,46 @@ public partial class Store_ReturnInventory : System.Web.UI.Page
 
     protected void txtinwardqantity_TextChanged(object sender, EventArgs e)
     {
-        if (txtThickness.Text != "" && txtwidth.Text != "" && txtlength.Text != "" && txtinwardqantity.Text != "")
+        if(txtWeights.Text == "")
         {
-            double thickness = Convert.ToDouble(txtThickness.Text);
-            double width = Convert.ToDouble(txtwidth.Text);
-            double length = Convert.ToDouble(txtlength.Text);
+            if (txtThickness.Text != "" && txtwidth.Text != "" && txtlength.Text != "" && txtinwardqantity.Text != "")
+            {
+                double thickness = Convert.ToDouble(txtThickness.Text);
+                double width = Convert.ToDouble(txtwidth.Text);
+                double length = Convert.ToDouble(txtlength.Text);
+                double Quantity = Convert.ToDouble(txtinwardqantity.Text);
+
+                // Ensure inputs are non-negative
+                if (thickness <= 0 || width <= 0 || length <= 0)
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please enter positive values for thickness, width, and length...!!');", true);
+
+                }
+
+                // Calculate weight in kilograms
+                double weight = length / 1000 * width / 1000 * thickness * 7.85;
+                double totalweight = weight * Quantity;
+                // Display the calculated weight
+                txtWeight.Text = totalweight.ToString();
+            }
+        }
+        else
+        {
+            double PerWeight = Convert.ToDouble(txtWeights.Text);
             double Quantity = Convert.ToDouble(txtinwardqantity.Text);
 
             // Ensure inputs are non-negative
-            if (thickness <= 0 || width <= 0 || length <= 0)
+            if (PerWeight <= 0 )
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please enter positive values for thickness, width, and length...!!');", true);
 
             }
-
-            // Calculate weight in kilograms
-            double weight = length / 1000 * width / 1000 * thickness * 7.85;
-            double totalweight = weight * Quantity;
+            double totalweight = PerWeight * Quantity;
             // Display the calculated weight
             txtWeight.Text = totalweight.ToString();
+
         }
+       
     }
 }
 

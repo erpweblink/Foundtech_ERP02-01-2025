@@ -403,6 +403,19 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
                     Cls_Main.Conn_Close();
                     Cls_Main.Conn_Dispose();
 
+                    DataTable Dt = Cls_Main.Read_Table("SELECT Status FROM tbl_ProductionDtls where JobNo ='" + txtjobno.Text + "' AND StageNumber = 6 ");
+
+                    if (Dt.Rows.Count > 0)
+                    {
+                        int statusval = Convert.ToInt32(Dt.Rows[0]["Status"]);
+
+                        if (statusval == 2)
+                        {
+                            DataTable Dts = Cls_Main.Read_Table("Update tbl_ProductionHdr Set CompletedQTY = 1 where JobNo ='" + txtjobno.Text + "'");
+                        }
+                    }
+
+
                     string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
                     string url = "ProdListPerProjCode2.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue;
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send to the Next..!!', '" + url + "');", true);

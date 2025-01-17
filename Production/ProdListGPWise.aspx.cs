@@ -34,7 +34,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
     //Fill GridView
     private void FillGrid()
     {
-        DataTable Dts = Cls_Main.Read_Table(" SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
+        DataTable Dts = Cls_Main.Read_Table("SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum, " +
             " MAX(CAST(Stage AS INT)) AS MaxStage FROM tbl_ProductionHDR GROUP BY ProjectCode, CustomerName,  ProjectName " +
             " ORDER BY ProjectCode desc; ");

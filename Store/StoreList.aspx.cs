@@ -48,7 +48,38 @@ public partial class Store_StoreList : System.Web.UI.Page
             string Length = ((Label)row.FindControl("Length")).Text;
             string Weight = ((Label)row.FindControl("Weight")).Text;
             string NeedQty = ((Label)row.FindControl("NeedQty")).Text;
-            GetAvailableDetals(RowMaterial, Thickness, Width, Length, NeedQty, Weight);
+            string PerWeight = ((Label)row.FindControl("PerWeight")).Text;
+            GetAvailableDetals(RowMaterial, Thickness, Width, Length, NeedQty, Weight,PerWeight);
+
+            if(PerWeight != "")
+            {
+                PerWeightVi.Visible = true;
+                txtThickness.Enabled = false;
+                txtThickness.Text = "0";
+                txtwidth.Enabled = false;
+                txtwidth.Text = "0";
+                txtlength.Enabled = false;
+                txtlength.Text = "0";
+                Txtweight.Enabled = false;
+                txtPerWeight.Text = "";
+                txtApprovQuantity.Text = "";
+                Txtweight.Text = "";
+            }
+            else
+            {
+                PerWeightVi.Visible = false;
+                txtPerWeight.Text = "0";
+                txtThickness.Enabled = true;
+                txtThickness.Text = "";
+                txtwidth.Enabled = true;
+                txtwidth.Text = "";
+                txtlength.Enabled = true;
+                txtlength.Text = "";
+                txtApprovQuantity.Text = "";
+                Txtweight.Text = "";
+                Txtweight.Enabled = false;
+            }
+
             HDnInward.Value = Convert.ToString(inwardNo);
             HddnID.Value = Convert.ToString(ID);
             this.ModalPopupHistory.Show();
@@ -116,7 +147,7 @@ public partial class Store_StoreList : System.Web.UI.Page
 
     }
 
-    public void GetAvailableDetals(string RowMaterial, string Thickness, string Width, string Length, string NeedQty, string Weight)
+    public void GetAvailableDetals(string RowMaterial, string Thickness, string Width, string Length, string NeedQty, string Weight, string PerWeight)
     {
         try
         {
@@ -127,6 +158,7 @@ public partial class Store_StoreList : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Thickness", Thickness);
             cmd.Parameters.AddWithValue("@Width", Width);
             cmd.Parameters.AddWithValue("@Length", Length);
+            cmd.Parameters.AddWithValue("@PerWeight", PerWeight);
             SqlDataAdapter sda = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             sda.Fill(dt);
@@ -172,6 +204,7 @@ public partial class Store_StoreList : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Width", txtwidth.Text);
             cmd.Parameters.AddWithValue("@Length", txtlength.Text);
             cmd.Parameters.AddWithValue("@Weight", Txtweight.Text);
+            cmd.Parameters.AddWithValue("@PerWeight", txtPerWeight.Text);
             cmd.Parameters.AddWithValue("@ID", HddnID.Value);
             cmd.ExecuteNonQuery();
             Cls_Main.Conn_Close();
@@ -233,35 +266,55 @@ public partial class Store_StoreList : System.Web.UI.Page
     {
         try
         {
-            DataTable dtpt = Cls_Main.Read_Table("select SUM(CAST(InwardQty AS FLOAT)) AS Quantity from tbl_InwardData WHERE RowMaterial='" + txtRMC.Text.Trim() + "' AND Thickness='" + txtThickness.Text.Trim() + "' AND Width='" + txtwidth.Text.Trim() + "' AND Length='" + txtlength.Text.Trim() + "' AND IsDeleted=0");
-            if (dtpt.Rows.Count > 0)
+            if (txtPerWeight.Text == "0")
             {
-                txtavailableQty.Text = dtpt.Rows[0]["Quantity"] != DBNull.Value ? dtpt.Rows[0]["Quantity"].ToString() : "0";
+                DataTable dtpt = Cls_Main.Read_Table("select SUM(CAST(InwardQty AS FLOAT)) AS Quantity from tbl_InwardData WHERE RowMaterial='" + txtRMC.Text.Trim() + "' AND Thickness='" + txtThickness.Text.Trim() + "' AND Width='" + txtwidth.Text.Trim() + "' AND Length='" + txtlength.Text.Trim() + "' AND IsDeleted=0");
+                if (dtpt.Rows.Count > 0)
+                {
+                    txtavailableQty.Text = dtpt.Rows[0]["Quantity"] != DBNull.Value ? dtpt.Rows[0]["Quantity"].ToString() : "0";
 
+                }
+                else
+                {
+
+                }
+                if (txtThickness.Text != "" && txtwidth.Text != "" && txtlength.Text != "")
+                {
+                    double thickness = Convert.ToDouble(txtThickness.Text);
+                    double width = Convert.ToDouble(txtwidth.Text);
+                    double length = Convert.ToDouble(txtlength.Text);
+                    double Quantity = string.IsNullOrEmpty(txtApprovQuantity.Text) ? 0 : Convert.ToDouble(txtApprovQuantity.Text);
+
+                    // Ensure inputs are non-negative
+                    if (thickness <= 0 || width <= 0 || length <= 0)
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please enter positive values for thickness, width, and length...!!');", true);
+
+                    }
+
+                    // Calculate weight in kilograms
+                    double weight = length / 1000 * width / 1000 * thickness * 7.85;
+                    double totalweight = weight * Quantity;
+                    // Display the calculated weight
+                    Txtweight.Text = totalweight.ToString();
+                }
             }
             else
             {
-
-            }
-            if (txtThickness.Text != "" && txtwidth.Text != "" && txtlength.Text != "")
-            {
-                double thickness = Convert.ToDouble(txtThickness.Text);
-                double width = Convert.ToDouble(txtwidth.Text);
-                double length = Convert.ToDouble(txtlength.Text);
+              
+                double PerWeight = Convert.ToDouble(txtPerWeight.Text);
                 double Quantity = string.IsNullOrEmpty(txtApprovQuantity.Text) ? 0 : Convert.ToDouble(txtApprovQuantity.Text);
 
                 // Ensure inputs are non-negative
-                if (thickness <= 0 || width <= 0 || length <= 0)
+                if (PerWeight <= 0)
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "DeleteResult('Please enter positive values for thickness, width, and length...!!');", true);
 
                 }
-
-                // Calculate weight in kilograms
-                double weight = length / 1000 * width / 1000 * thickness * 7.85;
-                double totalweight = weight * Quantity;
+                double totalweight = PerWeight * Quantity;
                 // Display the calculated weight
                 Txtweight.Text = totalweight.ToString();
+
             }
             this.ModalPopupHistory.Show();
         }
