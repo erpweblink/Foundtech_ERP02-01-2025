@@ -42,7 +42,7 @@ public partial class Production_Bending : System.Web.UI.Page
           " FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo=PD.JobNo " +
           " INNER JOIN tbl_orderacceptancehdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Bending' and PD.Status < 2 " +
           " GROUP BY  PD.ProjectCode, PD.ProjectName, PH.CustomerName, OH.PdfFilePath, PH.OANumber " +
-          " ORDER BY CAST(SUBSTRING(OANumber, CHARINDEX('-', OANumber) + 1, LEN(OANumber)) AS INT) DESC ");
+          " ORDER BY CAST(SUBSTRING(PH.OANumber, CHARINDEX('-', PH.OANumber) + 1, LEN(PH.OANumber)) AS INT) DESC ");
         MainGridLoad.DataSource = Dt;
         MainGridLoad.DataBind();
     }
