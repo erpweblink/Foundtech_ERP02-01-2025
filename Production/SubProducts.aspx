@@ -555,6 +555,7 @@
                         <div class="row">
                             <asp:HiddenField runat="server" ID="hideJobNo" />
                             <asp:HiddenField runat="server" ID="hideProdName" />
+                            <asp:HiddenField runat="server" ID="hideProdDiscr" />
                             <br />
                             <%--<div class="table-responsive text-center">--%>
                             <div class="table table-responsive">

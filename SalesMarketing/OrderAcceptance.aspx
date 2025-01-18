@@ -555,7 +555,7 @@
                                                                     <%--<asp:LinkButton ID="btn_edit" runat="server" Height="27px" CausesValidation="false" CommandName="RowEdit" CommandArgument='<%#Eval("ID")%>'><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>--%>
 
                                                                     <asp:LinkButton ID="btn_edit" CausesValidation="false" Text="Edit" runat="server" CommandName="Edit"><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>&nbsp;
-                                                                 <asp:LinkButton ID="gv_AddSubProd" Text="Add" CausesValidation="false" CommandName="AddNew" runat="server" Visible="false" CommandArgument='<%# Eval("Id") + "," + Eval("ProductName") %>'><i class='fa fa-plus-circle' style='font-size:24px;color: #212529;'></i></asp:LinkButton>&nbsp;
+                                                                 <asp:LinkButton ID="gv_AddSubProd" Text="Add" CausesValidation="false" CommandName="AddNew" runat="server" Visible="false" CommandArgument='<%# Eval("Id") + "," + Eval("ProductName") + "," + Eval("Description") %>'><i class='fa fa-plus-circle' style='font-size:24px;color: #212529;'></i></asp:LinkButton>&nbsp;
                                                                 <asp:LinkButton runat="server" ID="lnkbtnDelete" OnClick="lnkbtnDelete_Click" ToolTip="Delete" OnClientClick="Javascript:return confirm('Are you sure to Delete?')" CausesValidation="false"><i class="fa fa-trash" style="font-size:24px"></i></asp:LinkButton>
                                                                 </ItemTemplate>
                                                                 <EditItemTemplate>
@@ -617,14 +617,19 @@
                                     <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding - left: 1px;">
                                         <br />
                                         <div class="row">
-                                            <div class="col-md-6 d-none">
+                                            <div class="col-md-4 d-none">
                                                 <asp:Label ID="Label14" runat="server" Font-Bold="true" CssClass="form-label">PONO :</asp:Label>
                                                 <asp:TextBox ID="txtPonoProd" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <asp:Label ID="Label13" runat="server" Font-Bold="true" CssClass="form-label">Product Name:</asp:Label>
                                                 <asp:TextBox ID="txtProductname" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
                                             </div>
+                                            <div class="col-md-4" >
+                                                <asp:Label ID="lblDiscr" runat="server" Font-Bold="true" CssClass="form-label">Product Discription:</asp:Label>
+                                                 <asp:TextBox ID="txtdiscr" CssClass="form-control" ReadOnly="true" runat="server" ></asp:TextBox>
+                                            </div>
+
                                         </div>
                                         <br />
                                         <br />

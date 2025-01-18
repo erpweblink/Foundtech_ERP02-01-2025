@@ -37,7 +37,7 @@ public partial class Production_Fabrication : System.Web.UI.Page
     private void FillGrid()
     {
 
-        DataTable Dt = Cls_Main.Read_Table("SELECT OH.PdfFilePath, PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, PH.OANumber,, " +
+        DataTable Dt = Cls_Main.Read_Table("SELECT OH.PdfFilePath, PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, PH.OANumber, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY,SUM(CAST(OutwardQty AS INT)) AS OutwardQty " +
             " FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo=PD.JobNo " +
             " INNER JOIN tbl_orderacceptancehdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Fabrication' and PD.Status < 2 " +

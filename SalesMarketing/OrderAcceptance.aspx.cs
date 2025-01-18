@@ -563,7 +563,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         Cls_Main.Conn_Close();
 
 
-                        DataTable Dt = Cls_Main.Read_Table("SELECT Id,Pono,Productname FROM [tbl_OrderAcceptancedtls] WHERE Pono='" + txtpono.Text + "'");
+                        DataTable Dt = Cls_Main.Read_Table("SELECT Id,Pono,Productname,Description FROM [tbl_OrderAcceptancedtls] WHERE Pono='" + txtpono.Text + "'");
                         if (Dt.Rows.Count > 0)
                         {
                             ViewState["OrderAcceptanceData"] = Dt;
@@ -659,19 +659,24 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             {
                                 string idValue = dr["id"].ToString();
                                 string productValue = dr["ProductName"].ToString();
-                                DataTable Dt2 = Cls_Main.Read_Table("SELECT * FROM [tbl_SubProducts] WHERE Pono='" + idValue + "' AND ProductName = '" + productValue + "'");
+                                string productDescr = dr["Description"].ToString();
+
+                                DataTable Dt2 = Cls_Main.Read_Table("SELECT * FROM [tbl_SubProducts] WHERE Pono='" + idValue + "' AND ProductName = '" + productValue + "' AND discr = '"+ productDescr + "' ");  //AND  rmoved by Nikhil 
                                 if (Dt2.Rows.Count > 0)
                                 {
-                                    string SubProductName = Dt2.Rows[0]["ProductName"].ToString();
+                                    string ProductName = Dt2.Rows[0]["ProductName"].ToString();
+                                    string ProductDiscr = Dt2.Rows[0]["discr"].ToString();
                                     DataTable Dt3 = Cls_Main.Read_Table("select * from tbl_OrderAcceptanceDtls where id = (select max(id) from tbl_OrderAcceptanceDtls)");
                                     if (Dt3.Rows.Count > 0)
                                     {
                                         string newId = Dt3.Rows[0]["Id"].ToString();
                                         string Name = Dt3.Rows[0]["ProductName"].ToString();
-                                        if (SubProductName == Name)
+                                        string disc = Dt3.Rows[0]["Description"].ToString();
+
+                                        if (ProductName == Name && ProductDiscr == disc)
                                         {
                                             con.Open();
-                                            SqlCommand smd = new SqlCommand("UPDATE [tbl_SubProducts] SET pono = '" + newId + "' where ProductName = '" + Name + "' ", con);
+                                            SqlCommand smd = new SqlCommand("UPDATE [tbl_SubProducts] SET pono = '" + newId + "' where Pono = '"+ idValue + "' AND ProductName = '" + Name + "' AND discr = '"+disc+"' ", con);  // Removed by Nikhil 
                                             smd.ExecuteNonQuery();
                                             con.Close();
                                         }
@@ -679,8 +684,6 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
                                 }
                             }
-
-
                             // End code
                             Cls_Main.Conn_Close();
                         }
@@ -1386,8 +1389,11 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
             string pono = val[0];
             string productName = val[1];
+            string DiscName = val[2];
             txtPonoProd.Text = pono;
             txtProductname.Text = productName;
+            txtdiscr.Text = DiscName;
+
             this.ModalPopupHistory.Show();
         }
     }
@@ -1418,10 +1424,10 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                 for (int row = 2; row <= rowCount; row++)
                 {
                     con.Open();
-                    SqlCommand cmd = new SqlCommand("INSERT INTO tbl_SubProducts (Pono,ProductName,SubProductName,Description,Quantity,Weight" +
-                        ",TotalWeight,Length) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + worksheet.Cells[row, 2].Text + "'," +
+                    SqlCommand cmd = new SqlCommand("INSERT INTO tbl_SubProducts (Pono,ProductName,SubProductName,Description,Quantity,Weight " +
+                        ",TotalWeight,Length,discr) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + worksheet.Cells[row, 2].Text + "'," +
                         "'" + worksheet.Cells[row, 3].Text + "','" + worksheet.Cells[row, 4].Text + "','" + worksheet.Cells[row, 5].Text + "'," +
-                        "'" + worksheet.Cells[row, 6].Text + "','" + worksheet.Cells[row, 7].Text + "')", con);
+                        "'" + worksheet.Cells[row, 6].Text + "','" + worksheet.Cells[row, 7].Text + "', '"+ txtdiscr.Text +"' )", con);
                     cmd.ExecuteNonQuery();
                     con.Close();
 
@@ -1460,10 +1466,10 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         if (TextBox1.Text != "")
         {
             con.Open();
-            SqlCommand cmd = new SqlCommand("INSERT INTO tbl_SubProducts (Pono,ProductName,SubProductName,Description,Quantity,Weight" +
-                ",TotalWeight,Length) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + TextBox1.Text + "'," +
+            SqlCommand cmd = new SqlCommand("INSERT INTO tbl_SubProducts (Pono,ProductName,SubProductName,Description,Quantity,Weight " +
+                ",TotalWeight,Length,discr) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + TextBox1.Text + "'," +
                 "'" + TextBox2.Text + "','" + TextBox3.Text + "','" + TextBox5.Text + "'," +
-                "'" + TextBox6.Text + "','" + TextBox4.Text + "')", con);
+                "'" + TextBox6.Text + "','" + TextBox4.Text + "', '"+txtdiscr.Text+"')", con);
             cmd.ExecuteNonQuery();
             con.Close();
 
