@@ -36,12 +36,12 @@ public partial class Production_Painting : System.Web.UI.Page
     //Fill GridView
     private void FillGrid()
     {
-        DataTable Dt = Cls_Main.Read_Table("SELECT  OH.PdfFilePath, PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+        DataTable Dt = Cls_Main.Read_Table("SELECT  OH.PdfFilePath, PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, PH.OANumber, " +
          "  SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY,SUM(CAST(OutwardQty AS INT)) AS OutwardQty " +
          " FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo=PD.JobNo " +
          " INNER JOIN tbl_orderacceptancehdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Painting' and PD.Status < 2 " +
-         " GROUP BY  PD.ProjectCode, PD.ProjectName, PH.CustomerName, OH.PdfFilePath " +
-         " ORDER BY PD.ProjectCode desc ");
+         " GROUP BY  PD.ProjectCode, PD.ProjectName, PH.CustomerName, OH.PdfFilePath, PH.OANumber " +
+         " ORDER BY CAST(SUBSTRING(PH.OANumber, CHARINDEX('-', PH.OANumber) + 1, LEN(PH.OANumber)) AS INT) DESC ");
         MainGridLoad.DataSource = Dt;
         MainGridLoad.DataBind();
     }
