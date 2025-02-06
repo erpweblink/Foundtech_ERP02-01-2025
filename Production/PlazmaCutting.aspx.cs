@@ -42,9 +42,9 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
         DataTable Dt = Cls_Main.Read_Table("SELECT OH.PdfFilePath, PD.ProjectCode, PD.ProjectName, PH.CustomerName,COUNT(*) AS TotalRecords, " +
         " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY,SUM(CAST(OutwardQty AS INT)) AS OutwardQty " +
-        " FROM[tbl_ProductionDTLS] AS PD " +
-        " INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-        " INNER JOIN tbl_orderacceptancehdr AS OH ON OH.ProjectCode = PD.ProjectCode WHERE PD.Stage = 'PlazmaCutting' AND PD.Status < 2 " +
+        " FROM[tbl_NewProductionDTLS] AS PD " +
+        " INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+        " INNER JOIN tbl_NewOrderAcceptanceHdr AS OH ON OH.ProjectCode = PD.ProjectCode WHERE PD.Stage = 'PlazmaCutting' AND PD.Status < 2 " +
         " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName, OH.PdfFilePath " +
         " ORDER BY PD.ProjectCode desc ");
         MainGridLoad.DataSource = Dt;
@@ -375,7 +375,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
     //        {
 
     //            Cls_Main.Conn_Open();
-    //            SqlCommand Cmd2 = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET  RevertQty= @RevertQty WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+    //            SqlCommand Cmd2 = new SqlCommand("UPDATE [tbl_NewProductionDTLS] SET  RevertQty= @RevertQty WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
     //            Cmd2.Parameters.AddWithValue("@StageNumber", 0);
     //            Cmd2.Parameters.AddWithValue("@JobNo", txtjobno.Text);
     //            Cmd2.Parameters.AddWithValue("@RevertQty", txtoutwardqty.Text);
@@ -384,7 +384,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
     //            Double qty = Convert.ToDouble(txtinwardqty.Text) - Convert.ToDouble(txtoutwardqty.Text);
     //            Cls_Main.Conn_Open();
-    //            SqlCommand Cmd = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+    //            SqlCommand Cmd = new SqlCommand("UPDATE [tbl_NewProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
     //            Cmd.Parameters.AddWithValue("@StageNumber", 1);
     //            Cmd.Parameters.AddWithValue("@JobNo", txtjobno.Text);
     //            if (qty == 0)
@@ -405,12 +405,12 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
     //            Cmd.ExecuteNonQuery();
     //            Cls_Main.Conn_Close();
 
-    //            DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_ProductionDTLS AS PD where JobNo='" + txtjobno.Text + "'and StageNumber<1 order by StageNumber desc");
+    //            DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_NewProductionDTLS AS PD where JobNo='" + txtjobno.Text + "'and StageNumber<1 order by StageNumber desc");
     //            if (Dt.Rows.Count > 0)
     //            {
     //                int StageNumber = Convert.ToInt32(Dt.Rows[0]["StageNumber"].ToString());
     //                Cls_Main.Conn_Open();
-    //                SqlCommand Cmd1 = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+    //                SqlCommand Cmd1 = new SqlCommand("UPDATE [tbl_NewProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
     //                Cmd1.Parameters.AddWithValue("@StageNumber", StageNumber);
     //                Cmd1.Parameters.AddWithValue("@JobNo", txtjobno.Text);
     //                Cmd1.Parameters.AddWithValue("@Status", 1);
@@ -440,7 +440,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
     public void GetRemarks()
     {
         Cls_Main.Conn_Open();
-        SqlCommand cmdselect = new SqlCommand("select Remark from  tbl_ProductionDTLS  WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+        SqlCommand cmdselect = new SqlCommand("select Remark from  tbl_NewProductionDTLS  WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
         cmdselect.Parameters.AddWithValue("@StageNumber", 0);
         cmdselect.Parameters.AddWithValue("@JobNo", txtjobno.Text);
         Object Remarks = cmdselect.ExecuteScalar();
@@ -659,8 +659,8 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
                 //if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
                 //{
-                //    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
-                //        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+                //    var data = GetData(string.Format("SELECT * FROM tbl_NewProductionDTLS  AS Pd" +
+                //        " Inner Join tbl_NewOrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
                 //        " WHERE Pd.Stage = 'PlazmaCutting' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
                 //    if (data != null && data.Rows.Count > 0)
                 //    {
@@ -677,7 +677,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
                 if (JobNo != null)
                 {
-                    DataTable Dts = Cls_Main.Read_Table("SELECT PdfFilePath FROM tbl_orderacceptancehdr  where ProjectCode ='" + JobNo.Text + "'");
+                    DataTable Dts = Cls_Main.Read_Table("SELECT PdfFilePath FROM tbl_NewOrderAcceptanceHdr  where ProjectCode ='" + JobNo.Text + "'");
 
                     LinkButton btndrawings = e.Row.FindControl("btnPdfFile") as LinkButton;
 
@@ -761,7 +761,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter("SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
-            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty  FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty  FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
             " Where PD.Stage = 'PlazmaCutting' AND PD.Status < 2 AND PH.CustomerName = '" + company + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
@@ -793,7 +793,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT Distinct(ProjectCode) AS Code FROM [tbl_ProductionHDR] where ProjectCode like @Search +'%' ";
+                com.CommandText = "SELECT Distinct(ProjectCode) AS Code FROM [tbl_NewProductionHDR] where ProjectCode like @Search +'%' ";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -819,7 +819,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
-            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty  FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty  FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
             " Where PD.Stage = 'PlazmaCutting' AND PD.Status < 2 AND PH.ProjectCode = '" + Cpono + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
@@ -846,7 +846,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_ProductionHDR] where ProjectName like @Search +'%' ";
+                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_NewProductionHDR] where ProjectName like @Search +'%' ";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -873,7 +873,7 @@ public partial class Production_PlazmaCutting : System.Web.UI.Page
 
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
-            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
             " Where PD.Stage = 'PlazmaCutting' AND PD.Status < 2 AND PH.ProjectName = '" + GST + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc ", Cls_Main.Conn);

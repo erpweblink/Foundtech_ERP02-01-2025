@@ -41,7 +41,7 @@ public partial class SalesMarketing_Pdf_CustomerPurchase : System.Web.UI.Page
         try
         {
             DataTable Dt = new DataTable();
-            SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CPO INNER JOIN tbl_CompanyMaster AS CM ON CM.Companyname=CPO.CustomerName WHERE Pono='" + PO_NO + "'  ", con);
+            SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CPO INNER JOIN tbl_CompanyMaster AS CM ON CM.Companyname=CPO.CustomerName WHERE Pono='" + PO_NO + "'  ", con);
             Da.Fill(Dt);
 
             StringWriter sw = new StringWriter();
@@ -212,7 +212,7 @@ public partial class SalesMarketing_Pdf_CustomerPurchase : System.Web.UI.Page
 
                 //------------HEADER END-----------------
 
-                SqlDataAdapter Daa = new SqlDataAdapter("SELECT distinct(Productname),[ID],[Pono],[Description],[HSN],[Quantity],[Units],[Rate],[CGSTPer],[CGSTAmt],[SGSTPer],[SGSTAmt],[IGSTPer],[IGSTAmt],[Total],[Discountpercentage],[DiscountAmount],[Alltotal] FROM [tbl_OrderAcceptanceDtls]  WHERE Pono ='" + PO_NO + "'  ", con);
+                SqlDataAdapter Daa = new SqlDataAdapter("SELECT distinct(Productname),[ID],[Pono],[Description],[HSN],[Quantity],[Units],[Rate],[CGSTPer],[CGSTAmt],[SGSTPer],[SGSTAmt],[IGSTPer],[IGSTAmt],[Total],[Discountpercentage],[DiscountAmount],[Alltotal] FROM [tbl_NewOrderAcceptanceDtls]  WHERE Pono ='" + PO_NO + "'  ", con);
                 DataTable Dtt = new DataTable();
                 Daa.Fill(Dtt);
 
@@ -230,7 +230,7 @@ public partial class SalesMarketing_Pdf_CustomerPurchase : System.Web.UI.Page
 
                 if (Dt.Rows.Count > 0)
                 {
-                    SqlDataAdapter Daaa = new SqlDataAdapter("SELECT distinct(Productname) FROM [tbl_OrderAcceptanceDtls]  WHERE Pono ='" + PO_NO + "'  ", con);
+                    SqlDataAdapter Daaa = new SqlDataAdapter("SELECT distinct(Productname) FROM [tbl_NewOrderAcceptanceDtls]  WHERE Pono ='" + PO_NO + "'  ", con);
                     DataTable Dttt = new DataTable();
                     Daaa.Fill(Dttt);
                     table.TotalWidth = 560f;

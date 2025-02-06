@@ -49,13 +49,13 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
     }
     private void showCount()
     {
-        DataTable Dt = Cls_Main.Read_Table("SELECT Count(*) AS Count FROM [tbl_ProductionHDR] Where ProjectCode = '" + Session["ProjectCode"].ToString() + "'");
+        DataTable Dt = Cls_Main.Read_Table("SELECT Count(*) AS Count FROM [tbl_NewProductionHDR] Where ProjectCode = '" + Session["ProjectCode"].ToString() + "'");
         if (Dt.Rows.Count > 0)
         {
             lblCount.Text = Dt.Rows[0]["Count"].ToString();
         }
 
-        DataTable Dts = Cls_Main.Read_Table("SELECT CustomerName,ProjectName FROM [tbl_ProductionHDR] Where ProjectCode = '" + Session["ProjectCode"].ToString() + "'");
+        DataTable Dts = Cls_Main.Read_Table("SELECT CustomerName,ProjectName FROM [tbl_NewProductionHDR] Where ProjectCode = '" + Session["ProjectCode"].ToString() + "'");
         if (Dts.Rows.Count > 0)
         {
             txtProjectCode.Text = Session["ProjectCode"].ToString();
@@ -69,16 +69,16 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
         lblPageName.Text = Session["Stage"].ToString();
         if (DropDownList1.SelectedValue != "ALL")
         {
-            DataTable Dt = Cls_Main.Read_Table("SELECT TOP " + DropDownList1.SelectedValue + " * FROM tbl_ProductionDTLS  AS Pd " +
-                " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+            DataTable Dt = Cls_Main.Read_Table("SELECT TOP " + DropDownList1.SelectedValue + " * FROM tbl_NewProductionDTLS  AS Pd " +
+                " Inner Join tbl_NewOrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
                 " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
         }
         else
         {
-            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
-                " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_NewProductionDTLS  AS Pd" +
+                " Inner Join tbl_NewOrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
                 " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
@@ -307,7 +307,7 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
     {
         try
         {
-            DataTable Dts = Cls_Main.Read_Table("SELECT ProjectCode, Discription, Weight, Length FROM tbl_Productiondtls where JobNo='" + txtjobno.Text.Trim() + "'");
+            DataTable Dts = Cls_Main.Read_Table("SELECT ProjectCode, Discription, Weight, Length FROM tbl_NewProductionDTLS where JobNo='" + txtjobno.Text.Trim() + "'");
 
             if(Dts.Rows.Count >= 0)
             {
@@ -321,7 +321,7 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                 {
                     Length = "0.000";
                 }
-                DataTable Dta = Cls_Main.Read_Table("select JobNo FROM tbl_Productiondtls WHERE ProjectCode = '" + Dts.Rows[0]["ProjectCode"].ToString() + "' " +
+                DataTable Dta = Cls_Main.Read_Table("select JobNo FROM tbl_NewProductionDTLS WHERE ProjectCode = '" + Dts.Rows[0]["ProjectCode"].ToString() + "' " +
                     " AND Discription = '" + Dts.Rows[0]["Discription"].ToString() +"' AND Weight = '"+ Weight +"'" +
                     " AND Length = '" + Length + "' AND Stage = 'Drawing'");
                 if(Dta.Rows.Count > 0)
@@ -422,7 +422,7 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                 }
                
                 Cls_Main.Conn_Open();
-                SqlCommand Cmd = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+                SqlCommand Cmd = new SqlCommand("UPDATE [tbl_NewProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
                 Cmd.Parameters.AddWithValue("@StageNumber", 0);
                 Cmd.Parameters.AddWithValue("@JobNo", txtjobno.Text);
                 Cmd.Parameters.AddWithValue("@InwardQTY", txttotalqty.Text);
@@ -441,13 +441,13 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                 Cmd.ExecuteNonQuery();
                 Cls_Main.Conn_Close();
 
-                DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_ProductionDTLS AS PD where JobNo='" + txtjobno.Text + "'and StageNumber>0 ");
+                DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_NewProductionDTLS AS PD where JobNo='" + txtjobno.Text + "'and StageNumber>0 ");
                 if (Dt.Rows.Count > 0)
                 {
                     int StageNumber = Convert.ToInt32(Dt.Rows[0]["StageNumber"].ToString());
 
                     Cls_Main.Conn_Open();
-                    SqlCommand Cmd1 = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET InwardQTY=@InwardQTY,InwardBy=@InwardBy,InwardDate=@InwardDate,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+                    SqlCommand Cmd1 = new SqlCommand("UPDATE [tbl_NewProductionDTLS] SET InwardQTY=@InwardQTY,InwardBy=@InwardBy,InwardDate=@InwardDate,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
                     Cmd1.Parameters.AddWithValue("@StageNumber", StageNumber);
                     Cmd1.Parameters.AddWithValue("@JobNo", txtjobno.Text);
                     Cmd1.Parameters.AddWithValue("@Status", 1);

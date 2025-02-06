@@ -50,13 +50,13 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
 
     private void showCount()
     {
-        DataTable Dt = Cls_Main.Read_Table("SELECT Count(*) AS Count FROM [tbl_ProductionHDR] Where ProjectCode = '" + hideJobCode.Value + "'");
+        DataTable Dt = Cls_Main.Read_Table("SELECT Count(*) AS Count FROM [tbl_NewProductionHDR] Where ProjectCode = '" + hideJobCode.Value + "'");
         if (Dt.Rows.Count > 0)
         {
             lblCount.Text = Dt.Rows[0]["Count"].ToString();
         }
 
-        DataTable Dts = Cls_Main.Read_Table("SELECT CustomerName,ProjectName FROM [tbl_ProductionHDR] Where ProjectCode = '" + hideJobCode.Value + "'");
+        DataTable Dts = Cls_Main.Read_Table("SELECT CustomerName,ProjectName FROM [tbl_NewProductionHDR] Where ProjectCode = '" + hideJobCode.Value + "'");
         if (Dts.Rows.Count > 0)
         {
             txtProjectCode.Text = hideJobCode.Value.ToString();
@@ -69,13 +69,13 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
         showCount();
         if (DropDownList1.SelectedValue != "ALL")
         {
-            DataTable Dt = Cls_Main.Read_Table("SELECT TOP " + DropDownList1.SelectedValue + " * FROM tbl_ProductionHDR Where ProjectCode = '" + hideJobCode.Value + "'");
+            DataTable Dt = Cls_Main.Read_Table("SELECT TOP " + DropDownList1.SelectedValue + " * FROM tbl_NewProductionHDR Where ProjectCode = '" + hideJobCode.Value + "'");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
         }
         else
         {
-            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_ProductionHDR Where ProjectCode = '" + hideJobCode.Value + "'");
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_NewProductionHDR Where ProjectCode = '" + hideJobCode.Value + "'");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
         }
@@ -124,7 +124,7 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
 
                 if (JobNo != null)
                 {
-                    DataTable Dt = Cls_Main.Read_Table("SELECT FilePath FROM tbl_ProductionHDR  where JobNo ='" + JobNo.Text + "'");
+                    DataTable Dt = Cls_Main.Read_Table("SELECT FilePath FROM tbl_NewProductionHDR  where JobNo ='" + JobNo.Text + "'");
 
                     LinkButton btndrawings = e.Row.FindControl("btndrawings") as LinkButton;
 
@@ -153,7 +153,7 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
 
                 }
                 GridView gvDetails = e.Row.FindControl("gvDetails") as GridView;
-                gvDetails.DataSource = GetData(string.Format("select *,CONVERT(bigint,InwardQTY)-CONVERT(bigint,OutwardQTY) AS Pending from tbl_ProductionDTLS where JobNo='{0}'",JobNo.Text));
+                gvDetails.DataSource = GetData(string.Format("select *,CONVERT(bigint,InwardQTY)-CONVERT(bigint,OutwardQTY) AS Pending from tbl_NewProductionDTLS where JobNo='{0}'",JobNo.Text));
                 gvDetails.DataBind();
             }
         }
@@ -177,7 +177,7 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
         {
             using (SqlCommand cmd = new SqlCommand())
             {
-                string CmdText = "select fileName from tbl_OrderAcceptanceHdr where IsDeleted=0 AND ID='" + id + "'";
+                string CmdText = "select fileName from tbl_NewOrderAcceptanceHdr where IsDeleted=0 AND ID='" + id + "'";
 
                 SqlDataAdapter ad = new SqlDataAdapter(CmdText, con);
                 DataTable dt = new DataTable();
@@ -221,7 +221,7 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT DISTINCT [JobNo] FROM [tbl_ProductionDtls] where JobNo like '%' + @Search + '%' " +
+                com.CommandText = "SELECT DISTINCT [JobNo] FROM [tbl_NewProductionDTLS] where JobNo like '%' + @Search + '%' " +
                     " AND ProjectCode ='" + name + "' ";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
@@ -248,7 +248,7 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
             string company = txtCustomerName.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM tbl_ProductionHDR  WHERE JobNo = '" + company + "' And ProjectCode = '"+hideJobCode.Value+"' ", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM tbl_NewProductionHDR  WHERE JobNo = '" + company + "' And ProjectCode = '"+hideJobCode.Value+"' ", Cls_Main.Conn);
             sad.Fill(dt);
             GVPurchase.EmptyDataText = "Not Records Found";
             GVPurchase.DataSource = dt;
@@ -282,7 +282,7 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT Distinct(ProductName) AS Code FROM [tbl_ProductionHDR] where ProductName like '%' + @Search +'%' " +
+                com.CommandText = "SELECT Distinct(ProductName) AS Code FROM [tbl_NewProductionHDR] where ProductName like '%' + @Search +'%' " +
                     " AND ProjectCode ='" + name + "' ";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
@@ -308,7 +308,7 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
             string Cpono = txtjobno.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM tbl_ProductionHDR  WHERE ProductName = '" + Cpono + "' And ProjectCode = '"+hideJobCode.Value+"' ", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM tbl_NewProductionHDR  WHERE ProductName = '" + Cpono + "' And ProjectCode = '"+hideJobCode.Value+"' ", Cls_Main.Conn);
             sad.Fill(dt);
             GVPurchase.EmptyDataText = "Not Records Found";
             GVPurchase.DataSource = dt;

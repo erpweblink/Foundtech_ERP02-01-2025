@@ -28,7 +28,7 @@ public partial class Production_ProductionListForCust : System.Web.UI.Page
     {
         DataTable Dts = Cls_Main.Read_Table(" SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum, " +
-            " MAX(CAST(Stage AS INT)) AS MaxStage FROM tbl_ProductionHDR WHERE CustomerName = '"+Name+"'" +
+            " MAX(CAST(Stage AS INT)) AS MaxStage FROM tbl_NewProductionHDR WHERE CustomerName = '"+Name+"'" +
             " GROUP BY ProjectCode, CustomerName,  ProjectName " +
             " ORDER BY ProjectCode desc; ");
 
@@ -77,7 +77,7 @@ public partial class Production_ProductionListForCust : System.Web.UI.Page
 
                 if (JobNo != null)
                 {
-                    DataTable Dt = Cls_Main.Read_Table("SELECT FilePath FROM tbl_ProductionHDR  where JobNo ='" + JobNo.Text + "'");
+                    DataTable Dt = Cls_Main.Read_Table("SELECT FilePath FROM tbl_NewProductionHDR  where JobNo ='" + JobNo.Text + "'");
 
                     LinkButton btndrawings = e.Row.FindControl("btndrawings") as LinkButton;
 
@@ -106,7 +106,7 @@ public partial class Production_ProductionListForCust : System.Web.UI.Page
 
 
                 GridView gvDetails = e.Row.FindControl("gvDetails") as GridView;
-                gvDetails.DataSource = GetData(string.Format("select *,CONVERT(bigint,InwardQTY)-CONVERT(bigint,OutwardQTY) AS Pending from tbl_ProductionDTLS where JobNo='{0}'", JobNo.Text));
+                gvDetails.DataSource = GetData(string.Format("select *,CONVERT(bigint,InwardQTY)-CONVERT(bigint,OutwardQTY) AS Pending from tbl_NewProductionDTLS where JobNo='{0}'", JobNo.Text));
                 gvDetails.DataBind();
             }
         }
@@ -139,7 +139,7 @@ public partial class Production_ProductionListForCust : System.Web.UI.Page
         {
             using (SqlCommand cmd = new SqlCommand())
             {
-                string CmdText = "select fileName from tbl_OrderAcceptanceHdr where IsDeleted=0 AND ID='" + id + "'";
+                string CmdText = "select fileName from tbl_NewOrderAcceptanceHdr where IsDeleted=0 AND ID='" + id + "'";
 
                 SqlDataAdapter ad = new SqlDataAdapter(CmdText, con);
                 DataTable dt = new DataTable();
@@ -184,7 +184,7 @@ public partial class Production_ProductionListForCust : System.Web.UI.Page
 
                 if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
                 {
-                    var data = GetData(string.Format("SELECT * FROM tbl_ProductionHDR WHERE ProjectCode='{0}'", ProjectCode.Text));
+                    var data = GetData(string.Format("SELECT * FROM tbl_NewProductionHDR WHERE ProjectCode='{0}'", ProjectCode.Text));
                     if (data != null && data.Rows.Count > 0)
                     {
                         GVPurchase.DataSource = data;

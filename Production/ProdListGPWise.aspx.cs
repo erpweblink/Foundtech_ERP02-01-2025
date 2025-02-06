@@ -36,7 +36,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
     {
         DataTable Dts = Cls_Main.Read_Table("SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum, " +
-            " MAX(CAST(Stage AS INT)) AS MaxStage FROM tbl_ProductionHDR GROUP BY ProjectCode, CustomerName,  ProjectName " +
+            " MAX(CAST(Stage AS INT)) AS MaxStage FROM tbl_NewProductionHDR GROUP BY ProjectCode, CustomerName,  ProjectName " +
             " ORDER BY ProjectCode desc; ");
 
         MainGridLoad.DataSource = Dts;
@@ -82,7 +82,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
                 if (JobNo != null)
                 {
-                    DataTable Dt = Cls_Main.Read_Table("SELECT FilePath FROM tbl_ProductionHDR  where JobNo ='" + JobNo.Text + "'");
+                    DataTable Dt = Cls_Main.Read_Table("SELECT FilePath FROM tbl_NewProductionHDR  where JobNo ='" + JobNo.Text + "'");
 
                     LinkButton btndrawings = e.Row.FindControl("btndrawings") as LinkButton;
 
@@ -111,7 +111,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
 
                 GridView gvDetails = e.Row.FindControl("gvDetails") as GridView;
-                gvDetails.DataSource = GetData(string.Format("select *,CONVERT(bigint,InwardQTY)-CONVERT(bigint,OutwardQTY) AS Pending from tbl_ProductionDTLS where JobNo='{0}'", JobNo.Text));
+                gvDetails.DataSource = GetData(string.Format("select *,CONVERT(bigint,InwardQTY)-CONVERT(bigint,OutwardQTY) AS Pending from tbl_NewProductionDTLS where JobNo='{0}'", JobNo.Text));
                 gvDetails.DataBind();
             }
         }
@@ -176,7 +176,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter("SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
                 " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum " +
-                " FROM tbl_ProductionHDR WHERE  CustomerName='" + txtCustomerName.Text + "' " +
+                " FROM tbl_NewProductionHDR WHERE  CustomerName='" + txtCustomerName.Text + "' " +
                 " GROUP BY ProjectCode, CustomerName,  ProjectName " +
                 " ORDER BY ProjectCode desc; ", Cls_Main.Conn);
             sad.Fill(dt);
@@ -207,7 +207,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT Distinct(ProjectCode) AS Code FROM [tbl_ProductionHDR] where ProjectCode like @Search +'%' ";
+                com.CommandText = "SELECT Distinct(ProjectCode) AS Code FROM [tbl_NewProductionHDR] where ProjectCode like @Search +'%' ";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -234,7 +234,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter("SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
                " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum " +
-               " FROM tbl_ProductionHDR WHERE  ProjectCode='" + Cpono + "' " +
+               " FROM tbl_NewProductionHDR WHERE  ProjectCode='" + Cpono + "' " +
                " GROUP BY ProjectCode, CustomerName,  ProjectName " +
                " ORDER BY ProjectCode desc; ", Cls_Main.Conn);
             sad.Fill(dt);
@@ -260,7 +260,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_ProductionHDR] where ProjectName like @Search +'%' ";
+                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_NewProductionHDR] where ProjectName like @Search +'%' ";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -288,7 +288,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter("SELECT ProjectCode, ProjectName, CustomerName, COUNT(*) AS TotalRecords, " +
                " SUM(CAST(TotalQuantity AS INT)) AS TotalQuantitySum, SUM(CAST(CompletedQTY AS INT)) AS CompletedQuantitySum " +
-               " FROM tbl_ProductionHDR WHERE  ProjectName='" + GST + "' " +
+               " FROM tbl_NewProductionHDR WHERE  ProjectName='" + GST + "' " +
                " GROUP BY ProjectCode, CustomerName,  ProjectName " +
                " ORDER BY ProjectCode desc; ", Cls_Main.Conn);
             sad.Fill(dt);
@@ -311,7 +311,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
         {
             using (SqlCommand cmd = new SqlCommand())
             {
-                string CmdText = "select fileName from tbl_OrderAcceptanceHdr where IsDeleted=0 AND ID='" + id + "'";
+                string CmdText = "select fileName from tbl_NewOrderAcceptanceHdr where IsDeleted=0 AND ID='" + id + "'";
 
                 SqlDataAdapter ad = new SqlDataAdapter(CmdText, con);
                 DataTable dt = new DataTable();
@@ -340,7 +340,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
     protected void btnsave_Click(object sender, EventArgs e)
     {
-        DataTable Dt = Cls_Main.Read_Table("select JobNo AS PID FROM [tbl_ProductionHDR]  WHERE ProjectCode = '" + ViewState["ID"].ToString() + "'");
+        DataTable Dt = Cls_Main.Read_Table("select JobNo AS PID FROM [tbl_NewProductionHDR]  WHERE ProjectCode = '" + ViewState["ID"].ToString() + "'");
         int count = Dt.Rows.Count;
         int StageCount = 0;
         foreach (DataRow row in Dt.Rows)
@@ -383,7 +383,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                 StageCount += 1;
             }
             Cls_Main.Conn_Open();
-            SqlCommand cmd = new SqlCommand("SP_ProductionDept", Cls_Main.Conn);
+            SqlCommand cmd = new SqlCommand("SP_NewProductionDept", Cls_Main.Conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@JobNo", ViewState["JobNo"].ToString());
             cmd.Parameters.AddWithValue("@Createdby", Session["UserCode"].ToString());
@@ -400,7 +400,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
     public void InseartData(string Stage, int num)
     {
         Cls_Main.Conn_Open();
-        SqlCommand cmd = new SqlCommand("SP_ProductionDept", Cls_Main.Conn);
+        SqlCommand cmd = new SqlCommand("SP_NewProductionDept", Cls_Main.Conn);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.Parameters.AddWithValue("@JobNo", ViewState["JobNo"].ToString());
         cmd.Parameters.AddWithValue("@Createdby", Session["UserCode"].ToString());
@@ -439,7 +439,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
 
                 //if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
                 //{
-                //    var data = GetData(string.Format("SELECT * FROM tbl_ProductionHDR WHERE ProjectCode='{0}'", ProjectCode.Text));
+                //    var data = GetData(string.Format("SELECT * FROM tbl_NewProductionHDR WHERE ProjectCode='{0}'", ProjectCode.Text));
                 //    if (data != null && data.Rows.Count > 0)
                 //    {
                 //        GVPurchase.DataSource = data;
@@ -492,7 +492,7 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             {
                 String Usermail = "", SerialNo = "", PoNo = "";
                 string Id = "";
-                SqlDataAdapter ad = new SqlDataAdapter("SELECT TOP 1 *  FROM tbl_OrderAcceptanceHdr WHERE CustomerName ='" + Customer + "'", con);
+                SqlDataAdapter ad = new SqlDataAdapter("SELECT TOP 1 *  FROM tbl_NewOrderAcceptanceHdr WHERE CustomerName ='" + Customer + "'", con);
                 DataTable dt = new DataTable();
                 ad.Fill(dt);
                 if (dt.Rows.Count > 0)
@@ -562,8 +562,6 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
             throw ex;
         }
     }
-
-
 
 
     private string GetEmailTemplate(string user, string link, string PoNo, string SerialNo)

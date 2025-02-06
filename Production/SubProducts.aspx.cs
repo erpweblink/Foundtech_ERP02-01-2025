@@ -1,13 +1,7 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 public partial class Production_SubProducts : System.Web.UI.Page
 {
@@ -42,22 +36,22 @@ public partial class Production_SubProducts : System.Web.UI.Page
     private void FillGrid()
     {
 
-        DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_ProductionHDR Where JobNo = '" + hideJobNo.Value + "' AND ProductName = '" + hideProdName.Value + "'");
+        DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_NewProductionHDR Where JobNo = '" + hideJobNo.Value + "' AND ProductName = '" + hideProdName.Value + "'");
         if (Dt.Rows.Count > 0)
         {
             string oanum = Dt.Rows[0]["OaNumber"].ToString();
-            DataTable Dta = Cls_Main.Read_Table("SELECT * FROM tbl_OrderAcceptanceDtls Where pono = '" + oanum + "' AND ProductName = '" + hideProdName.Value + "'");
+            DataTable Dta = Cls_Main.Read_Table("SELECT * FROM tbl_NewOrderAcceptanceDtls Where pono = '" + oanum + "' AND ProductName = '" + hideProdName.Value + "'");
             if (Dta.Rows.Count > 0)
             {
                 string Id = Dta.Rows[0]["ID"].ToString();
 
-                DataTable Dtas = Cls_Main.Read_Table("SELECT * FROM tbl_SubProducts Where pono = '" + Id + "' AND ProductName = '" + hideProdName.Value + "'");
+                DataTable Dtas = Cls_Main.Read_Table("SELECT * FROM tbl_NewSubProducts Where pono = '" + Id + "' AND ProductName = '" + hideProdName.Value + "'");
                 GVPurchase.DataSource = Dtas;
                 GVPurchase.DataBind();
             }
         }
 
-        DataTable Dts = Cls_Main.Read_Table("SELECT CustomerName,ProjectName,ProductName FROM [tbl_ProductionHDR] Where ProjectCode = '" + Session["ProjectCode"].ToString() + "'");
+        DataTable Dts = Cls_Main.Read_Table("SELECT CustomerName,ProjectName,ProductName FROM [tbl_NewProductionHDR] Where ProjectCode = '" + Session["ProjectCode"].ToString() + "' AND JobNo = '" + hideJobNo.Value + "' AND ProductName = '" + hideProdName.Value + "'");
         if (Dts.Rows.Count > 0)
         {
             txtProjectCode.Text = Session["ProjectCode"].ToString();

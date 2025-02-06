@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.ExtendedProperties;
-using System;
-using System.Activities.Expressions;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -9,9 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
-using System.Windows.Media;
 
 public partial class Production_DrawingDetails : System.Web.UI.Page
 {
@@ -39,8 +35,8 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
         DataTable Dt = Cls_Main.Read_Table("SELECT OH.PdfFilePath, PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY " +
-            " FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-            " INNER JOIN tbl_orderacceptancehdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Drawing' " +
+            " FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " INNER JOIN tbl_NewOrderAcceptanceHdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Drawing' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName, OH.PdfFilePath " +
             " ORDER BY PD.ProjectCode desc ");
         MainGridLoad.DataSource = Dt;
@@ -310,7 +306,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
             Cls_Main.Conn_Close();
 
             Cls_Main.Conn_Open();
-            SqlCommand Cmd = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+            SqlCommand Cmd = new SqlCommand("UPDATE [tbl_NewProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
             Cmd.Parameters.AddWithValue("@StageNumber", 0);
             Cmd.Parameters.AddWithValue("@JobNo", txtjobno.Text);
             Cmd.Parameters.AddWithValue("@InwardQTY", txttotalqty.Text);
@@ -329,13 +325,13 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
             Cmd.ExecuteNonQuery();
             Cls_Main.Conn_Close();
 
-            DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_ProductionDTLS AS PD where JobNo='" + txtjobno.Text + "'and StageNumber>0 ");
+            DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_NewProductionDTLS AS PD where JobNo='" + txtjobno.Text + "'and StageNumber>0 ");
             if (Dt.Rows.Count > 0)
             {
                 int StageNumber = Convert.ToInt32(Dt.Rows[0]["StageNumber"].ToString());
 
                 Cls_Main.Conn_Open();
-                SqlCommand Cmd1 = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET InwardQTY=@InwardQTY,InwardBy=@InwardBy,InwardDate=@InwardDate,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+                SqlCommand Cmd1 = new SqlCommand("UPDATE [tbl_NewProductionDTLS] SET InwardQTY=@InwardQTY,InwardBy=@InwardBy,InwardDate=@InwardDate,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
                 Cmd1.Parameters.AddWithValue("@StageNumber", StageNumber);
                 Cmd1.Parameters.AddWithValue("@JobNo", txtjobno.Text);
                 Cmd1.Parameters.AddWithValue("@Status", 1);
@@ -454,8 +450,8 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
                 //if (ProjectCode != null && !string.IsNullOrEmpty(ProjectCode.Text))
                 //{
-                //    var data = GetData(string.Format("SELECT * FROM tbl_ProductionDTLS  AS Pd" +
-                //        " Inner Join tbl_OrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+                //    var data = GetData(string.Format("SELECT * FROM tbl_NewProductionDTLS  AS Pd" +
+                //        " Inner Join tbl_NewOrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
                 //        " WHERE Pd.Stage = 'Drawing' AND Pd.ProjectCode='{0}'", ProjectCode.Text));
                 //    if (data != null && data.Rows.Count > 0)
                 //    {
@@ -472,7 +468,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
                 if (JobNo != null)
                 {
-                    DataTable Dts = Cls_Main.Read_Table("SELECT PdfFilePath FROM tbl_orderacceptancehdr  where ProjectCode ='" + JobNo.Text + "'");
+                    DataTable Dts = Cls_Main.Read_Table("SELECT PdfFilePath FROM tbl_NewOrderAcceptanceHdr  where ProjectCode ='" + JobNo.Text + "'");
 
                     LinkButton btndrawings = e.Row.FindControl("btnPdfFile") as LinkButton;
 
@@ -556,7 +552,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter("SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
-            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY  FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY  FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
             " Where PD.Stage = 'Drawing' AND PH.CustomerName = '" + company + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
@@ -588,7 +584,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT Distinct(ProjectCode) AS Code FROM [tbl_ProductionHDR] where ProjectCode like @Search +'%' ";
+                com.CommandText = "SELECT Distinct(ProjectCode) AS Code FROM [tbl_NewProductionHDR] where ProjectCode like @Search +'%' ";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -614,7 +610,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
-            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY  FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY  FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
             " Where PD.Stage = 'Drawing' AND PH.ProjectCode = '" + Cpono + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
@@ -641,7 +637,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_ProductionHDR] where ProjectName like @Search +'%' ";
+                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_NewProductionHDR] where ProjectName like @Search +'%' ";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -668,7 +664,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
 
             DataTable dt = new DataTable();
             SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
-            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY  FROM tbl_ProductionDTLS AS PD INNER JOIN tbl_ProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
+            " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY  FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
             " Where PD.Stage = 'Drawing' AND PH.ProjectName = '" + GST + "' " +
             " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc ", Cls_Main.Conn);
