@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2013.Excel;
-using Org.BouncyCastle.Asn1.Crmf;
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -307,28 +305,33 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
     {
         try
         {
-            DataTable Dts = Cls_Main.Read_Table("SELECT ProjectCode, Discription, Weight, Length FROM tbl_NewProductionDTLS where JobNo='" + txtjobno.Text.Trim() + "'");
+            DataTable Dts = Cls_Main.Read_Table("SELECT Top 1 ProjectCode, Discription, Width, Length FROM tbl_NewProductionDTLS where JobNo='" + txtjobno.Text.Trim() + "'");
 
             if(Dts.Rows.Count >= 0)
             {
-                string Weight = Dts.Rows[0]["Weight"].ToString();
+                string Width = Dts.Rows[0]["Width"].ToString();
                 string Length = Dts.Rows[0]["Length"].ToString();
-                if (Weight == "")
+                if (Width == "")
                 {
-                    Weight = "0.000";
+                    Width = "0.000";
                 } 
                 if (Length == "")
                 {
                     Length = "0.000";
                 }
-                DataTable Dta = Cls_Main.Read_Table("select JobNo FROM tbl_NewProductionDTLS WHERE ProjectCode = '" + Dts.Rows[0]["ProjectCode"].ToString() + "' " +
-                    " AND Discription = '" + Dts.Rows[0]["Discription"].ToString() +"' AND Weight = '"+ Weight +"'" +
+                DataTable Dta = Cls_Main.Read_Table("select JobNo,OANumber,ProjectCode,Discription,Length,Width FROM tbl_NewProductionDTLS WHERE ProjectCode = '" + Dts.Rows[0]["ProjectCode"].ToString() + "' " +
+                    " AND Discription = '" + Dts.Rows[0]["Discription"].ToString() + "' AND Width = '" + Width +"'" +
                     " AND Length = '" + Length + "' AND Stage = 'Drawing'");
                 if(Dta.Rows.Count > 0)
                 {
                     foreach (DataRow row in Dta.Rows)
                     {
                         string jobno = row["JobNo"].ToString();
+                        string Oano = row["OANumber"].ToString();
+                        string ProjCode = row["ProjectCode"].ToString();
+                        string Discr = row["Discription"].ToString();
+                        string Leng = row["Length"].ToString();
+                        string Wid = row["Width"].ToString();
                         Cls_Main.Conn_Open();
 
                         // Loop through the Request.Files to process the uploaded files
@@ -353,7 +356,8 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                                 }
 
                                 // Insert file details and remark into the database
-                                string insertQuery = "INSERT INTO tbl_DrawingDetails (JobNo, FileName,FilePath, Remark,CreatedBy,CreatedOn) VALUES (@JobNo, @FileName,@FilePath, @Remark,@CreatedBy,@CreatedOn)";
+                                string insertQuery = "INSERT INTO tbl_DrawingDetails (JobNo, FileName,FilePath, Remark,CreatedBy,CreatedOn,OaNumber,ProjectCode,Discription,Length,Width) " +
+                                    " VALUES (@JobNo, @FileName,@FilePath, @Remark,@CreatedBy,@CreatedOn,@oano,@projCode,@Discr,@Leng,@Wid)";
                                 using (SqlCommand cmd = new SqlCommand(insertQuery, Cls_Main.Conn))
                                 {
                                     // Add parameters to prevent SQL injection
@@ -363,6 +367,11 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                                     cmd.Parameters.AddWithValue("@Remark", remark);
                                     cmd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
                                     cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
+                                    cmd.Parameters.AddWithValue("@oano", Oano);
+                                    cmd.Parameters.AddWithValue("@projCode", ProjCode);
+                                    cmd.Parameters.AddWithValue("@Discr", Discr);
+                                    cmd.Parameters.AddWithValue("@Leng", Leng);
+                                    cmd.Parameters.AddWithValue("@Wid", Wid);
                                     // Execute the insert query
                                     cmd.ExecuteNonQuery();
                                 }
@@ -438,7 +447,7 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                 }
                 Cmd.Parameters.AddWithValue("@OutwardBy", Session["UserCode"].ToString());
                 Cmd.Parameters.AddWithValue("@OutwardDate", DateTime.Now);
-                Cmd.ExecuteNonQuery();
+               // Cmd.ExecuteNonQuery();
                 Cls_Main.Conn_Close();
 
                 DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_NewProductionDTLS AS PD where JobNo='" + txtjobno.Text + "'and StageNumber>0 ");
@@ -454,7 +463,7 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                     Cmd1.Parameters.AddWithValue("@InwardQTY", txttotalqty.Text);
                     Cmd1.Parameters.AddWithValue("@InwardBy", Session["UserCode"].ToString());
                     Cmd1.Parameters.AddWithValue("@InwardDate", DateTime.Now);
-                    Cmd1.ExecuteNonQuery();
+                  //Cmd1.ExecuteNonQuery();
                     Cls_Main.Conn_Close();
                 }
             }

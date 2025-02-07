@@ -2,11 +2,13 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using Spire.Pdf.Exporting.XPS.Schema;
 
 public partial class Production_SubProducts : System.Web.UI.Page
 {
     SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["constr"].ConnectionString);
     CommonCls objcls = new CommonCls();
+    string Discr = "";
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["UserCode"] == null)
@@ -24,7 +26,7 @@ public partial class Production_SubProducts : System.Web.UI.Page
 
                     hideJobNo.Value = val[0];
                     hideProdName.Value = val[1];
-
+                    Discr = val[2];
                     FillGrid();
                 }
             }
@@ -40,7 +42,7 @@ public partial class Production_SubProducts : System.Web.UI.Page
         if (Dt.Rows.Count > 0)
         {
             string oanum = Dt.Rows[0]["OaNumber"].ToString();
-            DataTable Dta = Cls_Main.Read_Table("SELECT * FROM tbl_NewOrderAcceptanceDtls Where pono = '" + oanum + "' AND ProductName = '" + hideProdName.Value + "'");
+            DataTable Dta = Cls_Main.Read_Table("SELECT * FROM tbl_NewOrderAcceptanceDtls Where pono = '" + oanum + "' AND ProductName = '" + hideProdName.Value + "' AND Description = '"+ Discr + "'");
             if (Dta.Rows.Count > 0)
             {
                 string Id = Dta.Rows[0]["ID"].ToString();

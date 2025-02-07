@@ -701,7 +701,7 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
         {
             string Page = "Drawing";
             string encryptedValue = objcls.encrypt(e.CommandArgument.ToString());
-            Response.Redirect("ProdListPerProjCode.aspx?ID=" + Page + "&EncryptedValue=" + encryptedValue);
+            Response.Redirect("DrawingListGPWise.aspx?ID=" + Page + "&EncryptedValue=" + encryptedValue);
         }
     }
 }
