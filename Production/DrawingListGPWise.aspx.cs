@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -38,7 +39,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
 
     private void FillGrid()
     {
-        DataTable Dt = Cls_Main.Read_Table("SELECT Discription, Length, Width, Stage, t1.Status, Count(JobNo) AS JobCounts " +
+        DataTable Dt = Cls_Main.Read_Table(" SELECT Discription, Length, Width, Stage, t1.Status, Count(JobNo) AS JobCounts " +
            " ,STUFF((SELECT ',' + CAST(JobNo AS NVARCHAR) FROM tbl_NewProductionDTLS t2 WHERE t2.Discription = t1.Discription " +
            " AND t2.Length = t1.Length AND t2.Width = t1.Width AND t2.Stage = t1.Stage FOR XML PATH('')), 1, 1, '') AS JobNoList, " +
            " Sum(Cast(TotalQTY as int)) AS TotalQty " +
@@ -123,7 +124,6 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
             Response.Redirect("SubProducts.aspx?Id=" + objcls.encrypt(e.CommandArgument.ToString()) + "");
         }
     }
-
 
     protected void GVPurchase_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -455,26 +455,74 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
     {
         Response.Redirect("Drawing.aspx");
     }
-    protected void GVRequest_RowEditing(object sender, GridViewEditEventArgs e)
-    {
 
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetDiscription(string prefixText, int count)
+    {
+        return AutoFillGetDiscription(prefixText);
     }
-    protected void GVRequest_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
 
-        if (e.CommandName == "RowDelete")
+    public static List<string> AutoFillGetDiscription(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
         {
-            Cls_Main.Conn_Open();
-            SqlCommand Cmd = new SqlCommand("UPDATE [tbl_InventoryRequest] SET IsDeleted=@IsDeleted,DeletedBy=@DeletedBy,DeletedOn=@DeletedOn WHERE ID=@ID", Cls_Main.Conn);
-            Cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(e.CommandArgument.ToString()));
-            Cmd.Parameters.AddWithValue("@IsDeleted", '1');
-            Cmd.Parameters.AddWithValue("@DeletedBy", Session["UserCode"].ToString());
-            Cmd.Parameters.AddWithValue("@DeletedOn", DateTime.Now);
-            Cmd.ExecuteNonQuery();
-            Cls_Main.Conn_Close();
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Request Deleted Successfully..!!')", true);
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = " select DISTINCT Discription from tbl_NewProductionDTLS " +
+                   " where Discription like @Search + '%' AND Stage = '" + HttpContext.Current.Session["Stage"].ToString() + "' AND ProjectCode = '" + HttpContext.Current.Session["ProjectCode"].ToString() + "'";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> Discription = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        Discription.Add(sdr["Discription"].ToString());
+                    }
+                }
+                con.Close();
+                return Discription;
+            }
 
         }
     }
- 
+
+    protected void txtSerachDisc_TextChanged(object sender, EventArgs e)
+    {
+        if (txtSerachDisc.Text != "" )
+        {
+            string Cpono = txtSerachDisc.Text;
+
+            DataTable dt = new DataTable();
+            SqlDataAdapter sad = new SqlDataAdapter(" SELECT Discription, Length, Width, Stage, t1.Status, Count(JobNo) AS JobCounts " +
+           " ,STUFF((SELECT ',' + CAST(JobNo AS NVARCHAR) FROM tbl_NewProductionDTLS t2 WHERE t2.Discription = t1.Discription " +
+           " AND t2.Length = t1.Length AND t2.Width = t1.Width AND t2.Stage = t1.Stage FOR XML PATH('')), 1, 1, '') AS JobNoList, " +
+           " Sum(Cast(TotalQTY as int)) AS TotalQty " +
+           " FROM tbl_NewProductionDTLS AS t1 " +
+           " INNER JOIN tbl_NewOrderAcceptanceHdr AS OH ON t1.OANumber = OH.Pono " +
+           " WHERE t1.Stage = '" + Session["Stage"].ToString() + "' AND t1.ProjectCode = '" + Session["ProjectCode"].ToString() + "' AND t1.Discription = '"+ Cpono + "' " +
+           " GROUP BY Discription,Length,Width,Stage,t1.Status ", Cls_Main.Conn);
+            sad.Fill(dt);
+            GVPurchase.EmptyDataText = "Not Records Found";
+            GVPurchase.DataSource = dt;
+            GVPurchase.DataBind();
+        }
+    }
+
+    protected void btnrefresh_Click(object sender, EventArgs e)
+    {
+        Response.Redirect(Request.Url.ToString());
+    }
+
+    protected void btnDetails_Click(object sender, EventArgs e)
+    {
+        string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
+        Response.Redirect("ProdListPerProjCode.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue);
+    }
 }

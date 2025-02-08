@@ -552,6 +552,7 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
 
     protected void lblBtn_Click(object sender, EventArgs e)
     {
-        Response.Redirect("DrawingDetails.aspx");
+        string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
+        Response.Redirect("DrawingListGPWise.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue);
     }
 }

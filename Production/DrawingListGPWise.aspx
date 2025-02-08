@@ -302,14 +302,31 @@
                     <br />
                     <br />
                     <br />
-                    <br />
                     <div class="row">
-                        <div class="col-9 col-md-10">
+                        <div class="col-9 col-md-9">
                             <h4 class="mt-4 "><b>DRAWING LIST</b></h4>
-
+                        </div>
+                        <div class="col-9 col-md-3" style="margin-top: 19px;">
+                            <asp:Button ID="btnDetails" CssClass="btn btn-outline-success" Text="See Details" runat="server" Style="margin-left: 103px;" OnClick="btnDetails_Click" AutoPostBack="true"/>
                         </div>
                     </div>
                     <hr />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <asp:Label ID="lblSearchDis" runat="server" Text="Discription" Font-Bold="true" Font-Size="Medium"></asp:Label>
+                            <asp:TextBox ID="txtSerachDisc" CssClass="form-control" placeholder="Discription" runat="server" OnTextChanged="txtSerachDisc_TextChanged" AutoPostBack="true"></asp:TextBox>
+                            <asp:AutoCompleteExtender ID="AutoCompleteExtender3" CompletionListCssClass="completionList"
+                                CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                                CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetDiscription" TargetControlID="txtSerachDisc" runat="server">
+                            </asp:AutoCompleteExtender>
+                            <br />
+                        </div>
+                        <div class="col-md-1" style="margin-top: 27px">
+                            <asp:LinkButton ID="btnrefresh" runat="server" OnClick="btnrefresh_Click" Style="width: 86%; padding: 3px 4px 3px 4px;" CssClass="form-control btn btn-warning"><i style="color:white" class="fa">&#xf021;</i> </asp:LinkButton>
+                        </div>
+                        <div class="col-md-7">
+                        </div>
+                    </div>
                     <div class="row">
                         <br />
                         <div id="divtable" runat="server">
