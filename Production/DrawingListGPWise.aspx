@@ -444,13 +444,13 @@
                                                                 <Columns>
                                                                     <asp:TemplateField HeaderText="File Name" HeaderStyle-CssClass="gvhead">
                                                                         <ItemTemplate>
-                                                                            <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("FilePath") %>' ToolTip="Open File" />
+                                                                            <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("ID") %>' ToolTip="Open File" />
                                                                             <asp:Label ID="lblFileName" runat="server" Text='<%#Eval("FileName")%>'></asp:Label>
                                                                         </ItemTemplate>
                                                                     </asp:TemplateField>
                                                                     <asp:TemplateField HeaderText="Action" HeaderStyle-CssClass="gvhead">
                                                                         <ItemTemplate>
-                                                                            <asp:LinkButton ID="LinkButtonTrash" runat="server" OnClick="LinkButtonTrash_Click" CommandArgument='<%# Eval("FilePath") %>' ToolTip="Delete File">
+                                                                            <asp:LinkButton ID="LinkButtonTrash" runat="server" OnClick="LinkButtonTrash_Click" CommandArgument='<%# Eval("ID") %>' ToolTip="Delete File">
                                                                             <i class="fa fa-trash" aria-hidden="true"></i>
                                                                             </asp:LinkButton>
                                                                         </ItemTemplate>
@@ -538,7 +538,7 @@
                                                             <div class="col-md-6 col-12 mb-3">
                                                                 <div class="image-item">
                                                                     <!-- Display the image -->
-                                                                    <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("FilePath") %>' ToolTip="Open File" />
+                                                                    <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("ID") %>' ToolTip="Open File" />
                                                                     <asp:Label ID="Label14" runat="server" Font-Bold="true" Text="Drawing Name : " CssClass="form-label"></asp:Label>
                                                                     <asp:Label ID="Label4" runat="server" Font-Bold="true" Text='<%# Eval("FileName") %>' CssClass="form-label"></asp:Label>
                                                                 </div>

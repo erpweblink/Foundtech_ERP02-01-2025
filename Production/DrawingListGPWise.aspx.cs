@@ -46,7 +46,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
            " FROM tbl_NewProductionDTLS AS t1 " +
            " INNER JOIN tbl_NewOrderAcceptanceHdr AS OH ON t1.OANumber = OH.Pono " +
            " WHERE t1.Stage = '" + Session["Stage"].ToString() + "' AND t1.ProjectCode = '" + Session["ProjectCode"].ToString() + "' " +
-           " GROUP BY Discription,Length,Width,Stage,t1.Status "+
+           " GROUP BY Discription,Length,Width,Stage,t1.Status " +
            " ORDER BY t1.Status desc ");
 
         GVPurchase.DataSource = Dt;
@@ -72,7 +72,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
             string lblTotalQty = ((Label)row.FindControl("lblTotalQty")).Text;
             string lblJobNoList = ((Label)row.FindControl("lblJobNoList")).Text;
 
-            DataTable Dt = Cls_Main.Read_Table("SELECT FilePath,Remark,FileName " +
+            DataTable Dt = Cls_Main.Read_Table("SELECT FilePath,Remark,FileName,MAX(Id) AS ID " +
                     " FROM tbl_DrawingDetails where Discription='" + lblDiscription + "' AND Length = '" + lblLength + "' AND Width = '" + lblWidth + "' " +
                     " Group by FilePath,Remark,FileName ");
 
@@ -102,7 +102,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
             string lblWidth = ((Label)row.FindControl("lblWidth")).Text;
             if (lblDiscription != null && lblLength != null && lblWidth != null)
             {
-                DataTable Dt = Cls_Main.Read_Table("SELECT FilePath,Remark,FileName " +
+                DataTable Dt = Cls_Main.Read_Table("SELECT FilePath,Remark,FileName,MAX(Id) AS ID " +
                     " FROM tbl_DrawingDetails where Discription='" + lblDiscription + "' AND Length = '" + lblLength + "' AND Width = '" + lblWidth + "' " +
                     " Group by FilePath,Remark,FileName ");
 
@@ -158,7 +158,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
                 Label lblWidth = e.Row.FindControl("lblWidth") as Label;
                 if (lblDiscription != null && lblLength != null && lblWidth != null)
                 {
-                    DataTable Dt = Cls_Main.Read_Table("SELECT FilePath,Remark,FileName " +
+                    DataTable Dt = Cls_Main.Read_Table("SELECT FilePath,Remark,FileName,MAX(Id) AS ID " +
                         " FROM tbl_DrawingDetails where Discription='" + lblDiscription.Text + "' AND Length = '" + lblLength.Text + "' AND Width = '" + lblWidth.Text + "' " +
                         " Group by FilePath,Remark,FileName ");
 
@@ -180,7 +180,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
                 }
 
                 Label Status = e.Row.FindControl("lblProdStatus") as Label;
-              
+
                 if (Status != null)
                 {
 
@@ -218,7 +218,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
     {
         string id = ((sender as ImageButton).CommandArgument).ToString();
 
-        Display(id);
+        Display(id);    
     }
 
     public void Display(string id)
@@ -270,10 +270,17 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
     protected void LinkButtonTrash_Click(object sender, EventArgs e)
     {
         string id = ((sender as LinkButton).CommandArgument).ToString();
+        DataTable Dts = Cls_Main.Read_Table("SELECT FilePath,FileName FROM tbl_DrawingDetails WHERE Id='" + id + "'");
 
-        DataTable Dt = Cls_Main.Read_Table("DELETE tbl_DrawingDetails WHERE Id='" + id + "'");
+        if(Dts.Rows.Count>0){
+            DataTable Dt = Cls_Main.Read_Table("DELETE tbl_DrawingDetails WHERE FileName='" + Dts.Rows[0]["FileName"].ToString() + "' AND FilePath = '"+ Dts.Rows[0]["FilePath"].ToString() +"'");
+            string path = Server.MapPath("~/Drawings/" + Dts.Rows[0]["FileName"].ToString());
+            File.Delete(path);
+        }
 
-        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Image deleted successfully..!!');", true);
+        string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
+        string url = "DrawingListGPWise.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue;
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Image deleted successfully..!!', '" + url + "');", true);
 
     }
 
@@ -298,116 +305,58 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
                     {
                         Length = "0.000";
                     }
-                    DataTable Dta = Cls_Main.Read_Table("select JobNo,OANumber,ProjectCode,Discription,Length,Width FROM tbl_NewProductionDTLS WHERE ProjectCode = '" + Dts.Rows[0]["ProjectCode"].ToString() + "' " +
-                        " AND Discription = '" + Dts.Rows[0]["Discription"].ToString() + "' AND Width = '" + Width + "'" +
-                        " AND Length = '" + Length + "' AND Stage = 'Drawing'");
-                    if (Dta.Rows.Count > 0)
+                    string jobno = Dts.Rows[0]["JobNo"].ToString();
+                    string Oano = Dts.Rows[0]["OANumber"].ToString();
+                    string ProjCode = Dts.Rows[0]["ProjectCode"].ToString();
+                    string Discr = Dts.Rows[0]["Discription"].ToString();
+                    Cls_Main.Conn_Open();
+
+                    // Loop through the Request.Files to process the uploaded files
+                    for (int i = 0; i < Request.Files.Count; i++)
                     {
-                        foreach (DataRow row in Dta.Rows)
+                        HttpPostedFile file = Request.Files[i];
+                        if (file != null && file.ContentLength > 0)
                         {
-                            string jobno = row["JobNo"].ToString();
-                            string Oano = row["OANumber"].ToString();
-                            string ProjCode = row["ProjectCode"].ToString();
-                            string Discr = row["Discription"].ToString();
-                            string Leng = row["Length"].ToString();
-                            string Wid = row["Width"].ToString();
-                            Cls_Main.Conn_Open();
+                            // Get the file name and save path
+                            string fileName = Path.GetFileName(file.FileName);
+                            string savePath = Server.MapPath("~/Drawings/" + fileName);
 
-                            // Loop through the Request.Files to process the uploaded files
-                            for (int i = 0; i < Request.Files.Count; i++)
+                            // Save the file
+                            file.SaveAs(savePath);
+
+                            // Get the corresponding remark for this file
+                            string remark = string.Empty;
+                            string remarkKey = string.Format("fileRemarks_{0}", i); // Generate the key for the remark
+                            if (Request.Form.AllKeys.Contains(remarkKey))
                             {
-                                HttpPostedFile file = Request.Files[i];
-                                if (file != null && file.ContentLength > 0)
-                                {
-                                    // Get the file name and save path
-                                    string fileName = Path.GetFileName(file.FileName);
-                                    string savePath = Server.MapPath("~/Drawings/" + fileName);
-
-                                    // Save the file
-                                    file.SaveAs(savePath);
-
-                                    // Get the corresponding remark for this file
-                                    string remark = string.Empty;
-                                    string remarkKey = string.Format("fileRemarks_{0}", i); // Generate the key for the remark
-                                    if (Request.Form.AllKeys.Contains(remarkKey))
-                                    {
-                                        remark = Request.Form[remarkKey];
-                                    }
-
-                                    // Insert file details and remark into the database
-                                    string insertQuery = "INSERT INTO tbl_DrawingDetails (JobNo, FileName,FilePath, Remark,CreatedBy,CreatedOn,OaNumber,ProjectCode,Discription,Length,Width) " +
-                                        " VALUES (@JobNo, @FileName,@FilePath, @Remark,@CreatedBy,@CreatedOn,@oano,@projCode,@Discr,@Leng,@Wid)";
-                                    using (SqlCommand cmd = new SqlCommand(insertQuery, Cls_Main.Conn))
-                                    {
-                                        // Add parameters to prevent SQL injection
-                                        cmd.Parameters.AddWithValue("@JobNo", jobno);  // Ensure JobNo is correctly set
-                                        cmd.Parameters.AddWithValue("@FileName", fileName);
-                                        cmd.Parameters.AddWithValue("@FilePath", savePath);
-                                        cmd.Parameters.AddWithValue("@Remark", remark);
-                                        cmd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
-                                        cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
-                                        cmd.Parameters.AddWithValue("@oano", Oano);
-                                        cmd.Parameters.AddWithValue("@projCode", ProjCode);
-                                        cmd.Parameters.AddWithValue("@Discr", Discr);
-                                        cmd.Parameters.AddWithValue("@Leng", Leng);
-                                        cmd.Parameters.AddWithValue("@Wid", Wid);
-                                        // Execute the insert query
-                                        cmd.ExecuteNonQuery();
-                                    }
-                                }
+                                remark = Request.Form[remarkKey];
                             }
 
-                            // Close the connection (if not managed by Cls_Main)
-                            Cls_Main.Conn_Close();
-                        }
-
-                    }
-                    else
-                    {
-                        Cls_Main.Conn_Open();
-
-                        // Loop through the Request.Files to process the uploaded files
-                        for (int i = 0; i < Request.Files.Count; i++)
-                        {
-                            HttpPostedFile file = Request.Files[i];
-                            if (file != null && file.ContentLength > 0)
+                            // Insert file details and remark into the database
+                            string insertQuery = "INSERT INTO tbl_DrawingDetails (JobNo, FileName,FilePath, Remark,CreatedBy,CreatedOn,OaNumber,ProjectCode,Discription,Length,Width) " +
+                                " VALUES (@JobNo, @FileName,@FilePath, @Remark,@CreatedBy,@CreatedOn,@oano,@projCode,@Discr,@Leng,@Wid)";
+                            using (SqlCommand cmd = new SqlCommand(insertQuery, Cls_Main.Conn))
                             {
-                                // Get the file name and save path
-                                string fileName = Path.GetFileName(file.FileName);
-                                string savePath = Server.MapPath("~/Drawings/" + fileName);
-
-                                // Save the file
-                                file.SaveAs(savePath);
-
-                                // Get the corresponding remark for this file
-                                string remark = string.Empty;
-                                string remarkKey = string.Format("fileRemarks_{0}", i); // Generate the key for the remark
-                                if (Request.Form.AllKeys.Contains(remarkKey))
-                                {
-                                    remark = Request.Form[remarkKey];
-                                }
-
-                                // Insert file details and remark into the database
-                                string insertQuery = "INSERT INTO tbl_DrawingDetails (JobNo, FileName,FilePath, Remark,CreatedBy,CreatedOn) VALUES (@JobNo, @FileName,@FilePath, @Remark,@CreatedBy,@CreatedOn)";
-                                using (SqlCommand cmd = new SqlCommand(insertQuery, Cls_Main.Conn))
-                                {
-                                    // Add parameters to prevent SQL injection
-                                    cmd.Parameters.AddWithValue("@JobNo", item);  // Ensure JobNo is correctly set
-                                    cmd.Parameters.AddWithValue("@FileName", fileName);
-                                    cmd.Parameters.AddWithValue("@FilePath", savePath);
-                                    cmd.Parameters.AddWithValue("@Remark", remark);
-                                    cmd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
-                                    cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
-                                    // Execute the insert query
-                                    cmd.ExecuteNonQuery();
-                                }
+                                // Add parameters to prevent SQL injection
+                                cmd.Parameters.AddWithValue("@JobNo", jobno);  // Ensure JobNo is correctly set
+                                cmd.Parameters.AddWithValue("@FileName", fileName);
+                                cmd.Parameters.AddWithValue("@FilePath", savePath);
+                                cmd.Parameters.AddWithValue("@Remark", remark);
+                                cmd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
+                                cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
+                                cmd.Parameters.AddWithValue("@oano", Oano);
+                                cmd.Parameters.AddWithValue("@projCode", ProjCode);
+                                cmd.Parameters.AddWithValue("@Discr", Discr);
+                                cmd.Parameters.AddWithValue("@Leng", Length);
+                                cmd.Parameters.AddWithValue("@Wid", Width);
+                                // Execute the insert query
+                                cmd.ExecuteNonQuery();
                             }
                         }
-
-                        // Close the connection (if not managed by Cls_Main)
-                        Cls_Main.Conn_Close();
-
                     }
+
+                    // Close the connection (if not managed by Cls_Main)
+                    Cls_Main.Conn_Close();
 
                     Cls_Main.Conn_Open();
                     SqlCommand Cmd = new SqlCommand("UPDATE [tbl_NewProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
@@ -495,7 +444,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
 
     protected void txtSerachDisc_TextChanged(object sender, EventArgs e)
     {
-        if (txtSerachDisc.Text != "" )
+        if (txtSerachDisc.Text != "")
         {
             string Cpono = txtSerachDisc.Text;
 
@@ -506,7 +455,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
            " Sum(Cast(TotalQTY as int)) AS TotalQty " +
            " FROM tbl_NewProductionDTLS AS t1 " +
            " INNER JOIN tbl_NewOrderAcceptanceHdr AS OH ON t1.OANumber = OH.Pono " +
-           " WHERE t1.Stage = '" + Session["Stage"].ToString() + "' AND t1.ProjectCode = '" + Session["ProjectCode"].ToString() + "' AND t1.Discription = '"+ Cpono + "' " +
+           " WHERE t1.Stage = '" + Session["Stage"].ToString() + "' AND t1.ProjectCode = '" + Session["ProjectCode"].ToString() + "' AND t1.Discription = '" + Cpono + "' " +
            " GROUP BY Discription,Length,Width,Stage,t1.Status ", Cls_Main.Conn);
             sad.Fill(dt);
             GVPurchase.EmptyDataText = "Not Records Found";
