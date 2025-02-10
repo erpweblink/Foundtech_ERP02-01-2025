@@ -5,6 +5,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -33,9 +35,15 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
                     FillGrid();
                 }
             }
+            if (Request["__EVENTTARGET"] == btnhist.ClientID)
+            {
+                RefreshPage();
+            }
         }
 
     }
+
+
 
     private void FillGrid()
     {
@@ -218,7 +226,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
     {
         string id = ((sender as ImageButton).CommandArgument).ToString();
 
-        Display(id);    
+        Display(id);
     }
 
     public void Display(string id)
@@ -227,14 +235,14 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
         {
             using (SqlCommand cmd = new SqlCommand())
             {
-                string CmdText = "select FileName from tbl_DrawingDetails where Id='" + id + "'";
+                string CmdText = "select FilePath from tbl_DrawingDetails where Id='" + id + "'";
 
                 SqlDataAdapter ad = new SqlDataAdapter(CmdText, con);
                 DataTable dt = new DataTable();
                 ad.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
-                    string fileName = dt.Rows[0]["FileName"].ToString();
+                    string fileName = Path.GetFileName(dt.Rows[0]["FilePath"].ToString());
                     string fileExtension = Path.GetExtension(fileName);
 
                     if (fileExtension == ".pdf")
@@ -272,8 +280,9 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
         string id = ((sender as LinkButton).CommandArgument).ToString();
         DataTable Dts = Cls_Main.Read_Table("SELECT FilePath,FileName FROM tbl_DrawingDetails WHERE Id='" + id + "'");
 
-        if(Dts.Rows.Count>0){
-            DataTable Dt = Cls_Main.Read_Table("DELETE tbl_DrawingDetails WHERE FileName='" + Dts.Rows[0]["FileName"].ToString() + "' AND FilePath = '"+ Dts.Rows[0]["FilePath"].ToString() +"'");
+        if (Dts.Rows.Count > 0)
+        {
+            DataTable Dt = Cls_Main.Read_Table("DELETE tbl_DrawingDetails WHERE FileName='" + Dts.Rows[0]["FileName"].ToString() + "' AND FilePath = '" + Dts.Rows[0]["FilePath"].ToString() + "'");
             string path = Server.MapPath("~/Drawings/" + Dts.Rows[0]["FileName"].ToString());
             File.Delete(path);
         }
@@ -289,6 +298,7 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
         try
         {
             string[] jobNos = txtoutwardqty.Text.Split(',');
+            string UniqueID = GenerateUniqueEncryptedValue();
             foreach (var item in jobNos)
             {
                 DataTable Dts = Cls_Main.Read_Table("SELECT *,ProjectCode, Discription, Width, Length FROM tbl_NewProductionDTLS where JobNo='" + item + "' AND Stage = 'Drawing'");
@@ -319,7 +329,9 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
                         {
                             // Get the file name and save path
                             string fileName = Path.GetFileName(file.FileName);
-                            string savePath = Server.MapPath("~/Drawings/" + fileName);
+                            string FileName = UniqueID + "_" + fileName;
+
+                            string savePath = Server.MapPath("~/Drawings/" + FileName);
 
                             // Save the file
                             file.SaveAs(savePath);
@@ -473,5 +485,34 @@ public partial class Production_DrawingListGPWise : System.Web.UI.Page
     {
         string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
         Response.Redirect("ProdListPerProjCode.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue);
+    }
+
+    public static string GenerateUniqueEncryptedValue()
+    {
+        string uniqueString = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks.ToString();
+
+        byte[] bytes = Encoding.UTF8.GetBytes(uniqueString);
+
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            // Compute the hash of the byte array
+            byte[] hashBytes = sha256.ComputeHash(bytes);
+
+            // Convert the hash bytes into a hex string
+            StringBuilder hexString = new StringBuilder();
+            foreach (byte b in hashBytes)
+            {
+                hexString.AppendFormat("{0:x2}", b);
+            }
+
+            return hexString.ToString();
+        }
+    }
+
+    private void RefreshPage()
+    {
+        string url = Request.Url.ToString();
+
+        Response.Redirect(Request.Url.ToString());
     }
 }

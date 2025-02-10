@@ -3,6 +3,8 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DocumentFormat.OpenXml.Office.Word;
@@ -51,11 +53,11 @@ public partial class Production_QualityPage : System.Web.UI.Page
 
     private void FillGrid()
     {
-        DataTable dt = Cls_Main.Read_Table(" SELECT OANumber,Stage,RowMaterial,RawMateReqQTY,RawMateRemainingReqQty, "+
+        DataTable dt = Cls_Main.Read_Table(" SELECT  t7.FilePath,t1.OANumber,t1.Stage,RowMaterial,RawMateReqQTY,RawMateRemainingReqQty, " +
             " (Sum(CAST(InwardQty as int))/(SUM(CAST(TotalQTY AS INT)) /Cast(RawMateReqQTY as int))) AS ReceivedQty, "+
             " (Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int)) AS SentQTy, "+
             " ((Sum(CAST(InwardQty as int))/(SUM(CAST(TotalQTY AS INT)) /Cast(RawMateReqQTY as int))-(Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int))))AS RemainingQTy, "+
-            " ProjectCode, ProjectName,Count(ID) AS JobCounts, " +
+            " t1.ProjectCode, t1.ProjectName,Count( t1.ID) AS JobCounts, " +
             " TRY_CAST(SUM(CAST(TotalQTY AS INT)) AS INT) AS TotalQuantity, " +
 
             " STUFF((SELECT ',' + CAST(JobNo AS NVARCHAR) " +
@@ -79,8 +81,9 @@ public partial class Production_QualityPage : System.Web.UI.Page
             " FOR XML PATH('')), 1, 1, '') AS Disc " +
 
             " FROM tbl_NewProductionDTLS AS t1 " +
-            " WHERE ProjectCode = '" + Session["ProjectCode"].ToString() + "' and Stage='" + Session["Stage"].ToString() + "' " +
-            " GROUP BY OANumber, Stage, RowMaterial, RawMateReqQTY, RawMateRemainingReqQty, ProjectCode, ProjectName "+
+            " LEFT JOIN tbl_NewProductionHDR AS t7 ON t7.ProductName = t1.RowMaterial " +
+            " WHERE  t1.ProjectCode = '" + Session["ProjectCode"].ToString() + "' and  t1.Stage='" + Session["Stage"].ToString() + "' " +
+            " GROUP BY t1.OANumber, t1.Stage, RowMaterial,RawMateReqQTY,RawMateRemainingReqQty, t1.ProjectCode,t1.ProjectName,t7.FilePath  " +
             " order by SentQTy desc, RemainingQTy desc ");
 
         dt.Columns.Add("ProductStatus");
@@ -226,7 +229,9 @@ public partial class Production_QualityPage : System.Web.UI.Page
                 string pdffilename1 = pdffilename[0];
                 string filenameExt = pdffilename[1];
 
-                string filePath = Server.MapPath("~/Drawings/") + pdffilename1 + "." + filenameExt;
+                string UniqueID = GenerateUniqueEncryptedValue();
+                string FileName = UniqueID + "_" + pdffilename1;
+                string filePath = Server.MapPath("~/PDF_Files/") + FileName + "." + filenameExt;
 
                 // Save the file to the specified path
                 System.IO.File.WriteAllBytes(filePath, fileContent);
@@ -239,7 +244,7 @@ public partial class Production_QualityPage : System.Web.UI.Page
                     SqlCommand cmd = new SqlCommand(" UPDATE tbl_NewProductionHDR SET FilePath = @filePath,FileAddedBy = @createdby," +
                         " FileAddedDate = @createdon WHERE JobNo = @jobNo ", con);
                     cmd.Parameters.AddWithValue("@jobNo", item);
-                    cmd.Parameters.AddWithValue("@filePath", fileName);
+                    cmd.Parameters.AddWithValue("@filePath", filePath);
                     cmd.Parameters.AddWithValue("@createdby", Session["usercode"].ToString());
                     cmd.Parameters.AddWithValue("@createdon", DateTime.Now);
                     cmd.ExecuteNonQuery();
@@ -569,4 +574,27 @@ public partial class Production_QualityPage : System.Web.UI.Page
         }
 
     }
+
+    public static string GenerateUniqueEncryptedValue()
+    {
+        string uniqueString = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks.ToString();
+
+        byte[] bytes = Encoding.UTF8.GetBytes(uniqueString);
+
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            // Compute the hash of the byte array
+            byte[] hashBytes = sha256.ComputeHash(bytes);
+
+            // Convert the hash bytes into a hex string
+            StringBuilder hexString = new StringBuilder();
+            foreach (byte b in hashBytes)
+            {
+                hexString.AppendFormat("{0:x2}", b);
+            }
+
+            return hexString.ToString();
+        }
+    }
+
 }

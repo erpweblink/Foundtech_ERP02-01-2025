@@ -5,6 +5,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web.Script.Services;
 using System.Web.Services;
 using System.Web.UI;
@@ -154,11 +156,11 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
             btnsave.Text = "Update";
 
             txtcompanyname.Text = Dt.Rows[0]["CustomerName"].ToString();
-           // txtpaymentterm.Text = Dt.Rows[0]["paymentterm"].ToString();
+            // txtpaymentterm.Text = Dt.Rows[0]["paymentterm"].ToString();
             txtpono.Text = Dt.Rows[0]["Pono"].ToString();
             txtserialno.Text = Dt.Rows[0]["SerialNo"].ToString();
             FillKittens();
-           // lblfile1.Text = Dt.Rows[0]["fileName"].ToString();
+            // lblfile1.Text = Dt.Rows[0]["fileName"].ToString();
 
             ddlContacts.SelectedItem.Text = Dt.Rows[0]["KindAtt"].ToString();
             FillddlUsers();
@@ -201,7 +203,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
             for (int i = 0; i < DTCOMP.Rows.Count; i++)
             {
-                Dt_Product.Rows.Add(DTCOMP.Rows[i]["Id"].ToString(), count, DTCOMP.Rows[i]["Productname"].ToString(), DTCOMP.Rows[i]["ProductQty"].ToString(), DTCOMP.Rows[i]["Description"].ToString(), DTCOMP.Rows[i]["Quantity"].ToString(), DTCOMP.Rows[i]["Length"].ToString(), DTCOMP.Rows[i]["Weight"].ToString(),  DTCOMP.Rows[i]["Width"].ToString(),  DTCOMP.Rows[i]["Thickness"].ToString(),  DTCOMP.Rows[i]["TotalWeight"].ToString());
+                Dt_Product.Rows.Add(DTCOMP.Rows[i]["Id"].ToString(), count, DTCOMP.Rows[i]["Productname"].ToString(), DTCOMP.Rows[i]["ProductQty"].ToString(), DTCOMP.Rows[i]["Description"].ToString(), DTCOMP.Rows[i]["Quantity"].ToString(), DTCOMP.Rows[i]["Length"].ToString(), DTCOMP.Rows[i]["Weight"].ToString(), DTCOMP.Rows[i]["Width"].ToString(), DTCOMP.Rows[i]["Thickness"].ToString(), DTCOMP.Rows[i]["TotalWeight"].ToString());
                 count = count + 1;
             }
         }
@@ -237,7 +239,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         txtTotalWeight.Text = "0.00";
         txtWidth.Text = "0.00";
         txtThickness.Text = "0.00";
-        ViewState["RowNo"] = Convert.ToInt32(ViewState["RowNo"]) + 1; 
+        ViewState["RowNo"] = Convert.ToInt32(ViewState["RowNo"]) + 1;
         dgvMachineDetails.DataSource = (DataTable)ViewState["PurchaseOrderProduct"];
         dgvMachineDetails.DataBind();
     }
@@ -361,7 +363,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@PANNo", txtpanno.Text);
                         cmd.Parameters.AddWithValue("@UserName", Session["usercode"].ToString());
 
-                        
+
 
                         cmd.Parameters.AddWithValue("@BillingAddress", txtaddress.Text);
                         if (ddlShippingaddress.SelectedItem.Text == "-Select Shipping Address-")
@@ -399,7 +401,10 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             string pdffilename1 = pdffilename[0];
                             string filenameExt = pdffilename[1];
 
-                            string filePath = Server.MapPath("~/PDF_Files/") + pdffilename1 + "." + filenameExt;
+                            string UniqueID = GenerateUniqueEncryptedValue();
+                            string FileName = UniqueID + "_" + pdffilename1;
+                            string filePath = Server.MapPath("~/PDF_Files/") + FileName + "." + filenameExt;
+
                             System.IO.File.WriteAllBytes(filePath, fileContents);
 
                             cmd.Parameters.AddWithValue("@PdfFile", filePath);
@@ -544,7 +549,10 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             string pdffilename1 = pdffilename[0];
                             string filenameExt = pdffilename[1];
 
-                            string filePath = Server.MapPath("~/PDF_Files/") + pdffilename1 + "." + filenameExt;
+                            string UniqueID = GenerateUniqueEncryptedValue();
+                            string FileName = UniqueID + "_" + pdffilename1;
+                            string filePath = Server.MapPath("~/PDF_Files/") + FileName + "." + filenameExt;
+
                             System.IO.File.WriteAllBytes(filePath, fileContents);
 
                             cmd.Parameters.AddWithValue("@PdfFile", filePath);
@@ -556,7 +564,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                         cmd.Parameters.AddWithValue("@Action", "Update");
-                         cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
 
 
@@ -641,7 +649,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             cmdd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
                             //cmdd.ExecuteNonQuery();
                             Cls_Main.Conn_Close();
-                         
+
 
 
                             //// New Functionality by Nikhil 10-01-2025
@@ -673,7 +681,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                             // End code
-                           // Cls_Main.Conn_Close();
+                            // Cls_Main.Conn_Close();
                         }
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Order Acceptance Update Successfully..!!');window.location='OAList.aspx'; ", true);
                     }
@@ -1481,6 +1489,29 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
             con.Close();
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Sub Products Save Successfully..!!');window.location='" + "OrderAcceptance.aspx?Id=" + objcls.encrypt(hhd.Value) + "" + "'; ", true);
+        }
+    }
+
+    public static string GenerateUniqueEncryptedValue()
+    {
+        string uniqueString = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks.ToString();
+
+        byte[] bytes = Encoding.UTF8.GetBytes(uniqueString);
+
+        // Create SHA-256 hash
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            // Compute the hash of the byte array
+            byte[] hashBytes = sha256.ComputeHash(bytes);
+
+            // Convert the hash bytes into a hex string
+            StringBuilder hexString = new StringBuilder();
+            foreach (byte b in hashBytes)
+            {
+                hexString.AppendFormat("{0:x2}", b);
+            }
+
+            return hexString.ToString();
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.SessionState;
@@ -109,7 +110,8 @@ public partial class Production_ProdDTLSProjCodeWise : System.Web.UI.Page
     {
         if (e.CommandName == "DrawingFiles")
         {
-            Response.Redirect("~/Drawings/" + e.CommandArgument.ToString());
+            string fileName = Path.GetFileName(e.CommandArgument.ToString());
+            Response.Redirect("~/PDF_Files/" + fileName);
         }
     }
 

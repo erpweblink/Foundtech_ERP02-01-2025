@@ -386,7 +386,7 @@
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="PDF File" ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
-                                                            <asp:LinkButton runat="server" ID="btnPdfFile" ToolTip="Show drawings" CausesValidation="false" CommandName="PdfDownload" CommandArgument='<%# Eval("ProjectCode") %>'><i class="fas fa-folder-open"  style="font-size: 26px;"></i></i></asp:LinkButton>
+                                                            <asp:LinkButton runat="server" ID="btnPdfFile" ToolTip="Show drawings" CausesValidation="false" CommandName="PdfDownload" CommandArgument='<%# Eval("FilePath") %>'><i class="fas fa-folder-open"  style="font-size: 26px;"></i></i></asp:LinkButton>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
 

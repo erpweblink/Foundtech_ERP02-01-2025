@@ -307,7 +307,7 @@
                             <h4 class="mt-4 "><b>DRAWING LIST</b></h4>
                         </div>
                         <div class="col-9 col-md-3" style="margin-top: 19px;">
-                            <asp:Button ID="btnDetails" CssClass="btn btn-outline-success" Text="See Details" runat="server" Style="margin-left: 103px;" OnClick="btnDetails_Click" AutoPostBack="true"/>
+                            <asp:Button ID="btnDetails" CssClass="btn btn-outline-success" Text="See Details" runat="server" Style="margin-left: 103px;" OnClick="btnDetails_Click" AutoPostBack="true" />
                         </div>
                     </div>
                     <hr />
@@ -410,7 +410,7 @@
                                         <div class="profilemodel2">
                                             <div class="headingcls">
                                                 <h4 class="modal-title">Production Details 
-                  <button type="button" id="Closepophistory" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button>
+                  <button type="button" id="Closepophistory" class="btnclose" style="display: inline-block;" data-dismiss="modal" onclick="closePopupAndRefresh();">Close</button>
                                                 </h4>
                                             </div>
 
@@ -496,7 +496,15 @@
                                         </div>
                                     </div>
                                 </div>
+                                <script type="text/javascript">
+                                    function closePopupAndRefresh() {
+                                        // Close the popup
+                                        $find('<%= ModalPopupHistory.ClientID %>').hide();
 
+                                           // Trigger postback to call server-side method
+                                           __doPostBack('<%= btnhist.ClientID %>', '');
+                                    }
+                                </script>
                             </div>
                             <div class="col-md-3"></div>
                         </div>
@@ -517,7 +525,7 @@
                                         <div class="profilemodel2">
                                             <div class="headingcls">
                                                 <h4 class="modal-title">Drawing Files
-                          <button type="button" id="Closepophistory1" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button>
+                          <button type="button" id="Closepophistory1" class="btnclose" style="display: inline-block;" data-dismiss="modal" >Close</button>
                                                 </h4>
                                             </div>
                                             <br />

@@ -560,20 +560,20 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         {
             using (SqlCommand cmd = new SqlCommand())
             {
-                string CmdText = "select FileName from tbl_DrawingDetails where Id='" + id + "'";
+                string CmdText = "select FilePath from tbl_DrawingDetails where Id='" + id + "'";
 
                 SqlDataAdapter ad = new SqlDataAdapter(CmdText, con);
                 DataTable dt = new DataTable();
                 ad.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
-                    string fileName = dt.Rows[0]["FileName"].ToString();
+                    string fileName = Path.GetFileName(dt.Rows[0]["FilePath"].ToString());
                     string fileExtension = Path.GetExtension(fileName);
 
                     if (fileExtension == ".pdf")
                     {
                         //Old Code 
-                        Response.Redirect("~/Drawings/" + dt.Rows[0]["FileName"].ToString());
+                        Response.Redirect("~/Drawings/" + fileName);
                     }
                     else
                     {
