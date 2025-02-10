@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -305,15 +307,16 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         {
             GVRequest.DataSource = dtpt;
             GVRequest.DataBind();
-            
-            if(txtdropEntry.SelectedValue == "1")
+
+            if (txtdropEntry.SelectedValue == "1")
             {
                 txtRMC.Text = "";
                 txtWeights.Text = "";
                 txtWeight.Text = "";
                 txtneedqty.Text = "";
                 txtDescription.Text = "";
-            }else if(txtdropEntry.SelectedValue == "2")
+            }
+            else if (txtdropEntry.SelectedValue == "2")
             {
                 txtRMC.Text = "";
                 txtWeights.Text = "";
@@ -335,7 +338,7 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
                 txtneedqty.Text = "";
                 txtDescription.Text = "";
             }
-           
+
         }
     }
 
@@ -409,23 +412,24 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
                     if (Session["Stage"].ToString() == "PLAZMACUTTING")
                     {
                         number = 1;
-                    }else if(Session["Stage"].ToString() == "BENDING")
+                    }
+                    else if (Session["Stage"].ToString() == "BENDING")
                     {
                         number = 2;
                     }
-                     else if(Session["Stage"].ToString() == "FABRICATION")
+                    else if (Session["Stage"].ToString() == "FABRICATION")
                     {
                         number = 3;
                     }
-                     else if(Session["Stage"].ToString() == "PAINTING")
+                    else if (Session["Stage"].ToString() == "PAINTING")
                     {
                         number = 4;
                     }
-                     else if(Session["Stage"].ToString() == "QUALITY")
+                    else if (Session["Stage"].ToString() == "QUALITY")
                     {
                         number = 5;
                     }
-                     else if(Session["Stage"].ToString() == "DISPATCH")
+                    else if (Session["Stage"].ToString() == "DISPATCH")
                     {
                         number = 6;
                     }
@@ -461,7 +465,7 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
                     string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
                     string url = "ProdListPerProjCode2.aspx?ID=" + Session["Stage"].ToString() + "&EncryptedValue=" + encryptedValue;
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "SuccessResult('Saved Record Successfully And Send to the Next..!!', '" + url + "');", true);
-                   
+
                 }
                 else
                 {
@@ -648,8 +652,6 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
         string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());
         Response.Redirect("ProdListPerProjCode2.aspx?ID=" + Page + "&EncryptedValue=" + encryptedValue);
     }
-
-
     protected void GVRequest_RowCommand(object sender, GridViewCommandEventArgs e)
     {
 
@@ -794,12 +796,12 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
     protected void txtdropdown_TextChanged(object sender, EventArgs e)
     {
         string val = txtdropdown.SelectedValue;
-        if(val == "2")
+        if (val == "2")
         {
             DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_NewProductionDTLS  AS Pd " +
              " Inner Join tbl_NewOrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
              " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "' " +
-             " AND PD.Status = '"+val+"' ");
+             " AND PD.Status = '" + val + "' ");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
         }
@@ -832,11 +834,11 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
             txtWeights.Text = "";
 
             txtWeight.Text = "";
-       
+
         }
         else if (val == "2")
         {
-          
+
             txtDescription.Enabled = true;
             txtRMC.Enabled = true;
             txtThickness.Enabled = true;
@@ -880,4 +882,123 @@ public partial class Production_ProdListPerProjCode2 : System.Web.UI.Page
 
     }
 
+
+    // Filter code by Nikhil 10-02-2025
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetProducts(string prefixText, int count)
+    {
+        return AutoFillGetProducts(prefixText);
+    }
+
+    public static List<string> AutoFillGetProducts(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = " select DISTINCT RowMaterial from tbl_NewProductionDTLS " +
+                   " where RowMaterial like @Search + '%' AND Stage = '" + HttpContext.Current.Session["Stage"].ToString() + "' AND ProjectCode = '" + HttpContext.Current.Session["ProjectCode"].ToString() + "'";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> RowMaterial = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        RowMaterial.Add(sdr["RowMaterial"].ToString());
+                    }
+                }
+                con.Close();
+                return RowMaterial;
+            }
+
+        }
+    }
+
+
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> GetDescription(string prefixText, int count)
+    {
+        return AutoFillGetDiscription(prefixText);
+    }
+
+    public static List<string> AutoFillGetDiscription(string prefixText)
+    {
+        using (SqlConnection con = new SqlConnection())
+        {
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
+
+            using (SqlCommand com = new SqlCommand())
+            {
+                com.CommandText = " select DISTINCT Discription from tbl_NewProductionDTLS " +
+                   " where Discription like @Search + '%' AND Stage = '" + HttpContext.Current.Session["Stage"].ToString() + "' AND ProjectCode = '" + HttpContext.Current.Session["ProjectCode"].ToString() + "'";
+
+                com.Parameters.AddWithValue("@Search", prefixText);
+                com.Connection = con;
+                con.Open();
+                List<string> Discription = new List<string>();
+                using (SqlDataReader sdr = com.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        Discription.Add(sdr["Discription"].ToString());
+                    }
+                }
+                con.Close();
+                return Discription;
+            }
+
+        }
+    }
+
+
+    protected void tctSearch_TextChanged(object sender, EventArgs e)
+    {
+        if(tctSearchDiscr.Text != "" && tctSearchProduct.Text != ""){
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_NewProductionDTLS  AS Pd" +
+              " Inner Join tbl_NewOrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+              " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'" +
+              " AND RowMaterial ='" + tctSearchProduct.Text + "' AND Discription ='" + tctSearchDiscr.Text + "' " +
+              " AND PD.Status <> 2 ORDER BY PD.Status DESC ");
+            GVPurchase.DataSource = Dt;
+            GVPurchase.DataBind();
+        }
+        else if (tctSearchProduct.Text != "")
+        {
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_NewProductionDTLS  AS Pd" +
+               " Inner Join tbl_NewOrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+               " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'" +
+               " AND RowMaterial ='" + tctSearchProduct.Text + "' " +
+               " AND PD.Status <> 2 ORDER BY PD.Status DESC ");
+            GVPurchase.DataSource = Dt;
+            GVPurchase.DataBind();
+        }
+        else if (tctSearchDiscr.Text != "")
+        {
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_NewProductionDTLS  AS Pd" +
+              " Inner Join tbl_NewOrderAcceptanceHdr AS OH on Pd.OANumber = OH.Pono " +
+              " WHERE Pd.Stage = '" + Session["Stage"].ToString() + "' AND Pd.ProjectCode='" + Session["ProjectCode"].ToString() + "'" +
+              " AND Discription ='" + tctSearchDiscr.Text + "' " +
+              " AND PD.Status <> 2 ORDER BY PD.Status DESC ");
+            GVPurchase.DataSource = Dt;
+            GVPurchase.DataBind();
+        }
+        else{
+            FillGrid();
+        }
+    }
+
+    protected void btnrefresh_Click(object sender, EventArgs e)
+    {
+        tctSearchProduct.Text = "";
+        tctSearchDiscr.Text = "";
+        FillGrid();
+    }
 }
