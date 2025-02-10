@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Reporting.WebForms;
 
 public partial class Production_DispatchPage : System.Web.UI.Page
 {
@@ -76,7 +74,7 @@ public partial class Production_DispatchPage : System.Web.UI.Page
 
             " FROM tbl_NewProductionDTLS AS t1 " +
             " WHERE ProjectCode = '" + Session["ProjectCode"].ToString() + "' and Stage='" + Session["Stage"].ToString() + "' " +
-            " GROUP BY OANumber, Stage, RowMaterial, RawMateReqQTY, RawMateRemainingReqQty, ProjectCode, ProjectName "+
+            " GROUP BY OANumber, Stage, RowMaterial, RawMateReqQTY, RawMateRemainingReqQty, ProjectCode, ProjectName " +
             " order by SentQTy desc, RemainingQTy desc ");
 
         dt.Columns.Add("ProductStatus");
@@ -295,6 +293,137 @@ public partial class Production_DispatchPage : System.Web.UI.Page
 
     protected void GroupRecords_RowEditing(object sender, GridViewEditEventArgs e)
     {
-
     }
+
+
+    public void GetExcellDataCustomerWise()
+    {
+        try
+        {
+            using (SqlCommand cmd = new SqlCommand(" SELECT OANumber, Stage, RowMaterial, RawMateReqQTY, (Sum(CAST(InwardQty as int)) / (SUM(CAST(TotalQTY AS INT)) / Cast(RawMateReqQTY as int))) AS ReceivedQty, " +
+            " (Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int)) AS SentQTy," +
+            " ((Sum(CAST(InwardQty as int))/(SUM(CAST(TotalQTY AS INT)) /Cast(RawMateReqQTY as int))-(Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int))))AS RemainingQTy, " +
+            " ProjectCode,ProjectName,Count(ID) AS JobCounts, TRY_CAST(SUM(CAST(TotalQTY AS INT)) AS INT) AS TotalQuantity, " +
+
+            " STUFF((SELECT ',' + CAST(JobNo AS NVARCHAR) " +
+            " FROM tbl_NewProductionDTLS t2 " +
+            " WHERE t2.RowMaterial = t1.RowMaterial  And t2.Stage = t1.Stage And t2.OANumber = t1.OANumber " +
+            " FOR XML PATH('')), 1, 1, '') AS JobNoList, " +
+
+            " STUFF((SELECT ',' + CAST(TotalQTY AS NVARCHAR) " +
+            " FROM tbl_NewProductionDTLS AS t3 " +
+            " WHERE t3.RowMaterial = t1.RowMaterial And t3.Stage = t1.Stage And t3.OANumber = t1.OANumber " +
+            " FOR XML PATH('')), 1, 1, '') AS TotalQTYlist, " +
+
+            " STUFF((SELECT ',' + CAST(InwardQTY AS NVARCHAR) " +
+            " FROM tbl_NewProductionDTLS AS t4 " +
+            " WHERE t4.RowMaterial = t1.RowMaterial And t4.Stage = t1.Stage And t4.OANumber = t1.OANumber " +
+            " FOR XML PATH('')), 1, 1, '') AS InwardQTYlist, " +
+
+            " STUFF((SELECT ',' + CAST(Discription AS NVARCHAR) " +
+            " FROM tbl_NewProductionDTLS t5 " +
+            " WHERE  t5.RowMaterial = t1.RowMaterial And t5.Stage = t1.Stage And t5.OANumber = t1.OANumber " +
+            " FOR XML PATH('')), 1, 1, '') AS Disc " +
+
+            " FROM tbl_NewProductionDTLS AS t1 " +
+            " WHERE ProjectCode = '" + Session["ProjectCode"].ToString() + "' and Stage='" + Session["Stage"].ToString() + "' " +
+            " GROUP BY OANumber, Stage, RowMaterial, RawMateReqQTY, RawMateRemainingReqQty, ProjectCode, ProjectName " +
+            " order by SentQTy desc, RemainingQTy desc", con))
+            {
+                DataTable Dt = new DataTable();
+                con.Open();
+                using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+                    dt.Columns.Add("ProductStatus");
+                    GroupRecords.DataSource = dt;
+                    GroupRecords.DataBind();
+                    con.Close();
+                    Response.Clear();
+                    System.DateTime now = System.DateTime.Today;
+                    string filename = dt.Rows[0]["ProjectCode"].ToString() + " Report " + now.ToString("dd/MM/yyyy");
+                    Response.AddHeader("content-disposition", "attachment; filename = '" + filename + "'.xls");
+                    Response.ContentType = "application/vnd.xls";
+                    System.IO.StringWriter stringWrite = new System.IO.StringWriter();
+                    System.Web.UI.HtmlTextWriter htmlWrite = new HtmlTextWriter(stringWrite);
+                    GroupRecords.RenderControl(htmlWrite);
+                    Response.Write(stringWrite.ToString());
+                    Response.Flush();
+                }
+            }
+
+        }
+
+
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+    protected void btnExcel_Click(object sender, EventArgs e)
+    {
+       // GetExcellDataCustomerWise();
+        Report();
+    }
+
+
+    public void Report()
+    {
+        try
+        {
+            using (SqlCommand cmd = new SqlCommand(" SELECT RowMaterial AS ProductName, RawMateReqQTY AS TotalSet, (Sum(CAST(InwardQty as int)) / (SUM(CAST(TotalQTY AS INT)) / Cast(RawMateReqQTY as int))) AS InwardSet, " +
+             " (Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int)) AS OutwardSet," +
+             " ((Sum(CAST(InwardQty as int))/(SUM(CAST(TotalQTY AS INT)) /Cast(RawMateReqQTY as int))-(Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int))))AS RemainingSet, " +
+             " ProjectCode, Case When RawMateReqQTY = (Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int)) then 'Completed' "+
+             " When ((Sum(CAST(InwardQty as int))/(SUM(CAST(TotalQTY AS INT)) /Cast(RawMateReqQTY as int))-(Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int)))) != 0 then 'In-Process' "+
+             " else 'Pending' end ProductStatus " +
+
+             " FROM tbl_NewProductionDTLS AS t1 " +
+             " WHERE ProjectCode = '" + Session["ProjectCode"].ToString() + "' and Stage='" + Session["Stage"].ToString() + "' " +
+             " GROUP BY RowMaterial, RawMateReqQTY, RawMateRemainingReqQty, ProjectCode, ProjectName " +
+             " order by OutwardSet desc ", con))
+            {
+                DataTable Dt = new DataTable();
+                con.Open();
+                using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    ReportDataSource obj1 = new ReportDataSource("DataSet1", dt);
+                    ReportViewer1.LocalReport.DataSources.Add(obj1);
+                    ReportViewer1.LocalReport.ReportPath = "RDLC_Reports\\DispatchReport.rdlc";
+                    ReportViewer1.LocalReport.Refresh();
+
+                    //-------- Print PDF directly without showing ReportViewer ----
+                    Warning[] warnings;
+                    string[] streamids;
+                    string mimeType;
+                    string encoding;
+                    string extension;
+                    byte[] bytePdfRep = ReportViewer1.LocalReport.Render("EXCEL", null, out mimeType, out encoding, out extension, out streamids, out warnings);
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+                    Response.Buffer = true;
+
+                    Response.ContentType = "application/vnd.ms-excel";
+                    Response.AddHeader("content-disposition", "attachment; filename="+dt.Rows[0]["ProjectCode"].ToString()+"_Reports.xls");
+
+
+                    Response.BinaryWrite(bytePdfRep);
+                    ReportViewer1.LocalReport.DataSources.Clear();
+                    ReportViewer1.Reset();
+
+
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+    }
+
 }

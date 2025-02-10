@@ -384,6 +384,11 @@
                                                             <asp:Label ID="lblDisclist" runat="server" Text='<%#Eval("Disc")%>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="File Path" HeaderStyle-CssClass="gvhead" Visible="false">
+                                                        <ItemTemplate>
+                                                            <asp:Label ID="lblFilePath" runat="server" Text='<%#Eval("FilePath")%>'></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="PDF File" ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
                                                             <asp:LinkButton runat="server" ID="btnPdfFile" ToolTip="Show drawings" CausesValidation="false" CommandName="PdfDownload" CommandArgument='<%# Eval("FilePath") %>'><i class="fas fa-folder-open"  style="font-size: 26px;"></i></i></asp:LinkButton>

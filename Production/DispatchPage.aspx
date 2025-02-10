@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/AdminMaster.master" AutoEventWireup="true" CodeFile="DispatchPage.aspx.cs" Inherits="Production_DispatchPage" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<%@ Register Assembly="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" Namespace="Microsoft.Reporting.WebForms" TagPrefix="rsweb" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <script src="../Content/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
     <script>     
@@ -272,7 +274,6 @@
     <form id="form1" runat="server" enctype="multipart/form-data">
         <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
         </asp:ToolkitScriptManager>
-
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
             <ContentTemplate>
                 <div class="container-fluid px-4">
@@ -283,6 +284,9 @@
                     <div class="row">
                         <div class="col-9 col-md-10">
                             <h4 class="mt-4 "><b>DISPATCH LIST</b></h4>
+                        </div> 
+                        <div class="col-9 col-md-2">
+                            <asp:Button ID="btnExcel" runat="server" OnClick="btnExcel_Click" CssClass="btn btn-outline-success" Text="Import Excel" Style="font-size:14px;margin-top: 15px;"/>
                         </div>
                     </div>
                     <hr />
@@ -379,7 +383,7 @@
                                                             <asp:Label ID="lblDisclist" runat="server" Text='<%#Eval("Disc")%>'></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="PDF File" ItemStyle-HorizontalAlign="Center">
+                                                    <asp:TemplateField HeaderText="PDF File" ItemStyle-HorizontalAlign="Center" Visible="false">
                                                         <ItemTemplate>
                                                             <asp:LinkButton runat="server" ID="btnPdfFile" ToolTip="Show drawings" CausesValidation="false" CommandName="PdfDownload" CommandArgument='<%# Eval("ProjectCode") %>'><i class="fas fa-folder-open"  style="font-size: 26px;"></i></i></asp:LinkButton>
                                                         </ItemTemplate>
@@ -466,8 +470,10 @@
             </ContentTemplate>
             <Triggers>
                 <asp:PostBackTrigger ControlID="btnSendDispatch" />
+                <asp:PostBackTrigger ControlID="btnExcel" />
             </Triggers>
         </asp:UpdatePanel>
+         <rsweb:ReportViewer ID="ReportViewer1" runat="server" Visible="false"></rsweb:ReportViewer>
     </form>
 
 </asp:Content>

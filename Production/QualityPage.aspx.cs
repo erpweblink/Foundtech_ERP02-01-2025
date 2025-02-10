@@ -54,9 +54,9 @@ public partial class Production_QualityPage : System.Web.UI.Page
     private void FillGrid()
     {
         DataTable dt = Cls_Main.Read_Table(" SELECT  t7.FilePath,t1.OANumber,t1.Stage,RowMaterial,RawMateReqQTY,RawMateRemainingReqQty, " +
-            " (Sum(CAST(InwardQty as int))/(SUM(CAST(TotalQTY AS INT)) /Cast(RawMateReqQTY as int))) AS ReceivedQty, "+
-            " (Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int)) AS SentQTy, "+
-            " ((Sum(CAST(InwardQty as int))/(SUM(CAST(TotalQTY AS INT)) /Cast(RawMateReqQTY as int))-(Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int))))AS RemainingQTy, "+
+            " (Sum(CAST(InwardQty as int))/(SUM(CAST(TotalQTY AS INT)) /Cast(RawMateReqQTY as int))) AS ReceivedQty, " +
+            " (Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int)) AS SentQTy, " +
+            " ((Sum(CAST(InwardQty as int))/(SUM(CAST(TotalQTY AS INT)) /Cast(RawMateReqQTY as int))-(Cast(RawMateReqQTY as Int)-Cast(RawMateRemainingReqQty as int))))AS RemainingQTy, " +
             " t1.ProjectCode, t1.ProjectName,Count( t1.ID) AS JobCounts, " +
             " TRY_CAST(SUM(CAST(TotalQTY AS INT)) AS INT) AS TotalQuantity, " +
 
@@ -103,7 +103,7 @@ public partial class Production_QualityPage : System.Web.UI.Page
                 Label lblProdStatus = e.Row.FindControl("lblProdStatus") as Label;
                 Label lblRemainingSet = e.Row.FindControl("lblRemainingSet") as Label;
 
-                if (lblReqQty != null || lblSentQty != null )
+                if (lblReqQty != null || lblSentQty != null)
                 {
 
                     if (lblReqQty.Text == lblSentQty.Text)
@@ -111,7 +111,8 @@ public partial class Production_QualityPage : System.Web.UI.Page
                         lblProdStatus.Text = "Completed";
                         lblProdStatus.ForeColor = System.Drawing.Color.Green;
                     }
-                    else if(lblRemainingSet.Text != "0"){
+                    else if (lblRemainingSet.Text != "0")
+                    {
                         lblProdStatus.Text = "In-Process";
                         lblProdStatus.ForeColor = System.Drawing.Color.Orange;
                     }
@@ -121,9 +122,22 @@ public partial class Production_QualityPage : System.Web.UI.Page
                         lblProdStatus.ForeColor = System.Drawing.Color.Red;
                     }
                 }
+                LinkButton btnPdfFile = e.Row.FindControl("btnPdfFile") as LinkButton;
+                Label lblFilePath = e.Row.FindControl("lblFilePath") as Label;
+                if (lblFilePath.Text != "")
+                {
+                    btnPdfFile.ForeColor = System.Drawing.Color.Green;
+                }
+                else
+                {
+                    btnPdfFile.ForeColor = System.Drawing.Color.Black;
+                    btnPdfFile.Enabled = false;
+                }
 
             }
+
         }
+
         catch
         {
         }

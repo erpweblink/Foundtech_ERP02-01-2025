@@ -109,7 +109,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("[SP_GetSubProductsByProjectCodeTesting]", connection))
+                using (SqlCommand cmd = new SqlCommand("[SP_NewGetSubProductsByProjectCode]", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Pono", e.CommandArgument.ToString());
