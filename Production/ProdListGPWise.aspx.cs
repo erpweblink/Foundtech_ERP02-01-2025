@@ -153,16 +153,16 @@ public partial class Production_ProdListGPWise : System.Web.UI.Page
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
                 con.Open();
-                List<string> countryNames = new List<string>();
+                List<string> Companyname = new List<string>();
                 using (SqlDataReader sdr = com.ExecuteReader())
                 {
                     while (sdr.Read())
                     {
-                        countryNames.Add(sdr["Companyname"].ToString());
+                        Companyname.Add(sdr["Companyname"].ToString());
                     }
                 }
                 con.Close();
-                return countryNames;
+                return Companyname;
             }
         }
     }

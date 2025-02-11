@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.35213.121
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Foundtech_ERP", ".", "{931C6ED9-6819-4ADE-828D-F86E81F0D64E}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Foundtech_ERP21-11-2024", ".", "{931C6ED9-6819-4ADE-828D-F86E81F0D64E}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.1"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8.1"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_56162"
 		Debug.AspNetCompiler.PhysicalPath = "..\Foundtech_ERP\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_56162\"
