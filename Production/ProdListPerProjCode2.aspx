@@ -587,23 +587,22 @@
 
     <div class="container-fluid" id="comment_form">
         <form id="form1" runat="server" enctype="multipart/form-data">
+            <center>
+                <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">
+                    <asp:Label ID="lblPageName" runat="server"></asp:Label>
+                    PRODUCT LIST</h2>
+            </center>
             <div class="row">
-                <div class="col-md-10">
-                    <center>
-                        <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">
-                            <asp:Label ID="lblPageName" runat="server"></asp:Label>
-                            PRODUCT LIST</h2>
-                    </center>
-                </div>
-                <div class="col-md-1" style="margin-top: 18px;">
+                <div class="col-md-10"></div>
+                <div class="col-md-1">
                     <asp:Button ID="lblBtn" runat="server" CssClass="btn-primary" Text="Back To List" OnClick="lblBtn_Click" Font-Size="17px"></asp:Button>
                 </div>
             </div>
             <hr style="border: 1px solid rgb(182, 178, 156);">
             <br />
-            <div class="container" style="box-shadow: none; margin-left: -6px; margin-top: -14px;">
+            <div class="container" style="box-shadow: none; margin-left: 16px;">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-md-4">
@@ -621,32 +620,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-5">
-                                <asp:Label ID="lblSerachProduct" runat="server" Text="Product Name :" Font-Bold="true"></asp:Label>
-                                <asp:TextBox ID="tctSearchProduct" runat="server" CssClass="form-control" Style="border: 1px solid black;" OnTextChanged="tctSearch_TextChanged" AutoPostBack="true"></asp:TextBox>
-                                <asp:AutoCompleteExtender ID="AutoCompleteExtender3" CompletionListCssClass="completionList"
-                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
-                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetProducts" TargetControlID="tctSearchProduct" runat="server">
-                                </asp:AutoCompleteExtender>
-                            </div>
-                            <div class="col-md-5">
-                                <asp:Label ID="lblSerachDiscr" runat="server" Text="Product Discription :" Font-Bold="true"></asp:Label>
-                                <asp:TextBox ID="tctSearchDiscr" runat="server" CssClass="form-control" Style="border: 1px solid black;" OnTextChanged="tctSearch_TextChanged" AutoPostBack="true"></asp:TextBox>
-                                <asp:AutoCompleteExtender ID="AutoCompleteExtender4" CompletionListCssClass="completionList"
-                                    CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
-                                    CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetDescription" TargetControlID="tctSearchDiscr" runat="server">
-                                </asp:AutoCompleteExtender>
-                            </div>
-                            <div class="col-md-1" style="margin-top: 21px;">
-                                <asp:LinkButton ID="btnrefresh" runat="server" OnClick="btnrefresh_Click" Style="width: 100%;padding: 7px 26px 7px 13px;" CssClass="form-control btn btn-warning"><i style="color:white" class="fa">&#xf021;</i> </asp:LinkButton>
-                            </div>
-                            <div class="col-md-1"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="container-fluid" style="margin-left: 21%;">
+                    <div class="col-md-6">
+                        <div class="container-fluid" style="margin-left: 28%;">
                             <div class="row">
                                 <div class="col-md-4">
                                     <span><b>Show Records:</b><br />
@@ -654,7 +629,7 @@
                                             ID="DropDownList1"
                                             CssClass="form-control"
                                             runat="server"
-                                            Style="width: 72px; display: inline-block;"
+                                            Style="width: 90px; display: inline-block;"
                                             AutoPostBack="true"
                                             OnTextChanged="DropDownList1_TextChanged">
                                         </asp:DropDownList>
@@ -664,7 +639,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <span><b>Products :</b><br />
-                                        <asp:DropDownList ID="txtdropdown" runat="server" CssClass="form-control" OnTextChanged="txtdropdown_TextChanged" AutoPostBack="True" Style="width: 155px;">
+                                        <asp:DropDownList ID="txtdropdown" runat="server" CssClass="form-control" OnTextChanged="txtdropdown_TextChanged" AutoPostBack="True">
                                             <asp:ListItem Text="Not Completed" Value="3" Selected="True"></asp:ListItem>
                                             <asp:ListItem Text="Completed" Value="2"></asp:ListItem>
                                         </asp:DropDownList>
@@ -675,8 +650,6 @@
                     </div>
                 </div>
             </div>
-
-
             <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
             </asp:ToolkitScriptManager>
 
@@ -685,6 +658,7 @@
                     <div id="divtable" runat="server">
                         <div class="container-fluid px-4">
                             <div class="row">
+                                <br />
                                 <%--<div class="table-responsive text-center">--%>
                                 <div class="table table-responsive">
                                     <br />
@@ -890,7 +864,7 @@
                                                             <!-- Display the image -->
                                                             <asp:ImageButton ID="ImageButtonfile2" ImageUrl="../Content1/img/Open-file2.png" runat="server" Width="30px" OnClick="ImageButtonfile2_Click" CommandArgument='<%# Eval("ID") %>' ToolTip="Open File" />
                                                             <asp:Label ID="Label14" runat="server" Font-Bold="true" Text="Drawing Name : " CssClass="form-label"></asp:Label>
-                                                            <asp:Label ID="Label4" runat="server" Font-Bold="true" Text='<%# Eval("FileName") %>' CssClass="form-label"></asp:Label>
+                                                            <asp:Label ID="Label4" runat="server" Font-Bold="true" Text='<%# Eval("Remark") %>' CssClass="form-label"></asp:Label>
                                                         </div>
                                                     </div>
                                                 </ItemTemplate>
