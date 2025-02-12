@@ -693,7 +693,7 @@
                                         <Columns>
                                             <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
                                                 <ItemTemplate>
-                                                    <asp:LinkButton runat="server" ID="btnShowDtls" ToolTip="View Sub Products" CommandName="ViewDetails" CommandArgument='<%# Eval("JobNo") + "," + Eval("rowmaterial") %>'><i class="fa fa-info-circle" aria-hidden="true" style="font-size: 26px; color: green;"></i></asp:LinkButton>
+                                                    <asp:LinkButton runat="server" ID="btnShowDtls" ToolTip="View Sub Products" CommandName="ViewDetails" CommandArgument='<%# Eval("JobNo") + "," + Eval("rowmaterial") + "," + Eval("Discription") %>'><i class="fa fa-info-circle" aria-hidden="true" style="font-size: 26px; color: green;"></i></asp:LinkButton>
                                                     <asp:Label ID="OaNumber" runat="server" Text='<%#Eval("Oanumber")%>' Visible="false"></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>

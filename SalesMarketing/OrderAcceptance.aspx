@@ -601,6 +601,7 @@
                                                                     </ItemTemplate>
                                                                     <EditItemTemplate>
                                                                         <asp:LinkButton ID="gv_update" OnClick="gv_update_Click" Text="Update" CausesValidation="false" CssClass="btn btn-primary btn-sm" runat="server"></asp:LinkButton>&nbsp;
+
                                                         <asp:LinkButton ID="gv_cancel" OnClick="gv_cancel_Click" CausesValidation="false" Text="Cancel" CssClass="btn btn-primary btn-sm " runat="server"></asp:LinkButton>
                                                                     </EditItemTemplate>
                                                                 </asp:TemplateField>
@@ -654,11 +655,11 @@
                                     <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding - left: 1px;">
                                         <br />
                                         <div class="row">
-                                            <div class="col-md-6 d-none">
+                                            <div class="col-md-4 d-none">
                                                 <asp:Label ID="Label14" runat="server" Font-Bold="true" CssClass="form-label">PONO :</asp:Label>
                                                 <asp:TextBox ID="txtPonoProd" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <asp:Label ID="Label13" runat="server" Font-Bold="true" CssClass="form-label">Product Name:</asp:Label>
                                                 <asp:TextBox ID="txtProductname" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
                                             </div> 
@@ -666,6 +667,11 @@
                                                 <asp:Label ID="Label144" runat="server" Font-Bold="true" CssClass="form-label">Discription:</asp:Label>
                                                 <asp:TextBox ID="txtDiscr" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
                                             </div>
+                                            <div class="col-md-4" >
+                                                <asp:Label ID="lblDiscr" runat="server" Font-Bold="true" CssClass="form-label">Product Discription:</asp:Label>
+                                                 <asp:TextBox ID="txtdiscr" CssClass="form-control" ReadOnly="true" runat="server" ></asp:TextBox>
+                                            </div>
+
                                         </div>
                                         <br />
                                         <br />

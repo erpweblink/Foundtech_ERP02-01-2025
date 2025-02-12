@@ -569,6 +569,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                         DataTable Dt = Cls_Main.Read_Table("SELECT Id,Pono,Productname FROM [tbl_NewOrderAcceptanceDtls] WHERE Pono='" + txtpono.Text + "'");
+
                         if (Dt.Rows.Count > 0)
                         {
                             ViewState["OrderAcceptanceData"] = Dt;
@@ -649,6 +650,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             cmdd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
                             //cmdd.ExecuteNonQuery();
                             Cls_Main.Conn_Close();
+
 
 
 
@@ -1405,10 +1407,12 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
             string pono = val[0];
             string productName = val[1];
+
             string Discr = val[2];
             txtPonoProd.Text = pono;
             txtProductname.Text = productName;
             txtDiscr.Text = Discr;
+
             this.ModalPopupHistory.Show();
         }
     }
@@ -1439,10 +1443,12 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                 for (int row = 2; row <= rowCount; row++)
                 {
                     con.Open();
+
                     SqlCommand cmd = new SqlCommand("INSERT INTO tbl_NewSubProducts (Pono,ProductName,Discr,SubProductName,SubDescription,Quantity,Length,Weight, " +
                         " Width,Thickness,TotalWeight) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + txtDiscr.Text + "','" + worksheet.Cells[row, 2].Text + "'," +
                         "'" + worksheet.Cells[row, 3].Text + "','" + worksheet.Cells[row, 4].Text + "','" + worksheet.Cells[row, 5].Text + "'," +
                         "'" + worksheet.Cells[row, 6].Text + "','" + worksheet.Cells[row, 7].Text + "','" + worksheet.Cells[row, 8].Text + "','" + worksheet.Cells[row, 9].Text + "')", con);
+
                     cmd.ExecuteNonQuery();
                     con.Close();
 
@@ -1481,6 +1487,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         if (TextBox1.Text != "")
         {
             con.Open();
+
             SqlCommand cmd = new SqlCommand("INSERT INTO tbl_NewSubProducts (Pono,ProductName,Discr,SubProductName,SubDescription,Quantity,Length,Weight, " +
                 " Width,Thickness,TotalWeight) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + txtDiscr.Text + "','" + TextBox1.Text + "'," +
                 "'" + TextBox2.Text + "','" + TextBox3.Text + "','" + TextBox4.Text + "'," +

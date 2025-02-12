@@ -89,7 +89,7 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
         if (e.CommandName == "Rowwarehouse")
         {
             DivWarehouse.Visible = true;
-           // divtable.Visible = false;
+            // divtable.Visible = false;
 
             string rowIndex = e.CommandArgument.ToString();
 
@@ -307,26 +307,30 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
         {
             DataTable Dts = Cls_Main.Read_Table("SELECT Top 1 ProjectCode, Discription, Width, Length FROM tbl_NewProductionDTLS where JobNo='" + txtjobno.Text.Trim() + "'");
 
-            if(Dts.Rows.Count >= 0)
+            if (Dts.Rows.Count >= 0)
             {
                 string Width = Dts.Rows[0]["Width"].ToString();
                 string Length = Dts.Rows[0]["Length"].ToString();
                 if (Width == "")
                 {
+
                     Width = "0.000";
                 } 
+
                 if (Length == "")
                 {
                     Length = "0.000";
                 }
+
                 DataTable Dta = Cls_Main.Read_Table("select JobNo,OANumber,ProjectCode,Discription,Length,Width FROM tbl_NewProductionDTLS WHERE ProjectCode = '" + Dts.Rows[0]["ProjectCode"].ToString() + "' " +
                     " AND Discription = '" + Dts.Rows[0]["Discription"].ToString() + "' AND Width = '" + Width +"'" +
                     " AND Length = '" + Length + "' AND Stage = 'Drawing'");
-                if(Dta.Rows.Count > 0)
+                if (Dta.Rows.Count > 0)
                 {
                     foreach (DataRow row in Dta.Rows)
                     {
                         string jobno = row["JobNo"].ToString();
+
                         string Oano = row["OANumber"].ToString();
                         string ProjCode = row["ProjectCode"].ToString();
                         string Discr = row["Discription"].ToString();
@@ -334,9 +338,12 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                         string Wid = row["Width"].ToString();
                         Cls_Main.Conn_Open();
 
+
                         // Loop through the Request.Files to process the uploaded files
                         for (int i = 0; i < Request.Files.Count; i++)
                         {
+                            Cls_Main.Conn_Open();
+
                             HttpPostedFile file = Request.Files[i];
                             if (file != null && file.ContentLength > 0)
                             {
@@ -376,10 +383,44 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                                     cmd.ExecuteNonQuery();
                                 }
                             }
+
+                            // Close the connection (if not managed by Cls_Main)
+                            Cls_Main.Conn_Close();
                         }
 
-                        // Close the connection (if not managed by Cls_Main)
+
+                        Cls_Main.Conn_Open();
+                        SqlCommand Cmd = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET OutwardQTY=@OutwardQTY,OutwardBy=@OutwardBy,OutwardDate=@OutwardDate,Remark=@Remark,InwardQTY=@InwardQTY,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+                        Cmd.Parameters.AddWithValue("@StageNumber", 0);
+                        Cmd.Parameters.AddWithValue("@JobNo", jobno);
+                        Cmd.Parameters.AddWithValue("@InwardQTY", totalQty);
+                        Cmd.Parameters.AddWithValue("@OutwardQTY", totalQty);
+                        Cmd.Parameters.AddWithValue("@Remark", txtRemarks.Text);
+                        Cmd.Parameters.AddWithValue("@Status", 2);
+                        Cmd.Parameters.AddWithValue("@OutwardBy", Session["UserCode"].ToString());
+                        Cmd.Parameters.AddWithValue("@OutwardDate", DateTime.Now);
+                        Cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
+
+                        DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_ProductionDTLS AS PD where JobNo='" + jobno + "'and StageNumber>0 ");
+                        if (Dt.Rows.Count > 0)
+                        {
+                            int StageNumber = Convert.ToInt32(Dt.Rows[0]["StageNumber"].ToString());
+                            int Status = Convert.ToInt32(Dt.Rows[0]["Status"].ToString());
+                            if (Status != 2)
+                            {
+                                Cls_Main.Conn_Open();
+                                SqlCommand Cmd1 = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET InwardQTY=@InwardQTY,InwardBy=@InwardBy,InwardDate=@InwardDate,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+                                Cmd1.Parameters.AddWithValue("@StageNumber", StageNumber);
+                                Cmd1.Parameters.AddWithValue("@JobNo", jobno);
+                                Cmd1.Parameters.AddWithValue("@Status", 1);
+                                Cmd1.Parameters.AddWithValue("@InwardQTY", totalQty);
+                                Cmd1.Parameters.AddWithValue("@InwardBy", Session["UserCode"].ToString());
+                                Cmd1.Parameters.AddWithValue("@InwardDate", DateTime.Now);
+                                Cmd1.ExecuteNonQuery();
+                                Cls_Main.Conn_Close();
+                            }
+                        }
                     }
 
                 }
@@ -428,6 +469,7 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                     // Close the connection (if not managed by Cls_Main)
                     Cls_Main.Conn_Close();
 
+
                 }
                
                 Cls_Main.Conn_Open();
@@ -465,7 +507,29 @@ public partial class Production_ProdListPerProjCode : System.Web.UI.Page
                     Cmd1.Parameters.AddWithValue("@InwardDate", DateTime.Now);
                   //Cmd1.ExecuteNonQuery();
                     Cls_Main.Conn_Close();
+
+                    DataTable Dt = Cls_Main.Read_Table("SELECT TOP 1 * FROM tbl_ProductionDTLS AS PD where JobNo='" + txtjobno.Text + "'and StageNumber>0 ");
+                    if (Dt.Rows.Count > 0)
+                    {
+                        int StageNumber = Convert.ToInt32(Dt.Rows[0]["StageNumber"].ToString());
+                        int Status = Convert.ToInt32(Dt.Rows[0]["Status"].ToString());
+                        if (Status != 2)
+                        {
+                            Cls_Main.Conn_Open();
+                            SqlCommand Cmd1 = new SqlCommand("UPDATE [tbl_ProductionDTLS] SET InwardQTY=@InwardQTY,InwardBy=@InwardBy,InwardDate=@InwardDate,Status=@Status WHERE StageNumber=@StageNumber AND JobNo=@JobNo", Cls_Main.Conn);
+                            Cmd1.Parameters.AddWithValue("@StageNumber", StageNumber);
+                            Cmd1.Parameters.AddWithValue("@JobNo", txtjobno.Text);
+                            Cmd1.Parameters.AddWithValue("@Status", 1);
+                            Cmd1.Parameters.AddWithValue("@InwardQTY", txttotalqty.Text);
+                            Cmd1.Parameters.AddWithValue("@InwardBy", Session["UserCode"].ToString());
+                            Cmd1.Parameters.AddWithValue("@InwardDate", DateTime.Now);
+                            Cmd1.ExecuteNonQuery();
+                            Cls_Main.Conn_Close();
+                        }
+                    }
                 }
+
+
             }
 
             string encryptedValue = objcls.encrypt(Session["ProjectCode"].ToString());

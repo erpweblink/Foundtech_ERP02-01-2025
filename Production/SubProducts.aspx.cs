@@ -26,6 +26,7 @@ public partial class Production_SubProducts : System.Web.UI.Page
 
                     hideJobNo.Value = val[0];
                     hideProdName.Value = val[1];
+
                     Discr = val[2];
                     FillGrid();
                 }
@@ -38,16 +39,20 @@ public partial class Production_SubProducts : System.Web.UI.Page
     private void FillGrid()
     {
 
+
         DataTable Dt = Cls_Main.Read_Table("SELECT * FROM tbl_NewProductionHDR Where JobNo = '" + hideJobNo.Value + "' AND ProductName = '" + hideProdName.Value + "'");
         if (Dt.Rows.Count > 0)
         {
             string oanum = Dt.Rows[0]["OaNumber"].ToString();
             DataTable Dta = Cls_Main.Read_Table("SELECT * FROM tbl_NewOrderAcceptanceDtls Where pono = '" + oanum + "' AND ProductName = '" + hideProdName.Value + "' AND Description = '"+ Discr + "'");
+
             if (Dta.Rows.Count > 0)
             {
                 string Id = Dta.Rows[0]["ID"].ToString();
 
+
                 DataTable Dtas = Cls_Main.Read_Table("SELECT * FROM tbl_NewSubProducts Where pono = '" + Id + "' AND ProductName = '" + hideProdName.Value + "'");
+
                 GVPurchase.DataSource = Dtas;
                 GVPurchase.DataBind();
             }
