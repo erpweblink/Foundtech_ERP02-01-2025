@@ -1,15 +1,9 @@
-﻿
-using DocumentFormat.OpenXml.Office2010.Excel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -45,13 +39,13 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
     {
         if (Session["Role"].ToString() == "Admin")
         {
-            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE CP.IsDeleted = 0 ORDER BY CP.ID DESC");
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE CP.IsDeleted = 0 ORDER BY CP.ID DESC");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
         }
         else
         {
-            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE (CP.CreatedBy='" + Session["UserCode"].ToString() + "' OR CP.UserName='" + Session["UserCode"].ToString() + "') AND  CP.IsDeleted = 0 ORDER BY CP.ID DESC");
+            DataTable Dt = Cls_Main.Read_Table("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE (CP.CreatedBy='" + Session["UserCode"].ToString() + "' OR CP.UserName='" + Session["UserCode"].ToString() + "') AND  CP.IsDeleted = 0 ORDER BY CP.ID DESC");
             GVPurchase.DataSource = Dt;
             GVPurchase.DataBind();
         }
@@ -74,24 +68,24 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             Cls_Main.Conn_Open();
 
             DataTable Dtt = new DataTable();
-            SqlDataAdapter Sdd = new SqlDataAdapter("SELECT * FROM tbl_ProductionDTLS WHERE Oanumber='" + e.CommandArgument.ToString() + "'", con);
+            SqlDataAdapter Sdd = new SqlDataAdapter("SELECT * FROM tbl_NewProductionDTLS WHERE Oanumber='" + e.CommandArgument.ToString() + "'", con);
             Sdd.Fill(Dtt);
             if (Dtt.Rows.Count == 0)
             {
 
-                SqlCommand Cmd = new SqlCommand("DELETE [tbl_OrderAcceptanceHdr] WHERE pono=@ID", Cls_Main.Conn);
+                SqlCommand Cmd = new SqlCommand("DELETE [tbl_NewOrderAcceptanceHdr] WHERE pono=@ID", Cls_Main.Conn);
                 Cmd.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
                 Cmd.ExecuteNonQuery();
 
-                SqlCommand Cmd1 = new SqlCommand("DELETE [tbl_OrderAcceptancedtls] WHERE pono=@ID", Cls_Main.Conn);
+                SqlCommand Cmd1 = new SqlCommand("DELETE [tbl_NewOrderAcceptanceDtls] WHERE pono=@ID", Cls_Main.Conn);
                 Cmd1.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
                 Cmd1.ExecuteNonQuery();
 
-                SqlCommand Cmd2 = new SqlCommand("DELETE [tbl_ProductionHDR] WHERE oanumber=@ID", Cls_Main.Conn);
+                SqlCommand Cmd2 = new SqlCommand("DELETE [tbl_NewProductionHDR] WHERE oanumber=@ID", Cls_Main.Conn);
                 Cmd2.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
                 Cmd2.ExecuteNonQuery();
 
-                //SqlCommand Cmd = new SqlCommand("UPDATE [tbl_OrderAcceptanceHdr] SET IsDeleted=@IsDeleted,DeletedBy=@DeletedBy,DeletedOn=@DeletedOn WHERE ID=@ID", Cls_Main.Conn);
+                //SqlCommand Cmd = new SqlCommand("UPDATE [tbl_NewOrderAcceptanceHdr] SET IsDeleted=@IsDeleted,DeletedBy=@DeletedBy,DeletedOn=@DeletedOn WHERE ID=@ID", Cls_Main.Conn);
                 //Cmd.Parameters.AddWithValue("@ID", Convert.ToInt32(e.CommandArgument.ToString()));
                 //Cmd.Parameters.AddWithValue("@IsDeleted", '1');
                 //Cmd.Parameters.AddWithValue("@DeletedBy", Session["UserCode"].ToString());
@@ -115,7 +109,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SP_GetSubProductsByProjectCode", connection))
+                using (SqlCommand cmd = new SqlCommand("[SP_NewGetSubProductsByProjectCode]", connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Pono", e.CommandArgument.ToString());
@@ -179,19 +173,19 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
         if(e.CommandName == "RowClose")
         {
             Cls_Main.Conn_Open();
-            SqlCommand Cmd = new SqlCommand("DELETE [tbl_OrderAcceptanceHdr] WHERE pono=@ID", Cls_Main.Conn);
+            SqlCommand Cmd = new SqlCommand("DELETE [tbl_NewOrderAcceptanceHdr] WHERE pono=@ID", Cls_Main.Conn);
             Cmd.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
             Cmd.ExecuteNonQuery();
 
-            SqlCommand Cmd1 = new SqlCommand("DELETE [tbl_OrderAcceptancedtls] WHERE pono=@ID", Cls_Main.Conn);
+            SqlCommand Cmd1 = new SqlCommand("DELETE [tbl_NewOrderAcceptanceDtls] WHERE pono=@ID", Cls_Main.Conn);
             Cmd1.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
             Cmd1.ExecuteNonQuery();
 
-            SqlCommand Cmd2 = new SqlCommand("DELETE [tbl_ProductionHDR] WHERE oanumber=@ID", Cls_Main.Conn);
+            SqlCommand Cmd2 = new SqlCommand("DELETE [tbl_NewProductionHDR] WHERE oanumber=@ID", Cls_Main.Conn);
             Cmd2.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
             Cmd2.ExecuteNonQuery();
 
-           SqlCommand Cmd3 = new SqlCommand("DELETE [tbl_ProductionDtls] WHERE oanumber=@ID", Cls_Main.Conn);
+           SqlCommand Cmd3 = new SqlCommand("DELETE [tbl_NewProductionDTLS] WHERE oanumber=@ID", Cls_Main.Conn);
             Cmd3.Parameters.AddWithValue("@ID", e.CommandArgument.ToString());
             Cmd3.ExecuteNonQuery();
 
@@ -221,7 +215,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
             if (JobNo != null)
             {
-                DataTable Dts = Cls_Main.Read_Table("SELECT PdfFilePath FROM tbl_orderacceptancehdr  where Pono ='" + JobNo.Text + "'");
+                DataTable Dts = Cls_Main.Read_Table("SELECT PdfFilePath FROM tbl_NewOrderAcceptanceHdr  where Pono ='" + JobNo.Text + "'");
 
                 LinkButton btndrawings = e.Row.FindControl("btnPdf") as LinkButton;
 
@@ -250,7 +244,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
             }
             DataTable Dtas = new DataTable();
-            SqlDataAdapter Sda = new SqlDataAdapter("Select * from tbl_ProductionDtls where Oanumber='" + JobNo.Text + "'", con);
+            SqlDataAdapter Sda = new SqlDataAdapter("Select * from tbl_NewProductionDTLS where Oanumber='" + JobNo.Text + "'", con);
             Sda.Fill(Dtas);
             if (Dtas.Rows.Count > 0)
             {
@@ -296,7 +290,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT DISTINCT CustomerName FROM [tbl_OrderAcceptanceHdr] where " + "CustomerName like @Search + '%' and IsDeleted=0";
+                com.CommandText = "SELECT DISTINCT CustomerName FROM [tbl_NewOrderAcceptanceHdr] where " + "CustomerName like @Search + '%' and IsDeleted=0";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -322,7 +316,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             string company = txtCustomerName.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE CP.IsDeleted = 0 AND CustomerName='" + txtCustomerName.Text + "' ORDER BY CP.ID DESC", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE CP.IsDeleted = 0 AND CustomerName='" + txtCustomerName.Text + "' ORDER BY CP.ID DESC", Cls_Main.Conn);
             sad.Fill(dt);
             GVPurchase.EmptyDataText = "Not Records Found";
             GVPurchase.DataSource = dt;
@@ -351,7 +345,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT * FROM [tbl_OrderAcceptanceHdr] where " + "ProjectCode like @Search + '%' and IsDeleted=0";
+                com.CommandText = "SELECT * FROM [tbl_NewOrderAcceptanceHdr] where " + "ProjectCode like @Search + '%' and IsDeleted=0";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -376,7 +370,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             string Cpono = txtCpono.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT Distinct * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName Where ProjectCode='" + Cpono + "' ORDER BY CP.ID DESC", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT Distinct * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName Where ProjectCode='" + Cpono + "' ORDER BY CP.ID DESC", Cls_Main.Conn);
             sad.Fill(dt);
             GVPurchase.EmptyDataText = "Not Records Found";
             GVPurchase.DataSource = dt;
@@ -401,7 +395,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                     {
                         string Quono = txtCpono.Text;
                         DataTable dt = new DataTable();
-                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where ProjectCode = '" + Quono + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
+                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where ProjectCode = '" + Quono + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
                         sad.Fill(dt);
                         GVPurchase.EmptyDataText = "Not Records Found";
                         GVPurchase.DataSource = dt;
@@ -412,7 +406,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                         string company = txtCustomerName.Text;
 
                         DataTable dt = new DataTable();
-                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where CustomerName = '" + company + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
+                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where CustomerName = '" + company + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
                         sad.Fill(dt);
                         GVPurchase.EmptyDataText = "Not Records Found";
                         GVPurchase.DataSource = dt;
@@ -424,7 +418,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                         DataTable dt = new DataTable();
 
                         //SqlDataAdapter sad = new SqlDataAdapter(" select [Id],[JobNo],[DateIn],[CustName],[Subcustomer],[Branch],[MateName],[SrNo],[MateStatus],FinalStatus,[TestBy],[ModelNo],[otherinfo],[Imagepath],[CreatedBy],[CreatedDate],[UpdateBy],[UpdateDate] ,ProductFault,RepeatedNo,DATEDIFF(DAY, CreatedDate, getdate()) AS days FROM [tblInwardEntry] Where DateIn between'" + txtfromdate.Text + "' AND '" + txttodate.Text + "' ", Cls_Main.Conn);
-                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE  CP.IsDeleted = 0 AND CP.CreatedOn between'" + txtfromdate.Text + "' AND '" + txttodate.Text + "' ", Cls_Main.Conn);
+                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE  CP.IsDeleted = 0 AND CP.CreatedOn between'" + txtfromdate.Text + "' AND '" + txttodate.Text + "' ", Cls_Main.Conn);
                         sad.Fill(dt);
 
                         GVPurchase.EmptyDataText = "Not Records Found";
@@ -440,7 +434,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                         string Quono = txtCpono.Text;
 
                         DataTable dt = new DataTable();
-                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE (CP.CreatedBy='" + Session["UserCode"].ToString() + "' OR CP.UserName='" + Session["UserCode"].ToString() + "') AND  ProjectCode = '" + Quono + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
+                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE (CP.CreatedBy='" + Session["UserCode"].ToString() + "' OR CP.UserName='" + Session["UserCode"].ToString() + "') AND  ProjectCode = '" + Quono + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
                         sad.Fill(dt);
                         GVPurchase.EmptyDataText = "Not Records Found";
                         GVPurchase.DataSource = dt;
@@ -451,7 +445,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                         string company = txtCustomerName.Text;
 
                         DataTable dt = new DataTable();
-                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE (CP.CreatedBy='" + Session["UserCode"].ToString() + "' OR CP.UserName='" + Session["UserCode"].ToString() + "') AND  CustomerName = '" + company + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
+                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE (CP.CreatedBy='" + Session["UserCode"].ToString() + "' OR CP.UserName='" + Session["UserCode"].ToString() + "') AND  CustomerName = '" + company + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
                         sad.Fill(dt);
                         GVPurchase.EmptyDataText = "Not Records Found";
                         GVPurchase.DataSource = dt;
@@ -463,7 +457,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
                         DataTable dt = new DataTable();
 
                         //SqlDataAdapter sad = new SqlDataAdapter(" select [Id],[JobNo],[DateIn],[CustName],[Subcustomer],[Branch],[MateName],[SrNo],[MateStatus],FinalStatus,[TestBy],[ModelNo],[otherinfo],[Imagepath],[CreatedBy],[CreatedDate],[UpdateBy],[UpdateDate] ,ProductFault,RepeatedNo,DATEDIFF(DAY, CreatedDate, getdate()) AS days FROM [tblInwardEntry] Where DateIn between'" + txtfromdate.Text + "' AND '" + txttodate.Text + "' ", Cls_Main.Conn);
-                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE (CP.CreatedBy='" + Session["UserCode"].ToString() + "' OR CP.UserName='" + Session["UserCode"].ToString() + "') AND  CP.CreatedOn between'" + txtfromdate.Text + "' AND '" + txttodate.Text + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
+                        SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName WHERE (CP.CreatedBy='" + Session["UserCode"].ToString() + "' OR CP.UserName='" + Session["UserCode"].ToString() + "') AND  CP.CreatedOn between'" + txtfromdate.Text + "' AND '" + txttodate.Text + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
                         sad.Fill(dt);
 
                         GVPurchase.EmptyDataText = "Not Records Found";
@@ -496,7 +490,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_OrderAcceptanceHdr] where " + "ProjectName like @Search + '%' and IsDeleted=0";
+                com.CommandText = "SELECT DISTINCT ProjectName FROM [tbl_NewOrderAcceptanceHdr] where " + "ProjectName like @Search + '%' and IsDeleted=0";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -522,7 +516,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
             string GST = txtGST.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where ProjectName = '" + GST + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where ProjectName = '" + GST + "' AND CP.IsDeleted = 0", Cls_Main.Conn);
             sad.Fill(dt);
             GVPurchase.EmptyDataText = "Not Records Found";
             GVPurchase.DataSource = dt;
@@ -543,7 +537,7 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
         {
             using (SqlCommand cmd = new SqlCommand())
             {
-                string CmdText = "select fileName from tbl_OrderAcceptanceHdr where IsDeleted=0 AND ID='" + id + "'";
+                string CmdText = "select fileName from tbl_NewOrderAcceptanceHdr where IsDeleted=0 AND ID='" + id + "'";
 
                 SqlDataAdapter ad = new SqlDataAdapter(CmdText, con);
                 DataTable dt = new DataTable();
@@ -571,13 +565,13 @@ public partial class SalesMarketing_OAList : System.Web.UI.Page
 
     public void SendtoProduction(Int32 ID)
     {
-        DataTable Dt = Cls_Main.Read_Table("select *,OAD.ID as PID FROM [DB_Foundtech].[dbo].[tbl_OrderAcceptanceHdr] AS OAH INNER JOIN tbl_OrderAcceptanceDtls AS OAD ON OAD.Pono = OAH.Pono WHERE OAH.ID = '" + ID + "' AND OAH.IsDeleted=0");
+        DataTable Dt = Cls_Main.Read_Table("select *,OAD.ID as PID FROM [DB_Foundtech].[dbo].[tbl_NewOrderAcceptanceHdr] AS OAH INNER JOIN tbl_NewOrderAcceptanceDtls AS OAD ON OAD.Pono = OAH.Pono WHERE OAH.ID = '" + ID + "' AND OAH.IsDeleted=0");
         foreach (DataRow row in Dt.Rows)
         {
             string PID = null;
             PID = row["PID"].ToString();
             Cls_Main.Conn_Open();
-            SqlCommand cmd = new SqlCommand("SP_ProductionDept", Cls_Main.Conn);
+            SqlCommand cmd = new SqlCommand("SP_NewProductionDept", Cls_Main.Conn);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@ID", PID);
             cmd.Parameters.AddWithValue("@MainId", ID);

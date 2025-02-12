@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ProdListPerProjCode.aspx.cs" Inherits="Production_ProdListPerProjCode" %>
+﻿.<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ProdListPerProjCode.aspx.cs" Inherits="Production_ProdListPerProjCode" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <!DOCTYPE html>
@@ -625,7 +625,7 @@
                                     <Columns>
                                         <asp:TemplateField HeaderStyle-Width="20" HeaderText=" " HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
-                                                <asp:LinkButton runat="server" ID="btnShowDtls" ToolTip="View Sub Products" CommandName="ViewDetails" CommandArgument='<%# Eval("JobNo") + "," + Eval("rowmaterial") %>'><i class="fa fa-info-circle" aria-hidden="true" style="font-size: 26px; color: green;"></i></asp:LinkButton>
+                                                <asp:LinkButton runat="server" ID="btnShowDtls" ToolTip="View Sub Products" CommandName="ViewDetails" CommandArgument='<%# Eval("JobNo") + "," + Eval("rowmaterial")+ "," + Eval("Discription") %>'><i class="fa fa-info-circle" aria-hidden="true" style="font-size: 26px; color: green;"></i></asp:LinkButton>
                                                 <asp:Label ID="OaNumber" runat="server" Text='<%#Eval("Oanumber")%>' Visible="false"></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
@@ -664,12 +664,12 @@
                                                 <asp:Label ID="Total_Price" runat="server" Text='<%#Eval("TotalQty")%>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Drawings" ItemStyle-HorizontalAlign="Center">
+                                        <asp:TemplateField HeaderText="Drawings" ItemStyle-HorizontalAlign="Center" Visible="false">
                                             <ItemTemplate>
                                                 <asp:LinkButton runat="server" ID="btndrawings" ToolTip="Show drawings" CausesValidation="false" CommandName="DrawingFiles" CommandArgument='<%# Eval("JobNo") %>'><i class="fas fa-folder-open"  style="font-size: 26px;"></i></i></asp:LinkButton>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="ACTION" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="120">
+                                        <asp:TemplateField HeaderText="ACTION" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="120" Visible="false">
                                             <ItemTemplate>
                                                 <asp:LinkButton runat="server" ID="btnEdit" ToolTip="Add Quantity and Send" CausesValidation="false" CommandName="Edit" CommandArgument='<%# Eval("JobNo") %>'><i class="fas fa-plus-square"  style="font-size: 26px; color:blue; "></i></i></asp:LinkButton>&nbsp;
                                             </ItemTemplate>

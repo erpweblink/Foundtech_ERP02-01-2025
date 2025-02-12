@@ -576,7 +576,7 @@
 
                                         <asp:TemplateField HeaderText="Product Discription" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
-                                                <asp:Label ID="ProdDiscript" runat="server" Text='<%#Eval("Description")%>'></asp:Label>
+                                                <asp:Label ID="ProdDiscript" runat="server" Text='<%#Eval("SubDescription")%>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Quantity" HeaderStyle-CssClass="gvhead">
@@ -584,19 +584,29 @@
                                                 <asp:Label ID="Qty" runat="server" Text='<%#Eval("Quantity")%>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Lenght" ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <asp:Label ID="Length" runat="server" Text='<%#Eval("Length")%>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Weight" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
                                                 <asp:Label ID="Weight" runat="server" Text='<%#Eval("Weight")%>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField> 
+                                        <asp:TemplateField HeaderText="Width" HeaderStyle-CssClass="gvhead">
+                                            <ItemTemplate>
+                                                <asp:Label ID="Width" runat="server" Text='<%#Eval("Width")%>'></asp:Label>
+                                            </ItemTemplate>
+                                        </asp:TemplateField> 
+                                        <asp:TemplateField HeaderText="Thickness" HeaderStyle-CssClass="gvhead">
+                                            <ItemTemplate>
+                                                <asp:Label ID="Thickness" runat="server" Text='<%#Eval("Thickness")%>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Total Weight" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
                                                 <asp:Label ID="TotWeight" runat="server" Text='<%#Eval("TotalWeight")%>'></asp:Label>
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Lenght" ItemStyle-HorizontalAlign="Center">
-                                            <ItemTemplate>
-                                                <asp:Label ID="Length" runat="server" Text='<%#Eval("Length")%>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>

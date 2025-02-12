@@ -1,17 +1,20 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Presentation;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Org.BouncyCastle.Asn1.Cmp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web.Script.Services;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+
+
+//Updated or new page 
+
 
 public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 {
@@ -52,14 +55,23 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
                 ViewState["RowNo"] = 0;
 
-                Dt_Product.Columns.AddRange(new DataColumn[8] { new DataColumn("Id"), new DataColumn("id"), new DataColumn("Productname"), new DataColumn("Description"), new DataColumn("Quantity"), new DataColumn("Length"), new DataColumn("Weight"), new DataColumn("TotalWeight") });
+                Dt_Product.Columns.AddRange(new DataColumn[11] { new DataColumn("Id"), new DataColumn("id"), new DataColumn("Productname"), new DataColumn("RequestedQTY"), new DataColumn("Description"), new DataColumn("Quantity"), new DataColumn("Length"), new DataColumn("Weight"), new DataColumn("Width"), new DataColumn("Thickness"), new DataColumn("TotalWeight") });
                 ViewState["PurchaseOrderProduct"] = Dt_Product;
 
                 //Edit 
                 if (Request.QueryString["ID"] != null)
                 {
+
                     ID = objcls.Decrypt(Request.QueryString["ID"].ToString());
                     btnsave.Text = "Update";
+                    tblAddNew.Visible = false;
+                    txtProducbulk.Visible = false;
+                    txtProducbulkbtn.Visible = false;
+                    dummyId.Visible = false;
+                    txtcompanyname.Enabled = false;
+                    txtprojectCode.Enabled = false;
+                    txtprojectName.Enabled = false;
+                    // btnsave.Text = "Update";
                     ShowDtlEdit();
                     hhd.Value = ID;
 
@@ -71,10 +83,14 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         if (gvDetails != null)
                         {
                             LinkButton gvAddSubProd = row.FindControl("gv_AddSubProd") as LinkButton;
-
+                            LinkButton edit = row.FindControl("btn_edit") as LinkButton;
+                            LinkButton lnkbtnDelete = row.FindControl("lnkbtnDelete") as LinkButton;
                             if (gvAddSubProd != null)
                             {
                                 gvAddSubProd.Visible = true;
+                                edit.Visible = false;
+                                lnkbtnDelete.Visible = false;
+
                             }
                         }
                     }
@@ -86,7 +102,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
     protected void POCode()
     {
         SqlDataAdapter ad = new SqlDataAdapter("SELECT TOP 1 Pono AS maxid " +
-            " FROM tbl_OrderAcceptanceHdr " +
+            " FROM tbl_NewOrderAcceptanceHdr " +
             " ORDER BY CAST(SUBSTRING(Pono, CHARINDEX('-', Pono) + 1, LEN(Pono)) AS INT) DESC; ", Cls_Main.Conn);
         DataTable dt = new DataTable();
         ad.Fill(dt);
@@ -134,17 +150,17 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
     //Data Fetch
     private void Load_Record(string ID)
     {
-        DataTable Dt = Cls_Main.Read_Table("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where CP.IsDeleted=0 AND CP.ID ='" + ID + "' ");
+        DataTable Dt = Cls_Main.Read_Table("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where CP.IsDeleted=0 AND CP.ID ='" + ID + "' ");
         if (Dt.Rows.Count > 0)
         {
             btnsave.Text = "Update";
 
             txtcompanyname.Text = Dt.Rows[0]["CustomerName"].ToString();
-            txtpaymentterm.Text = Dt.Rows[0]["paymentterm"].ToString();
+            // txtpaymentterm.Text = Dt.Rows[0]["paymentterm"].ToString();
             txtpono.Text = Dt.Rows[0]["Pono"].ToString();
             txtserialno.Text = Dt.Rows[0]["SerialNo"].ToString();
             FillKittens();
-            lblfile1.Text = Dt.Rows[0]["fileName"].ToString();
+            // lblfile1.Text = Dt.Rows[0]["fileName"].ToString();
 
             ddlContacts.SelectedItem.Text = Dt.Rows[0]["KindAtt"].ToString();
             FillddlUsers();
@@ -173,7 +189,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
     {
         //divTotalPart.Visible = true;
 
-        SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceDtls] WHERE Pono='" + txtpono.Text + "'", Cls_Main.Conn);
+        SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceDtls] WHERE Pono='" + txtpono.Text + "'", Cls_Main.Conn);
         DataTable DTCOMP = new DataTable();
         Da.Fill(DTCOMP);
 
@@ -187,7 +203,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
             for (int i = 0; i < DTCOMP.Rows.Count; i++)
             {
-                Dt_Product.Rows.Add(DTCOMP.Rows[i]["Id"].ToString(), count, DTCOMP.Rows[i]["Productname"].ToString(), DTCOMP.Rows[i]["Description"].ToString(), DTCOMP.Rows[i]["Quantity"].ToString(), DTCOMP.Rows[i]["Weight"].ToString(), DTCOMP.Rows[i]["Length"].ToString(), DTCOMP.Rows[i]["TotalWeight"].ToString());
+                Dt_Product.Rows.Add(DTCOMP.Rows[i]["Id"].ToString(), count, DTCOMP.Rows[i]["Productname"].ToString(), DTCOMP.Rows[i]["ProductQty"].ToString(), DTCOMP.Rows[i]["Description"].ToString(), DTCOMP.Rows[i]["Quantity"].ToString(), DTCOMP.Rows[i]["Length"].ToString(), DTCOMP.Rows[i]["Weight"].ToString(), DTCOMP.Rows[i]["Width"].ToString(), DTCOMP.Rows[i]["Thickness"].ToString(), DTCOMP.Rows[i]["TotalWeight"].ToString());
                 count = count + 1;
             }
         }
@@ -201,8 +217,19 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
     {
         //divTotalPart.Visible = true;
         DataTable Dt = (DataTable)ViewState["PurchaseOrderProduct"];
-        // Dt.Rows.Add(ViewState["RowNo"], txtProduct.Text, txtdescription.Text.Trim(), txthsnsac.Text.Trim(), txtquantity.Text, txtunit.Text, txtrate.Text, txttotal.Text, txtCGST.Text, txtCGSTamt.Text, txtSGST.Text, txtSGSTamt.Text, txtIGST.Text, txtIGSTamt.Text, txtdiscount.Text, txtdiscountamt.Text, txtgrandtotal.Text, txtweight.Text);
-        Dt.Rows.Add(ViewState["RowNo"], txtProduct.Text, txtdescription.Text.Trim(), txtquantity.Text, txtlength.Text, txtWeight.Text, txtTotalWeight.Text);
+        //var maxId = Dt.AsEnumerable()
+        //       .Where(row => row["id"] != DBNull.Value)
+        //       .Select(row => Convert.ToInt32(row["id"]))
+        //       .DefaultIfEmpty(0)  
+        //       .Max();
+        //int count=0;
+        //if(maxId != 0){
+        //    count = Convert.ToInt32(maxId) + 1;m
+        //}else{
+        //    count = 0;
+        //}
+
+        Dt.Rows.Add(ViewState["RowNo"], ViewState["RowNo"], txtProduct.Text, txtReqQty.Text, txtdescription.Text.Trim(), txtquantity.Text, txtlength.Text, txtWeight.Text, txtWidth.Text, txtThickness.Text, txtTotalWeight.Text);
         ViewState["PurchaseOrderProduct"] = Dt;
         txtProduct.Text = string.Empty;
         txtdescription.Text = string.Empty;
@@ -210,7 +237,9 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         txtlength.Text = "0.00";
         txtWeight.Text = "0.00";
         txtTotalWeight.Text = "0.00";
-
+        txtWidth.Text = "0.00";
+        txtThickness.Text = "0.00";
+        ViewState["RowNo"] = Convert.ToInt32(ViewState["RowNo"]) + 1;
         dgvMachineDetails.DataSource = (DataTable)ViewState["PurchaseOrderProduct"];
         dgvMachineDetails.DataBind();
     }
@@ -320,7 +349,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                     if (btnsave.Text == "Save")
                     {
                         Cls_Main.Conn_Open();
-                        SqlCommand cmd = new SqlCommand("SP_OrderAcceptanceHdr", Cls_Main.Conn);
+                        SqlCommand cmd = new SqlCommand("[SP_NewOrderAcceptanceHdr]", Cls_Main.Conn);
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@CustomerName", txtcompanyname.Text);
                         cmd.Parameters.AddWithValue("@Pono", txtpono.Text);
@@ -334,17 +363,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@PANNo", txtpanno.Text);
                         cmd.Parameters.AddWithValue("@UserName", Session["usercode"].ToString());
 
-                        //if (ddlUser.SelectedValue == "-- Select User Name--")
-                        //{
-                        //    cmd.Parameters.AddWithValue("@UserName", Session["UserCode"].ToString());
-                        //}
-                        //else
-                        //{
-                        //    cmd.Parameters.AddWithValue("@UserName", ddlUser.SelectedValue);
-                        //}
 
-
-                        cmd.Parameters.AddWithValue("@fileName", DBNull.Value);
 
                         cmd.Parameters.AddWithValue("@BillingAddress", txtaddress.Text);
                         if (ddlShippingaddress.SelectedItem.Text == "-Select Shipping Address-")
@@ -358,12 +377,6 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@Deliverydate", txtdeliverydate.Text);
                         cmd.Parameters.AddWithValue("@Referquotation", txtreferquotation.Text);
                         cmd.Parameters.AddWithValue("@Remarks", txtremark.Text);
-                        cmd.Parameters.AddWithValue("@CGST_Amt", "0");
-                        cmd.Parameters.AddWithValue("@SGST_Amt", "0.00");
-                        cmd.Parameters.AddWithValue("@IGST_Amt", "0.00");
-                        cmd.Parameters.AddWithValue("@Total_Price", "0.00");
-                        cmd.Parameters.AddWithValue("@Paymentterm", txtpaymentterm.Text);
-                        cmd.Parameters.AddWithValue("@Totalinword", "0.00");
                         cmd.Parameters.AddWithValue("@IsDeleted", '0');
                         cmd.Parameters.AddWithValue("@ProjectCode", txtprojectCode.Text);
                         cmd.Parameters.AddWithValue("@ProjectName", txtprojectName.Text);
@@ -388,7 +401,10 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             string pdffilename1 = pdffilename[0];
                             string filenameExt = pdffilename[1];
 
-                            string filePath = Server.MapPath("~/PDF_Files/") + pdffilename1 + "." + filenameExt;
+                            string UniqueID = GenerateUniqueEncryptedValue();
+                            string FileName = UniqueID + "_" + pdffilename1;
+                            string filePath = Server.MapPath("~/PDF_Files/") + FileName + "." + filenameExt;
+
                             System.IO.File.WriteAllBytes(filePath, fileContents);
 
                             cmd.Parameters.AddWithValue("@PdfFile", filePath);
@@ -409,9 +425,13 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         foreach (GridViewRow grd1 in dgvMachineDetails.Rows)
                         {
                             string lblproduct = (grd1.FindControl("lblproduct") as Label).Text;
+                            string lblProdQty = (grd1.FindControl("lblReqQty") as Label).Text;
                             string lblDescription = (grd1.FindControl("lblDescription") as Label).Text;
                             string lblQuantity = (grd1.FindControl("lblQuantity") as Label).Text;
                             string lblWeight = (grd1.FindControl("lblWeight") as Label).Text;
+                            string lblWidth = (grd1.FindControl("lblWidth") as Label).Text;
+                            string lblThickness = (grd1.FindControl("lblThickness") as Label).Text;
+
                             decimal parsedWeight;
                             bool isValidDecimal = Decimal.TryParse(lblWeight, out parsedWeight);
                             if (!isValidDecimal || parsedWeight < 0.00M)
@@ -434,8 +454,9 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             else
                             {
                                 parsedLength = Math.Round(parsedLength, 3, MidpointRounding.AwayFromZero);
-                                lblLength = parsedWeight.ToString("0.000");
+                                lblLength = parsedLength.ToString("0.000");
                             }
+
                             string lblTotWeight = (grd1.FindControl("lblTotalWeight") as Label).Text;
                             decimal parsedTotWeight;
                             bool isValidTotWeight = Decimal.TryParse(lblTotWeight, out parsedTotWeight);
@@ -446,37 +467,23 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             else
                             {
                                 parsedTotWeight = Math.Round(parsedTotWeight, 3, MidpointRounding.AwayFromZero);
-                                lblTotWeight = parsedWeight.ToString("0.000");
+                                lblTotWeight = parsedTotWeight.ToString("0.000");
                             }
 
-
-
                             Cls_Main.Conn_Open();
-                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description,HSN," +
-                                "Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage," +
-                                "DiscountAmount,Alltotal,Weight,Length,TotalWeight,CreatedOn) " +
-                                "VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt," +
-                                "@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@lblLength,@lblTotWeight," +
-                                "@CreatedOn)", Cls_Main.Conn);
+                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_NewOrderAcceptanceDtls (Pono,Productname,ProductQty,Description," +
+                                "Quantity,Length,Weight,Width,Thickness,TotalWeight,Createdby,CreatedOn) " +
+                                "VALUES(@Pono,@Productname,@lblProdQty,@Description,@Quantity,@lblLength,@lblWeight,@lblWidth,@lblThickness,@lblTotWeight," +
+                                " @CreatedBy,@CreatedOn)", Cls_Main.Conn);
                             cmdd.Parameters.AddWithValue("@Pono", txtpono.Text);
                             cmdd.Parameters.AddWithValue("@Productname", lblproduct);
+                            cmdd.Parameters.AddWithValue("@lblProdQty", lblProdQty);
                             cmdd.Parameters.AddWithValue("@Description", lblDescription);
-                            cmdd.Parameters.AddWithValue("@HSN", "0.00");
                             cmdd.Parameters.AddWithValue("@Quantity", lblQuantity);
-                            cmdd.Parameters.AddWithValue("@Units", "0.00");
-                            cmdd.Parameters.AddWithValue("@Rate", "0.00");
-                            cmdd.Parameters.AddWithValue("@CGSTPer", "0.00");
-                            cmdd.Parameters.AddWithValue("@CGSTAmt", "0.00");
-                            cmdd.Parameters.AddWithValue("@SGSTPer", "0.00");
-                            cmdd.Parameters.AddWithValue("@SGSTAmt", "0.00");
-                            cmdd.Parameters.AddWithValue("@IGSTPer", "0.00");
-                            cmdd.Parameters.AddWithValue("@IGSTAmt", "0.00");
-                            cmdd.Parameters.AddWithValue("@Total", "0.00");
-                            cmdd.Parameters.AddWithValue("@Discountpercentage", "0.00");
-                            cmdd.Parameters.AddWithValue("@DiscountAmount", "0.00");
-                            cmdd.Parameters.AddWithValue("@Alltotal", "0.00");
-                            cmdd.Parameters.AddWithValue("@lblWeight", lblWeight);
                             cmdd.Parameters.AddWithValue("@lblLength", lblLength);
+                            cmdd.Parameters.AddWithValue("@lblWeight", lblWeight);
+                            cmdd.Parameters.AddWithValue("@lblWidth", lblWidth);
+                            cmdd.Parameters.AddWithValue("@lblThickness", lblThickness);
                             cmdd.Parameters.AddWithValue("@lblTotWeight", lblTotWeight);
                             cmdd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
                             cmdd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
@@ -490,7 +497,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         DateTime Date = DateTime.Now;
                         Cls_Main.Conn_Open();
 
-                        SqlCommand cmd = new SqlCommand("SP_OrderAcceptanceHdr", Cls_Main.Conn);
+                        SqlCommand cmd = new SqlCommand("SP_NewOrderAcceptanceHdr", Cls_Main.Conn);
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@CustomerName", txtcompanyname.Text);
                         cmd.Parameters.AddWithValue("@Pono", txtpono.Text);
@@ -499,35 +506,30 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@PoDate", txtpodate.Text);
                         cmd.Parameters.AddWithValue("@Mobileno", txtmobileno.Text);
                         cmd.Parameters.AddWithValue("@EmailID", txtemail.Text);
+
                         cmd.Parameters.AddWithValue("@GSTNo", txtgstno.Text);
                         cmd.Parameters.AddWithValue("@PANNo", txtpanno.Text);
+                        cmd.Parameters.AddWithValue("@UserName", Session["usercode"].ToString());
+
+
+
                         cmd.Parameters.AddWithValue("@BillingAddress", txtaddress.Text);
-                        cmd.Parameters.AddWithValue("@ShippingAddress", ddlShippingaddress.SelectedItem.Text);
+                        if (ddlShippingaddress.SelectedItem.Text == "-Select Shipping Address-")
+                        {
+                            cmd.Parameters.AddWithValue("@ShippingAddress", DBNull.Value);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@ShippingAddress", ddlShippingaddress.SelectedItem.Text);
+                        }
                         cmd.Parameters.AddWithValue("@Deliverydate", txtdeliverydate.Text);
                         cmd.Parameters.AddWithValue("@Referquotation", txtreferquotation.Text);
                         cmd.Parameters.AddWithValue("@Remarks", txtremark.Text);
-
-                        cmd.Parameters.AddWithValue("@Paymentterm", txtpaymentterm.Text);
-                        cmd.Parameters.AddWithValue("@UserName", Session["usercode"].ToString());
-                        //if (ddlUser.SelectedValue == "-- Select User Name--")
-                        //{
-                        //    cmd.Parameters.AddWithValue("@UserName", Session["UserCode"].ToString());
-                        //}
-                        //else
-                        //{
-                        //    cmd.Parameters.AddWithValue("@UserName", ddlUser.SelectedValue);
-                        //}
-                        cmd.Parameters.AddWithValue("@fileName", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@UpdatedBy", Session["UserCode"].ToString());
-                        cmd.Parameters.AddWithValue("@UpdatedOn", DateTime.Now);
-                        cmd.Parameters.AddWithValue("@CGST_Amt", "0");
-                        cmd.Parameters.AddWithValue("@SGST_Amt", "0.00");
-                        cmd.Parameters.AddWithValue("@IGST_Amt", "0.00");
-                        cmd.Parameters.AddWithValue("@Total_Price", "0.00");
-                        cmd.Parameters.AddWithValue("@Totalinword", "0.00");
                         cmd.Parameters.AddWithValue("@IsDeleted", '0');
                         cmd.Parameters.AddWithValue("@ProjectCode", txtprojectCode.Text);
                         cmd.Parameters.AddWithValue("@ProjectName", txtprojectName.Text);
+                        cmd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
+                        cmd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
 
                         if (PdfFile.HasFile)
                         {
@@ -547,7 +549,10 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             string pdffilename1 = pdffilename[0];
                             string filenameExt = pdffilename[1];
 
-                            string filePath = Server.MapPath("~/PDF_Files/") + pdffilename1 + "." + filenameExt;
+                            string UniqueID = GenerateUniqueEncryptedValue();
+                            string FileName = UniqueID + "_" + pdffilename1;
+                            string filePath = Server.MapPath("~/PDF_Files/") + FileName + "." + filenameExt;
+
                             System.IO.File.WriteAllBytes(filePath, fileContents);
 
                             cmd.Parameters.AddWithValue("@PdfFile", filePath);
@@ -559,11 +564,12 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                         cmd.Parameters.AddWithValue("@Action", "Update");
-                        //  cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
 
 
-                        DataTable Dt = Cls_Main.Read_Table("SELECT Id,Pono,Productname,Description FROM [tbl_OrderAcceptancedtls] WHERE Pono='" + txtpono.Text + "'");
+                        DataTable Dt = Cls_Main.Read_Table("SELECT Id,Pono,Productname FROM [tbl_NewOrderAcceptanceDtls] WHERE Pono='" + txtpono.Text + "'");
+
                         if (Dt.Rows.Count > 0)
                         {
                             ViewState["OrderAcceptanceData"] = Dt;
@@ -571,18 +577,22 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
                         //DELETE DETAILS DATA FOR UPDATE
                         Cls_Main.Conn_Open();
-                        SqlCommand cmddelete = new SqlCommand("DELETE FROM tbl_OrderAcceptanceDtls WHERE Pono=@Pono", Cls_Main.Conn);
+                        SqlCommand cmddelete = new SqlCommand("DELETE FROM tbl_NewOrderAcceptanceDtls WHERE Pono=@Pono", Cls_Main.Conn);
                         cmddelete.Parameters.AddWithValue("@Pono", txtpono.Text);
-                        cmddelete.ExecuteNonQuery();
+                        //cmddelete.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
 
                         //Save Product Details 
                         foreach (GridViewRow grd1 in dgvMachineDetails.Rows)
                         {
                             string lblproduct = (grd1.FindControl("lblproduct") as Label).Text;
+                            string lblProdQty = (grd1.FindControl("lblReqQty") as Label).Text;
                             string lblDescription = (grd1.FindControl("lblDescription") as Label).Text;
                             string lblQuantity = (grd1.FindControl("lblQuantity") as Label).Text;
                             string lblWeight = (grd1.FindControl("lblWeight") as Label).Text;
+                            string lblWidth = (grd1.FindControl("lblWidth") as Label).Text;
+                            string lblThickness = (grd1.FindControl("lblThickness") as Label).Text;
+
                             decimal parsedWeight;
                             bool isValidDecimal = Decimal.TryParse(lblWeight, out parsedWeight);
                             if (!isValidDecimal || parsedWeight < 0.00M)
@@ -605,8 +615,9 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             else
                             {
                                 parsedLength = Math.Round(parsedLength, 3, MidpointRounding.AwayFromZero);
-                                lblLength = parsedWeight.ToString("0.000");
+                                lblLength = parsedLength.ToString("0.000");
                             }
+
                             string lblTotWeight = (grd1.FindControl("lblTotalWeight") as Label).Text;
                             decimal parsedTotWeight;
                             bool isValidTotWeight = Decimal.TryParse(lblTotWeight, out parsedTotWeight);
@@ -617,75 +628,62 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                             else
                             {
                                 parsedTotWeight = Math.Round(parsedTotWeight, 3, MidpointRounding.AwayFromZero);
-                                lblTotWeight = parsedWeight.ToString("0.000");
+                                lblTotWeight = parsedTotWeight.ToString("0.000");
                             }
 
-
                             Cls_Main.Conn_Open();
-                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description," +
-                                "HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage," +
-                                "DiscountAmount,Alltotal,Weight,Length,TotalWeight,CreatedOn)" +
-                                " VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units," +
-                                "@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total," +
-                                "@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@lblLength,@lblTotWeight,@CreatedOn)", Cls_Main.Conn);
+                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_NewOrderAcceptanceDtls (Pono,Productname,ProductQty,Description," +
+                                 "Quantity,Length,Weight,Width,Thickness,TotalWeight,Createdby,CreatedOn) " +
+                                 "VALUES(@Pono,@Productname,@lblProdQty,@Description,@Quantity,@lblLength,@lblWeight,@lblWidth,@lblThickness,@lblTotWeight," +
+                                 " @CreatedBy,@CreatedOn)", Cls_Main.Conn);
                             cmdd.Parameters.AddWithValue("@Pono", txtpono.Text);
                             cmdd.Parameters.AddWithValue("@Productname", lblproduct);
+                            cmdd.Parameters.AddWithValue("@lblProdQty", lblProdQty);
                             cmdd.Parameters.AddWithValue("@Description", lblDescription);
-                            cmdd.Parameters.AddWithValue("@HSN", "0.00");
                             cmdd.Parameters.AddWithValue("@Quantity", lblQuantity);
-                            cmdd.Parameters.AddWithValue("@Units", "0.00");
-                            cmdd.Parameters.AddWithValue("@Rate", "0.00");
-                            cmdd.Parameters.AddWithValue("@CGSTPer", "0.00");
-                            cmdd.Parameters.AddWithValue("@CGSTAmt", "0.00");
-                            cmdd.Parameters.AddWithValue("@SGSTPer", "0.00");
-                            cmdd.Parameters.AddWithValue("@SGSTAmt", "0.00");
-                            cmdd.Parameters.AddWithValue("@IGSTPer", "0.00");
-                            cmdd.Parameters.AddWithValue("@IGSTAmt", "0.00");
-                            cmdd.Parameters.AddWithValue("@Total", "0.00");
-                            cmdd.Parameters.AddWithValue("@Discountpercentage", "0.00");
-                            cmdd.Parameters.AddWithValue("@DiscountAmount", "0.00");
-                            cmdd.Parameters.AddWithValue("@Alltotal", "0.00");
-                            cmdd.Parameters.AddWithValue("@lblWeight", lblWeight);
                             cmdd.Parameters.AddWithValue("@lblLength", lblLength);
+                            cmdd.Parameters.AddWithValue("@lblWeight", lblWeight);
+                            cmdd.Parameters.AddWithValue("@lblWidth", lblWidth);
+                            cmdd.Parameters.AddWithValue("@lblThickness", lblThickness);
                             cmdd.Parameters.AddWithValue("@lblTotWeight", lblTotWeight);
                             cmdd.Parameters.AddWithValue("@CreatedBy", Session["UserCode"].ToString());
                             cmdd.Parameters.AddWithValue("@CreatedOn", DateTime.Now);
-                            cmdd.ExecuteNonQuery();
-
-
-                            // New Functionality by Nikhil 10-01-2025
-                            DataTable dt1 = (DataTable)ViewState["OrderAcceptanceData"];
-                            foreach (DataRow dr in dt1.Rows)
-                            {
-                                string idValue = dr["id"].ToString();
-                                string productValue = dr["ProductName"].ToString();
-                                string productDescr = dr["Description"].ToString();
-
-                                DataTable Dt2 = Cls_Main.Read_Table("SELECT * FROM [tbl_SubProducts] WHERE Pono='" + idValue + "' AND ProductName = '" + productValue + "' AND discr = '"+ productDescr + "' ");  //AND  rmoved by Nikhil 
-                                if (Dt2.Rows.Count > 0)
-                                {
-                                    string ProductName = Dt2.Rows[0]["ProductName"].ToString();
-                                    string ProductDiscr = Dt2.Rows[0]["discr"].ToString();
-                                    DataTable Dt3 = Cls_Main.Read_Table("select * from tbl_OrderAcceptanceDtls where id = (select max(id) from tbl_OrderAcceptanceDtls)");
-                                    if (Dt3.Rows.Count > 0)
-                                    {
-                                        string newId = Dt3.Rows[0]["Id"].ToString();
-                                        string Name = Dt3.Rows[0]["ProductName"].ToString();
-                                        string disc = Dt3.Rows[0]["Description"].ToString();
-
-                                        if (ProductName == Name && ProductDiscr == disc)
-                                        {
-                                            con.Open();
-                                            SqlCommand smd = new SqlCommand("UPDATE [tbl_SubProducts] SET pono = '" + newId + "' where Pono = '"+ idValue + "' AND ProductName = '" + Name + "' AND discr = '"+disc+"' ", con);  // Removed by Nikhil 
-                                            smd.ExecuteNonQuery();
-                                            con.Close();
-                                        }
-                                    }
-
-                                }
-                            }
-                            // End code
+                            //cmdd.ExecuteNonQuery();
                             Cls_Main.Conn_Close();
+
+
+
+
+                            //// New Functionality by Nikhil 10-01-2025
+                            //DataTable dt1 = (DataTable)ViewState["OrderAcceptanceData"];
+                            //foreach (DataRow dr in dt1.Rows)
+                            //{
+                            //    string idValue = dr["id"].ToString();
+                            //    string productValue = dr["ProductName"].ToString();
+                            //    DataTable Dt2 = Cls_Main.Read_Table("SELECT * FROM [tbl_NewSubProducts] WHERE Pono='" + idValue + "' AND ProductName = '" + productValue + "'");
+                            //    if (Dt2.Rows.Count > 0)
+                            //    {
+                            //        string SubProductName = Dt2.Rows[0]["ProductName"].ToString();
+                            //        DataTable Dt3 = Cls_Main.Read_Table("select * from tbl_NewOrderAcceptanceDtls where id = (select max(id) from tbl_NewOrderAcceptanceDtls)");
+                            //        if (Dt3.Rows.Count > 0)
+                            //        {
+                            //            string newId = Dt3.Rows[0]["Id"].ToString();
+                            //            string Name = Dt3.Rows[0]["ProductName"].ToString();
+                            //            if (SubProductName == Name)
+                            //            {
+                            //                con.Open();
+                            //                SqlCommand smd = new SqlCommand("UPDATE [tbl_NewSubProducts] SET pono = '" + newId + "' where ProductName = '" + Name + "' ", con);
+                            //                smd.ExecuteNonQuery();
+                            //                con.Close();
+                            //            }
+                            //        }
+
+                            //    }
+                            //}
+
+
+                            // End code
+                            // Cls_Main.Conn_Close();
                         }
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Order Acceptance Update Successfully..!!');window.location='OAList.aspx'; ", true);
                     }
@@ -858,7 +856,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                 string Id = DataBinder.Eval(e.Row.DataItem, "Id") as string;
                 if (!string.IsNullOrEmpty(productName))
                 {
-                    gvDetails.DataSource = GetData(string.Format("select * from tbl_SubProducts where ProductName='{0}' AND PoNo = '{1}' ", productName, Id));
+                    gvDetails.DataSource = GetData(string.Format("select * from tbl_NewSubProducts where ProductName='{0}' AND PoNo = '{1}' ", productName, Id));
                     gvDetails.DataBind();
                 }
 
@@ -879,6 +877,8 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         string Quantity = ((TextBox)row.FindControl("Quantity")).Text;
         string Lenght = ((TextBox)row.FindControl("Length")).Text;
         string Weight = ((TextBox)row.FindControl("Weight")).Text;
+        string Width = ((TextBox)row.FindControl("Width")).Text;
+        string Thickness = ((TextBox)row.FindControl("Thickness")).Text;
         string TotalWeight = ((TextBox)row.FindControl("TotalWeight")).Text;
 
         DataTable Dt = ViewState["PurchaseOrderProduct"] as DataTable;
@@ -889,6 +889,8 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         Dt.Rows[row.RowIndex]["Length"] = Lenght;
 
         Dt.Rows[row.RowIndex]["Weight"] = Weight;
+        Dt.Rows[row.RowIndex]["Width"] = Width;
+        Dt.Rows[row.RowIndex]["Thickness"] = Thickness;
         Dt.Rows[row.RowIndex]["TotalWeight"] = TotalWeight;
         Dt.AcceptChanges();
         ViewState["PurchaseOrderProduct"] = Dt;
@@ -906,6 +908,8 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         string Quantity = ((TextBox)row.FindControl("Quantity")).Text;
         string Lenght = ((TextBox)row.FindControl("Length")).Text;
         string Weight = ((TextBox)row.FindControl("Weight")).Text;
+        string Width = ((TextBox)row.FindControl("Width")).Text;
+        string Thickness = ((TextBox)row.FindControl("Thickness")).Text;
         string TotalWeight = ((TextBox)row.FindControl("TotalWeight")).Text;
 
         DataTable Dt = ViewState["PurchaseOrderProduct"] as DataTable;
@@ -916,6 +920,8 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         Dt.Rows[row.RowIndex]["Length"] = Lenght;
 
         Dt.Rows[row.RowIndex]["Weight"] = Weight;
+        Dt.Rows[row.RowIndex]["Width"] = Width;
+        Dt.Rows[row.RowIndex]["Thickness"] = Thickness;
         Dt.Rows[row.RowIndex]["TotalWeight"] = TotalWeight;
         Dt.AcceptChanges();
         ViewState["PurchaseOrderProduct"] = Dt;
@@ -1325,29 +1331,41 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
 
                 DataTable Dt = (DataTable)ViewState["PurchaseOrderProduct"];
-                int Count = 1;
+                int Count = 0;
                 for (int row = 2; row <= rowCount; row++)
                 {
                     if (worksheet.Cells[row, 2].Text == "" && worksheet.Cells[row, 3].Text == ""
                       && worksheet.Cells[row, 4].Text == "" && worksheet.Cells[row, 5].Text == ""
-                      && worksheet.Cells[row, 6].Text == "" && worksheet.Cells[row, 7].Text == "")
+                      && worksheet.Cells[row, 6].Text == "" && worksheet.Cells[row, 7].Text == ""
+                      && worksheet.Cells[row, 8].Text == "" && worksheet.Cells[row, 9].Text == ""
+                       && worksheet.Cells[row, 10].Text == "")
                     {
                         break;
                     }
 
                     DataRow dataRow = Dt.NewRow();
+                    dataRow["Id"] = Count;
                     dataRow["id"] = Count;
                     dataRow["Productname"] = worksheet.Cells[row, 2].Text;
-                    dataRow["Description"] = worksheet.Cells[row, 3].Text;
-                    dataRow["Quantity"] = worksheet.Cells[row, 4].Text;
-                    dataRow["Length"] = worksheet.Cells[row, 5].Text;
-                    dataRow["Weight"] = worksheet.Cells[row, 6].Text;
-                    dataRow["TotalWeight"] = worksheet.Cells[row, 7].Text;
+                    dataRow["RequestedQty"] = worksheet.Cells[row, 3].Text;
+                    dataRow["Description"] = worksheet.Cells[row, 4].Text;
+                    dataRow["Quantity"] = worksheet.Cells[row, 5].Text;
+                    dataRow["Length"] = worksheet.Cells[row, 6].Text;
+                    dataRow["Weight"] = worksheet.Cells[row, 7].Text;
+                    dataRow["Width"] = worksheet.Cells[row, 8].Text;
+                    dataRow["Thickness"] = worksheet.Cells[row, 9].Text;
+                    dataRow["TotalWeight"] = worksheet.Cells[row, 10].Text;
 
                     Dt.Rows.Add(dataRow);
                     Count++;
                 }
                 ViewState["PurchaseOrderProduct"] = Dt;
+                var MaxId = Dt.AsEnumerable()
+                       .Where(row => row["Id"] != DBNull.Value)
+                       .Select(row => Convert.ToInt32(row["Id"]))
+                       .DefaultIfEmpty(0)
+                       .Max();
+                ViewState["RowNo"] = MaxId + 1;
                 dgvMachineDetails.DataSource = ViewState["PurchaseOrderProduct"];
                 dgvMachineDetails.DataBind();
             }
@@ -1362,7 +1380,7 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         if (code != "")
         {
             con.Open();
-            SqlCommand getHdrDetails = new SqlCommand("SELECT * from tbl_OrderAcceptanceHdr WHERE ProjectCode='" + code + "'", con);
+            SqlCommand getHdrDetails = new SqlCommand("SELECT * from tbl_NewOrderAcceptanceHdr WHERE ProjectCode='" + code + "'", con);
             using (SqlDataReader reader = getHdrDetails.ExecuteReader())
             {
                 if (reader.Read())
@@ -1389,10 +1407,11 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
 
             string pono = val[0];
             string productName = val[1];
-            string DiscName = val[2];
+
+            string Discr = val[2];
             txtPonoProd.Text = pono;
             txtProductname.Text = productName;
-            txtdiscr.Text = DiscName;
+            txtDiscr.Text = Discr;
 
             this.ModalPopupHistory.Show();
         }
@@ -1424,10 +1443,12 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
                 for (int row = 2; row <= rowCount; row++)
                 {
                     con.Open();
-                    SqlCommand cmd = new SqlCommand("INSERT INTO tbl_SubProducts (Pono,ProductName,SubProductName,Description,Quantity,Weight " +
-                        ",TotalWeight,Length,discr) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + worksheet.Cells[row, 2].Text + "'," +
+
+                    SqlCommand cmd = new SqlCommand("INSERT INTO tbl_NewSubProducts (Pono,ProductName,Discr,SubProductName,SubDescription,Quantity,Length,Weight, " +
+                        " Width,Thickness,TotalWeight) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + txtDiscr.Text + "','" + worksheet.Cells[row, 2].Text + "'," +
                         "'" + worksheet.Cells[row, 3].Text + "','" + worksheet.Cells[row, 4].Text + "','" + worksheet.Cells[row, 5].Text + "'," +
-                        "'" + worksheet.Cells[row, 6].Text + "','" + worksheet.Cells[row, 7].Text + "', '"+ txtdiscr.Text +"' )", con);
+                        "'" + worksheet.Cells[row, 6].Text + "','" + worksheet.Cells[row, 7].Text + "','" + worksheet.Cells[row, 8].Text + "','" + worksheet.Cells[row, 9].Text + "')", con);
+
                     cmd.ExecuteNonQuery();
                     con.Close();
 
@@ -1466,14 +1487,38 @@ public partial class SalesMarketing_OrderAcceptance : System.Web.UI.Page
         if (TextBox1.Text != "")
         {
             con.Open();
-            SqlCommand cmd = new SqlCommand("INSERT INTO tbl_SubProducts (Pono,ProductName,SubProductName,Description,Quantity,Weight " +
-                ",TotalWeight,Length,discr) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + TextBox1.Text + "'," +
-                "'" + TextBox2.Text + "','" + TextBox3.Text + "','" + TextBox5.Text + "'," +
-                "'" + TextBox6.Text + "','" + TextBox4.Text + "', '"+txtdiscr.Text+"')", con);
+
+            SqlCommand cmd = new SqlCommand("INSERT INTO tbl_NewSubProducts (Pono,ProductName,Discr,SubProductName,SubDescription,Quantity,Length,Weight, " +
+                " Width,Thickness,TotalWeight) VALUES ('" + txtPonoProd.Text + "','" + txtProductname.Text + "','" + txtDiscr.Text + "','" + TextBox1.Text + "'," +
+                "'" + TextBox2.Text + "','" + TextBox3.Text + "','" + TextBox4.Text + "'," +
+                "'" + TextBox5.Text + "','" + TextBox6.Text + "','" + TextBox7.Text + "','" + TextBox8.Text + "')", con);
             cmd.ExecuteNonQuery();
             con.Close();
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Sub Products Save Successfully..!!');window.location='" + "OrderAcceptance.aspx?Id=" + objcls.encrypt(hhd.Value) + "" + "'; ", true);
+        }
+    }
+
+    public static string GenerateUniqueEncryptedValue()
+    {
+        string uniqueString = Guid.NewGuid().ToString() + "_" + DateTime.UtcNow.Ticks.ToString();
+
+        byte[] bytes = Encoding.UTF8.GetBytes(uniqueString);
+
+        // Create SHA-256 hash
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            // Compute the hash of the byte array
+            byte[] hashBytes = sha256.ComputeHash(bytes);
+
+            // Convert the hash bytes into a hex string
+            StringBuilder hexString = new StringBuilder();
+            foreach (byte b in hashBytes)
+            {
+                hexString.AppendFormat("{0:x2}", b);
+            }
+
+            return hexString.ToString();
         }
     }
 }

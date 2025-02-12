@@ -40,7 +40,7 @@ public partial class Dashboard : System.Web.UI.Page
         int count = 0;
         //if (Session["Role"].ToString() == "Admin")
         //{
-        SqlCommand cmd = new SqlCommand("SELECT Count(*) FROM tbl_OrderAcceptanceHdr where IsDeleted=0 ", Cls_Main.Conn);
+        SqlCommand cmd = new SqlCommand("SELECT Count(*) FROM tbl_NewOrderAcceptanceHdr where IsDeleted=0 ", Cls_Main.Conn);
         count = Convert.ToInt16(cmd.ExecuteScalar());
         //}
         //else

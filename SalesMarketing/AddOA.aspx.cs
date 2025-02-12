@@ -71,7 +71,7 @@ public partial class SalesMarketing_AddOA : System.Web.UI.Page
     }
     protected void POCode()
     {
-        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([ID]) as maxid FROM [tbl_OrderAcceptanceHdr]", Cls_Main.Conn);
+        SqlDataAdapter ad = new SqlDataAdapter("SELECT max([ID]) as maxid FROM [tbl_NewOrderAcceptanceHdr]", Cls_Main.Conn);
         DataTable dt = new DataTable();
         ad.Fill(dt);
         if (dt.Rows.Count > 0)
@@ -87,7 +87,7 @@ public partial class SalesMarketing_AddOA : System.Web.UI.Page
     //Data Fetch
     private void Load_Record(string ID)
     {
-        DataTable Dt = Cls_Main.Read_Table("SELECT * FROM [tbl_OrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where CP.IsDeleted=0 AND CP.ID ='" + ID + "' ");
+        DataTable Dt = Cls_Main.Read_Table("SELECT * FROM [tbl_NewOrderAcceptanceHdr] AS CP LEFT JOIN tbl_UserMaster AS UM ON UM.UserCode=CP.UserName where CP.IsDeleted=0 AND CP.ID ='" + ID + "' ");
         if (Dt.Rows.Count > 0)
         {
             btnsave.Text = "Update";
@@ -127,7 +127,7 @@ public partial class SalesMarketing_AddOA : System.Web.UI.Page
     {
         divTotalPart.Visible = true;
 
-        SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM [tbl_OrderAcceptanceDtls] WHERE Pono='" + txtpono.Text + "'", Cls_Main.Conn);
+        SqlDataAdapter Da = new SqlDataAdapter("SELECT * FROM [tbl_NewOrderAcceptanceDtls] WHERE Pono='" + txtpono.Text + "'", Cls_Main.Conn);
         DataTable DTCOMP = new DataTable();
         Da.Fill(DTCOMP);
 
@@ -365,7 +365,7 @@ public partial class SalesMarketing_AddOA : System.Web.UI.Page
 
 
                             Cls_Main.Conn_Open();
-                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description,HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage,DiscountAmount,Alltotal,Weight,CreatedOn) VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@CreatedOn)", Cls_Main.Conn);
+                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_NewOrderAcceptanceDtls (Pono,Productname,Description,HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage,DiscountAmount,Alltotal,Weight,CreatedOn) VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@CreatedOn)", Cls_Main.Conn);
                             cmdd.Parameters.AddWithValue("@Pono", txtpono.Text);
                             cmdd.Parameters.AddWithValue("@Productname", lblproduct);
                             cmdd.Parameters.AddWithValue("@Description", lblDescription);
@@ -453,7 +453,7 @@ public partial class SalesMarketing_AddOA : System.Web.UI.Page
 
                         //DELETE DETAILS DATA FOR UPDATE
                         Cls_Main.Conn_Open();
-                        SqlCommand cmddelete = new SqlCommand("DELETE FROM tbl_OrderAcceptanceDtls WHERE Pono=@Pono", Cls_Main.Conn);
+                        SqlCommand cmddelete = new SqlCommand("DELETE FROM tbl_NewOrderAcceptanceDtls WHERE Pono=@Pono", Cls_Main.Conn);
                         cmddelete.Parameters.AddWithValue("@Pono", txtpono.Text);
                         cmddelete.ExecuteNonQuery();
                         Cls_Main.Conn_Close();
@@ -482,7 +482,7 @@ public partial class SalesMarketing_AddOA : System.Web.UI.Page
 
 
                             Cls_Main.Conn_Open();
-                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_OrderAcceptanceDtls (Pono,Productname,Description,HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage,DiscountAmount,Alltotal,Weight,CreatedOn) VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@CreatedOn)", Cls_Main.Conn);
+                            SqlCommand cmdd = new SqlCommand("INSERT INTO tbl_NewOrderAcceptanceDtls (Pono,Productname,Description,HSN,Quantity,Units,Rate,CGSTPer,CGSTAmt,SGSTPer,SGSTAmt,IGSTPer,IGSTAmt,Total,Discountpercentage,DiscountAmount,Alltotal,Weight,CreatedOn) VALUES(@Pono,@Productname,@Description,@HSN,@Quantity,@Units,@Rate,@CGSTPer,@CGSTAmt,@SGSTPer,@SGSTAmt,@IGSTPer,@IGSTAmt,@Total,@Discountpercentage,@DiscountAmount,@Alltotal,@lblWeight,@CreatedOn)", Cls_Main.Conn);
                             cmdd.Parameters.AddWithValue("@Pono", txtpono.Text);
                             cmdd.Parameters.AddWithValue("@Productname", lblproduct);
                             cmdd.Parameters.AddWithValue("@Description", lblDescription);

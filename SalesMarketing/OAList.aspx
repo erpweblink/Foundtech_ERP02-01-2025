@@ -26,7 +26,7 @@
             })
         };
     </script>
-    <link href="../Content/css/Griddiv.css" rel="stylesheet" />
+    <%--<link href="../Content1/css/Griddiv.css" rel="stylesheet" />--%>
     <style>
         .spancls {
             color: #5d5656 !important;
@@ -92,7 +92,67 @@
         .rwotoppadding {
             padding-top: 10px;
         }
+
+
+
+        /*Loader css*/
+
+        #BodyMain {
+            background-color: #030710;
+            margin: 0px;
+            height: 8vh;
+        }
+
+        #DivMain {
+            position: relative;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: #031d51;
+            text-align: center;
+            padding: 10px;
+        }
+
+        #SpanMain {
+            font-size: 36px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            line-height: 90%;
+            position: relative;
+            mix-blend-mode: difference;
+            color: whitesmoke;
+        }
+
+        #DivMain::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 0;
+            height: 92%;
+            background-color: #ddc05b;
+            animation: move 5s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes move {
+            0%, 100% {
+                width: 0;
+            }
+
+            50% {
+                width: 100%; 
+            }
+        }
+        /*End*/
     </style>
+
+    <script type="text/javascript">
+        function showLoadingSpinner() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+        }
+    </script>
+
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
@@ -229,7 +289,7 @@
                                         </asp:TemplateField>--%>
                                         <asp:TemplateField HeaderText="ACTION" ItemStyle-Width="120" HeaderStyle-CssClass="gvhead">
                                             <ItemTemplate>
-                                                <asp:LinkButton ID="btnEdit" runat="server" Height="27px" ToolTip="Edit" CausesValidation="false" CommandName="RowEdit" Visible='<%# Eval("Status").ToString() == "0" ? true : false %>' CommandArgument='<%#Eval("ID")%>'><i class='fas fa-edit' style='font-size:24px;color: #212529;'></i></asp:LinkButton>&nbsp;
+                                                <asp:LinkButton ID="btnEdit" runat="server" Height="27px" ToolTip="Edit" CausesValidation="false" CommandName="RowEdit" Visible='<%# Eval("Status").ToString() == "0" ? true : false %>' CommandArgument='<%#Eval("ID")%>'><i class='fas fa-edit' style='font-size:24px;color: #212529;' onclick="showLoadingSpinner()"></i></asp:LinkButton>&nbsp;
 
 
                                                 <asp:LinkButton ID="btnDelete" runat="server" Height="27px" ToolTip="Delete" CausesValidation="false" CommandName="RowDelete" OnClientClick="Javascript:return confirm('Are you sure to Delete?')" CommandArgument='<%#Eval("Pono")%>'><i class='fas fa-trash' style='font-size:24px;color: red;'></i></asp:LinkButton>&nbsp;
@@ -242,6 +302,15 @@
                                     </Columns>
                                 </asp:GridView>
                             </div>
+
+                            <div id="loadingSpinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+                                <div id="BodyMain">
+                                    <div id="DivMain">
+                                        <span id="SpanMain">Loading..</span>
+                                    </div>
+                                </div>
+                            </div>
+
 
                         </div>
                     </div>
