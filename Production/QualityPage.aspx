@@ -1,4 +1,5 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/AdminMaster.master" AutoEventWireup="true" CodeFile="QualityPage.aspx.cs" Inherits="Production_QualityPage" %>
+﻿
+<%@ Page Title="" Language="C#" MasterPageFile="~/AdminMaster.master" AutoEventWireup="true" CodeFile="QualityPage.aspx.cs" Inherits="Production_QualityPage" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
@@ -460,7 +461,7 @@
                                                     <asp:Label ID="Label2" runat="server" Font-Bold="true" CssClass="form-label">Outward QTY:</asp:Label>
                                                     <asp:TextBox ID="txtoutwardqty" CssClass="form-control" placeholder="Enter Outward QTY" TextMode="Number" runat="server"></asp:TextBox>
                                                 </div>
-                                                <p style="font-size: 11px; color: red;"><span style="color: red; font-size: 13px">Note<span style="color: red;">*</span> : When The status is completed for all the rows in beside table then only user can be able to sent the products to next stage. </p>
+                                                 <p><span style="color: black; font-size: 17px">Note * : <span style="font-size: 17px; color:blue;">Dispatch button show on after all product status is completed.</span> </p>
                                             </div>
                                             <br />
                                             <div class="col-md-7">

@@ -7,8 +7,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using DocumentFormat.OpenXml.Office.Word;
-using DocumentFormat.OpenXml.Office2010.Excel;
 
 public partial class Production_QualityPage : System.Web.UI.Page
 {
