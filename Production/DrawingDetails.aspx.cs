@@ -552,11 +552,10 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
             string company = txtCustName.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT OH.PdfFilePath,PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY  FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-            " INNER JOIN tbl_NewOrderAcceptanceHdr AS OH ON OH.ProjectCode = PD.ProjectCode " +
             " Where PD.Stage = 'Drawing' AND PH.CustomerName = '" + company + "' " +
-            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName,OH.PdfFilePath " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
             sad.Fill(dt);
             MainGridLoad.EmptyDataText = "Not Records Found";
@@ -666,11 +665,10 @@ public partial class Production_DrawingDetails : System.Web.UI.Page
             string GST = txtGST.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter(" SELECT OH.PdfFilePath,PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY  FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-            " INNER JOIN tbl_NewOrderAcceptanceHdr AS OH ON OH.ProjectCode = PD.ProjectCode " +
             " Where PD.Stage = 'Drawing' AND PH.ProjectName = '" + GST + "' " +
-            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName,OH.PdfFilePath " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc ", Cls_Main.Conn);
             sad.Fill(dt);
             MainGridLoad.EmptyDataText = "Not Records Found";

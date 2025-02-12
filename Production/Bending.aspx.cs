@@ -5,6 +5,10 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -587,10 +591,10 @@ public partial class Production_Bending : System.Web.UI.Page
             string company = txtCustName.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter("SELECT OH.PdfFilePath,PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            SqlDataAdapter sad = new SqlDataAdapter("SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty  FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-            " INNER JOIN tbl_NewOrderAcceptanceHdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Bending' AND PD.Status < 2 AND PH.CustomerName = '" + company + "' " +
-            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName,OH.PdfFilePath " +
+            " Where PD.Stage = 'Bending' AND PD.Status < 2 AND PH.CustomerName = '" + company + "' " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
             sad.Fill(dt);
             MainGridLoad.EmptyDataText = "Not Records Found";
@@ -645,10 +649,10 @@ public partial class Production_Bending : System.Web.UI.Page
             string Cpono = txtProjCode.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter(" SELECT OH.PdfFilePath,PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty  FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-            " INNER JOIN tbl_NewOrderAcceptanceHdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Bending' AND PD.Status < 2 AND PH.ProjectCode = '" + Cpono + "' " +
-            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName,OH.PdfFilePath " +
+            " Where PD.Stage = 'Bending' AND PD.Status < 2 AND PH.ProjectCode = '" + Cpono + "' " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc  ", Cls_Main.Conn);
             sad.Fill(dt);
             MainGridLoad.EmptyDataText = "Not Records Found";
@@ -699,10 +703,10 @@ public partial class Production_Bending : System.Web.UI.Page
             string GST = txtGST.Text;
 
             DataTable dt = new DataTable();
-            SqlDataAdapter sad = new SqlDataAdapter(" SELECT OH.PdfFilePath,PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
+            SqlDataAdapter sad = new SqlDataAdapter(" SELECT PD.ProjectCode, PD.ProjectName, PH.CustomerName, COUNT(*) AS TotalRecords, " +
             " SUM(CAST(TotalQTY AS INT)) AS TotalQTY,SUM(CAST(InwardQTY AS INT)) AS InwardQTY ,SUM(CAST(OutwardQty AS INT)) AS OutwardQty  FROM tbl_NewProductionDTLS AS PD INNER JOIN tbl_NewProductionHDR AS PH ON PH.JobNo = PD.JobNo " +
-            " INNER JOIN tbl_NewOrderAcceptanceHdr AS OH ON OH.ProjectCode = PD.ProjectCode Where PD.Stage = 'Bending' AND PD.Status < 2 AND PH.ProjectName = '" + GST + "' " +
-            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName,OH.PdfFilePath " +
+            " Where PD.Stage = 'Bending' AND PD.Status < 2 AND PH.ProjectName = '" + GST + "' " +
+            " GROUP BY PD.ProjectCode, PD.ProjectName, PH.CustomerName " +
             " ORDER BY PD.ProjectCode desc ", Cls_Main.Conn);
             sad.Fill(dt);
             MainGridLoad.EmptyDataText = "Not Records Found";

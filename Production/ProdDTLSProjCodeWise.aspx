@@ -523,49 +523,49 @@
 
     <div class="container-fluid" id="comment_form">
         <form id="form1" runat="server">
-            <div class="row" style="margin-top: -41px;">
-                <div class="col-md-10">
-                    <center>
-                        <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">PRODUCTION LIST</h2>
-                    </center>
-                </div>
-                <div class="col-md-1" style="margin-top: 18px;">
-                    <asp:Button ID="lblBtn" runat="server" CssClass="btn-primary" Text="Back To List" OnClick="lblBtn_Click" Font-Size="17px" Style="padding: 0px 7px 0px 7px;"></asp:Button>
+            <center>
+                <h2 style="color: #747474; font-family: Roboto,sans-serif; font-size: 36px; font-style: normal; font-weight: 800;" class="mt-2">PRODUCTION LIST</h2>
+            </center>
+            <div class="row">
+                <div class="col-md-10"></div>
+                <div class="col-md-1">
+                    <asp:Button ID="lblBtn" runat="server" CssClass="btn-primary" Text="Back To List" OnClick="lblBtn_Click" Font-Size="17px"></asp:Button>
                 </div>
             </div>
             <hr style="border: 1px solid rgb(182, 178, 156);">
-            
-                <div class="row" style="margin-left: 10px;">
-                    <div class="col-md-3"></div>
-                    <div class="col-md-3">
-                        <asp:Label ID="Label1" runat="server" Font-Bold="true" Style="display: flex; justify-content: center" Text="Job No:"></asp:Label>
-                        <div style="margin-top: 14px;">
-                            <asp:TextBox ID="txtCustomerName" CssClass="form-control" placeholder="Search by Job No" runat="server" OnTextChanged="txtCustomerName_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="Dynamic" ErrorMessage="Please Enter Job no"
-                                ControlToValidate="txtCustomerName" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
-                            <asp:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" CompletionListCssClass="completionList"
-                                CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
-                                CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCustomerList"
-                                TargetControlID="txtCustomerName">
-                            </asp:AutoCompleteExtender>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <asp:Label ID="Label2" runat="server" Font-Bold="true" Style="display: flex; justify-content: center" Text="Product Name :"></asp:Label>
-                        <div style="margin-top: 14px;">
-                            <asp:TextBox ID="txtjobno" CssClass="form-control" placeholder="Search by Product Name" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
-                            <asp:AutoCompleteExtender ID="AutoCompleteExtender2" runat="server" CompletionListCssClass="completionList"
-                                CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
-                                CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCponoList"
-                                TargetControlID="txtjobno">
-                            </asp:AutoCompleteExtender>
-                        </div>
-                    </div>
-
-                    <div class="col-md-1" style="margin-top: 36px">
-                        <asp:LinkButton ID="btnrefresh" runat="server" OnClick="btnrefresh_Click" Width="100%" CssClass="form-control btn btn-warning"><i style="color:white" class="fa">&#xf021;</i> </asp:LinkButton>
+            <br />
+            <div class="row" style="margin-left: 10px;">
+                <div class="col-md-3"></div>
+                <div class="col-md-3">
+                    <asp:Label ID="Label1" runat="server" Font-Bold="true" Style="display: flex; justify-content: center" Text="Job No:"></asp:Label>
+                    <div style="margin-top: 14px;">
+                        <asp:TextBox ID="txtCustomerName" CssClass="form-control" placeholder="Search by Job No" runat="server" OnTextChanged="txtCustomerName_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" Display="Dynamic" ErrorMessage="Please Enter Job no"
+                            ControlToValidate="txtCustomerName" ValidationGroup="form1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                        <asp:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" CompletionListCssClass="completionList"
+                            CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                            CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCustomerList"
+                            TargetControlID="txtCustomerName">
+                        </asp:AutoCompleteExtender>
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <asp:Label ID="Label2" runat="server" Font-Bold="true" Style="display: flex; justify-content: center" Text="Product Name :"></asp:Label>
+                    <div style="margin-top: 14px;">
+                        <asp:TextBox ID="txtjobno" CssClass="form-control" placeholder="Search by Product Name" runat="server" OnTextChanged="txtjobno_TextChanged" Width="100%" AutoPostBack="true"></asp:TextBox>
+                        <asp:AutoCompleteExtender ID="AutoCompleteExtender2" runat="server" CompletionListCssClass="completionList"
+                            CompletionListHighlightedItemCssClass="itemHighlighted" CompletionListItemCssClass="listItem"
+                            CompletionInterval="10" MinimumPrefixLength="1" ServiceMethod="GetCponoList"
+                            TargetControlID="txtjobno">
+                        </asp:AutoCompleteExtender>
+                    </div>
+                </div>
+
+                <div class="col-md-1" style="margin-top: 36px">
+                    <asp:LinkButton ID="btnrefresh" runat="server" OnClick="btnrefresh_Click" Width="100%" CssClass="form-control btn btn-warning"><i style="color:white" class="fa">&#xf021;</i> </asp:LinkButton>
+                </div>
+            </div>
+            <br />
             <br />
             <div class="row">
                 <div class="col-md-9" style="margin-left: 24px;">
@@ -584,13 +584,13 @@
                         </div>
                     </div>
                 </div>
-                <div clss="col-md-3" style="margin-left: 20px;">
-                    <span><b>Show Records:</b> 
+                <div clss="col-md-3" style="margin-left: 61px;">
+                    <span>Show Records: 
                         <asp:DropDownList
                             ID="DropDownList1"
                             CssClass="form-control"
                             runat="server"
-                            Style="width: 90px; display: inline-block;"
+                            Style="width: 90px; margin-top: -2px; display: inline-block;"
                             AutoPostBack="true"
                             OnTextChanged="DropDownList1_TextChanged">
                         </asp:DropDownList>
@@ -600,7 +600,6 @@
 
                 </div>
             </div>
-
             <asp:ToolkitScriptManager ID="ToolkitScriptManager2" runat="server">
             </asp:ToolkitScriptManager>
 
