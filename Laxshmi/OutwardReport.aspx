@@ -138,6 +138,117 @@
                     border-color: #dddddd;
                 }
     </style>
+
+    <style>
+        .modelprofile1 {
+            background-color: rgba(0, 0, 0, 0.54);
+            display: block;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            /*top: 10px;*/
+            height: 100%;
+            overflow: auto;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .profilemodel2 {
+            background-color: #fefefe;
+            margin-top: 25px;
+            /*padding: 17px 5px 18px 22px;*/
+            padding: 0px 0px 15px 0px;
+            width: 100%;
+            top: 40px;
+            color: #000;
+            border-radius: 5px;
+        }
+
+        .lblpopup {
+            text-align: left;
+        }
+
+        .wp-block-separator:not(.is-style-wide):not(.is-style-dots)::before, hr:not(.is-style-wide):not(.is-style-dots)::before {
+            content: '';
+            display: block;
+            height: 1px;
+            width: 100%;
+            background: #cccccc;
+        }
+
+        .btnclose {
+            background-color: #ef1e24;
+            float: right;
+            font-size: 18px !important;
+            /* font-weight: 600; */
+            color: #f7f6f6 !important;
+            border: 0px groove !important;
+            background-color: none !important;
+            /*margin-right: 10px !important;*/
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        /*hr {
+         margin-top: 5px !important;
+         margin-bottom: 15px !important;
+         border: 1px solid #eae6e6 !important;
+         width: 100%;
+     }*/
+        hr.new1 {
+            border-top: 1px dashed green !important;
+            border: 0;
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+            width: 100%;
+        }
+
+        .errspan {
+            float: right;
+            margin-right: 6px;
+            margin-top: -25px;
+            position: relative;
+            z-index: 2;
+            color: black;
+        }
+
+        .currentlbl {
+            text-align: center !important;
+        }
+
+        .completionList {
+            border: solid 1px Gray;
+            border-radius: 5px;
+            margin: 0px;
+            padding: 3px;
+            height: 120px;
+            overflow: auto;
+            background-color: #FFFFFF;
+        }
+
+        .listItem {
+            color: #191919;
+        }
+
+        .itemHighlighted {
+            background-color: #ADD6FF;
+        }
+
+        .headingcls {
+            background-color: #01a9ac;
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px 5px 0px 0px;
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1250px !important;
+            }
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
     <form id="form1" runat="server">
@@ -220,13 +331,13 @@
                         </div>
                         <div class="col-md-3">
                             <div style="margin-top: 14px;">
-                                <asp:Label ID="lblfromdate" runat="server" Font-Bold="true" Text="From Date :"></asp:Label>
+                                <asp:Label ID="lblfromdate" runat="server" Font-Bold="true" Text="From Date(Delivery Date) :"></asp:Label>
                                 <asp:TextBox ID="txtfromdate" CssClass="form-control" runat="server" TextMode="Date" Width="100%"></asp:TextBox>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div style="margin-top: 14px;">
-                                <asp:Label ID="lbltodate" runat="server" Font-Bold="true" Text="To Date :"></asp:Label>
+                                <asp:Label ID="lbltodate" runat="server" Font-Bold="true" Text="To Date(Delivery Date) :"></asp:Label>
                                 <asp:TextBox ID="txttodate" CssClass="form-control" runat="server" TextMode="Date" Width="100%"></asp:TextBox>
                             </div>
                         </div>
@@ -254,12 +365,17 @@
                         <div id="DivRoot1" align="left" runat="server">
                             <div style="overflow: hidden;" id="DivHeaderRow1">
                             </div>
-                            <div style="overflow-x: auto; max-height: 400px; overflow-y: auto; border: 1px solid #ccc;">
-                                <asp:GridView ID="GVfollowup" runat="server" CellPadding="4" Font-Names="Verdana" ShowFooter="true"
+                            <div style="overflow: scroll;" class="dt-responsive table-responsive" onscroll="OnScrollDiv(this)" id="DivMainContent1">
+                                <asp:GridView ID="GVfollowup" runat="server" DataKeyNames="ID" CellPadding="4" Font-Names="Verdana" ShowFooter="true"
                                     Font-Size="10pt" Width="100%"
                                     GridLines="Both" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false"
-                                    OnRowDataBound="GVfollowup_RowDataBound">
+                                    OnRowDataBound="GVfollowup_RowDataBound" OnRowCommand="GVfollowup_RowCommand" OnRowEditing="GVfollowup_RowEditing">
                                     <Columns>
+                                        <asp:TemplateField HeaderText="Edit" HeaderStyle-CssClass="gvhead" ItemStyle-HorizontalAlign="Center">
+                                            <ItemTemplate>
+                                                <asp:LinkButton ID="btn_edit" CausesValidation="false" Text="Edit" runat="server" CommandName="Edit" CommandArgument='<%# Eval("OutwardNo") %>'><i class='fas fa-edit' style='font-size:24px;color: blue;'></i></asp:LinkButton>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Sr. No." HeaderStyle-CssClass="gvhead" ItemStyle-HorizontalAlign="Center">
                                             <ItemTemplate>
                                                 <asp:Label ID="lblSrNo" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
@@ -357,12 +473,112 @@
 
                 </div>
 
+                <asp:Button ID="btnhist" runat="server" Style="display: none" />
+                <asp:ModalPopupExtender ID="ModalPopupHistory" runat="server" TargetControlID="btnhist"
+                    PopupControlID="PopupHistoryDetail" OkControlID="Closepophistory" />
+
+                <asp:Panel ID="PopupHistoryDetail" runat="server" CssClass="modelprofile1">
+                    <div class="row container">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-8">
+                            <div class="profilemodel2">
+                                <div class="headingcls">
+                                    <h4 class="modal-title">Edit Outward Entry
+                                       <button type="button" id="Closepophistory" class="btnclose" style="display: inline-block;" data-dismiss="modal">Close</button></h4>
+                                </div>
+
+                                <br />
+                                <div class="body" style="margin-right: 10px; margin-left: 10px; padding-right: 1px; padding-left: 1px;">
+                                    <div class="row">
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label5" runat="server" Font-Bold="true" CssClass="form-label">Outward No:</asp:Label>
+                                            <asp:TextBox ID="txtInwardnopop" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label6" runat="server" Font-Bold="true" CssClass="form-label">Customer Name:</asp:Label>
+                                            <asp:TextBox ID="txtcustomernamepop" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label7" runat="server" Font-Bold="true" CssClass="form-label">Row Material:</asp:Label>
+                                            <asp:TextBox ID="txtrowmaterialpop" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                        </div>
+
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label16" runat="server" Font-Bold="true" CssClass="form-label">Outward QTY:</asp:Label>
+                                            <asp:TextBox ID="txtinwardqty" CssClass="form-control" ReadOnly="true" runat="server"></asp:TextBox>
+                                        </div>
+
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label8" runat="server" Font-Bold="true" CssClass="form-label">Outward QTY:</asp:Label>
+                                            <asp:TextBox ID="txtoutwardqty" CssClass="form-control" placeholder="Enter Outward QTY" TextMode="Number" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" Display="Dynamic" ErrorMessage="Please Enter Outward Quantity"
+                                                ControlToValidate="txtoutwardqty" ValidationGroup="1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label24" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Vehicle  No. :</asp:Label>
+                                            <asp:TextBox ID="txtVehicleno" CssClass="form-control" placeholder="Enter Vehicle  No." runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator10" runat="server" Display="Dynamic" ErrorMessage="Please Enter Vehicle  No."
+                                                ControlToValidate="txtVehicleno" ValidationGroup="1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label21" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Weight :</asp:Label>
+                                            <asp:TextBox ID="txtWeight" CssClass="form-control" placeholder="Enter Weight" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator8" runat="server" Display="Dynamic" ErrorMessage="Please Enter Weight"
+                                                ControlToValidate="txtWeight" ValidationGroup="1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label27" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Delivery Note No.:</asp:Label>
+                                            <asp:TextBox ID="TextBox1" CssClass="form-control" placeholder="Enter Delivery Note No." runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator13" runat="server" Display="Dynamic" ErrorMessage="Please Enter Delivery Note No."
+                                                ControlToValidate="TextBox1" ValidationGroup="1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label26" runat="server" Font-Bold="true" CssClass="form-label"><span class="spncls">*</span>Delivery Note Date:</asp:Label>
+                                            <asp:TextBox ID="txtDeliverynotedate" CssClass="form-control" placeholder="Enter Delivery Date" TextMode="date" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator12" runat="server" Display="Dynamic" ErrorMessage="Please Enter Delivery Date"
+                                                ControlToValidate="txtDeliverynotedate" ValidationGroup="1" ForeColor="Red" SetFocusOnError="true"></asp:RequiredFieldValidator>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label28" runat="server" Font-Bold="true" CssClass="form-label">Reference No.:</asp:Label>
+                                            <asp:TextBox ID="txtrefrenceno" CssClass="form-control" placeholder="Enter Reference No." runat="server"></asp:TextBox>
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label29" runat="server" Font-Bold="true" CssClass="form-label">Reference Date:</asp:Label>
+                                            <asp:TextBox ID="txtReferenceDate" CssClass="form-control" placeholder="Enter Delivery Date" TextMode="date" runat="server"></asp:TextBox>
+
+                                        </div>
+                                        <div class="col-md-6 col-12 mb-3">
+                                            <asp:Label ID="Label11" runat="server" Font-Bold="true" CssClass="form-label">Description:</asp:Label>
+                                            <asp:TextBox ID="txtRemarks" CssClass="form-control" placeholder="Enter Description" TextMode="MultiLine" runat="server"></asp:TextBox>
+                                        </div>
+                                        <hr />
+                                        <div class="col-md-12">
+                                            <center style="margin-top: 18px">
+                                                <asp:LinkButton runat="server" ID="btnSendtopro" ValidationGroup="1" class="btn btn-success" OnClick="btnsave_Click">
+                                                         <span class="btn-label">
+                                                             <i class="fa fa-check"></i>
+                                                         </span>
+                                                        Update 
+                                                </asp:LinkButton>
+                                            </center>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </asp:Panel>
+
                 <br />
                 <rsweb:ReportViewer ID="ReportViewer1" runat="server" Visible="false"></rsweb:ReportViewer>
             </ContentTemplate>
             <Triggers>
                 <asp:PostBackTrigger ControlID="btnDownload" />
                 <asp:PostBackTrigger ControlID="btnPDF" />
+                <asp:PostBackTrigger ControlID="GVfollowup" />
             </Triggers>
         </asp:UpdatePanel>
     </form>

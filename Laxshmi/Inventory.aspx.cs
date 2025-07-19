@@ -131,7 +131,10 @@ public partial class Laxshmi_Inventory : System.Web.UI.Page
         string previousyear = (Convert.ToDecimal(FinFullYear) - 1).ToString();
         string strInvoiceNumber = "";
         string fY = previousyear.ToString() + "-" + FinYear;
-        string strSelect = @"select ISNULL(MAX(OutwardNo), '0') AS maxno from tbl_LM_Outwarddata where OutwardNo like '%" + fY + "%'";
+        string strSelect = @" SELECT 
+    ISNULL(MAX(CAST(SUBSTRING(OutwardNo, CHARINDEX('/', OutwardNo) + 1, LEN(OutwardNo)) AS INT)), 0) + 1 AS maxno
+FROM 
+    tbl_LM_Outwarddata where OutwardNo like '%" + fY + "%'";
         // string strSelect = @"SELECT TOP 1 MAX(ID) FROM tblTaxInvoiceHdr where InvoiceNo like '%" + fY + "%' ";
 
         SqlCommand cmd = new SqlCommand();
@@ -147,9 +150,7 @@ public partial class Laxshmi_Inventory : System.Web.UI.Page
         con.Close();
         if (result != "")
         {
-            int numbervalue = Convert.ToInt32(result.Substring(result.LastIndexOf("/") + 1));
-            numbervalue = numbervalue + 1;
-            strInvoiceNumber = previousyear.ToString() + "-" + FinYear + "/" + numbervalue;
+            strInvoiceNumber = previousyear.ToString() + "-" + FinYear + "/" + result;
         }
         else
         {
@@ -287,13 +288,13 @@ public partial class Laxshmi_Inventory : System.Web.UI.Page
                 Label RemainingDefectQty = e.Row.FindControl("DefectedQty") as Label;
                 LinkButton lnkDefectout = (LinkButton)e.Row.FindControl("lnkDefectout");
                 LinkButton btnoutward = (LinkButton)e.Row.FindControl("btnoutward");
-                if (Convert.ToDouble(TotalRemainingQty.Text) ==0 && Convert.ToDouble(RemainingDefectQty.Text)==0)
+                if (Convert.ToDouble(TotalRemainingQty.Text) == 0 && Convert.ToDouble(RemainingDefectQty.Text) == 0)
 
                 {
                     e.Row.Visible = false;
                 }
 
-                if(Convert.ToDouble(TotalRemainingQty.Text) <= 0)
+                if (Convert.ToDouble(TotalRemainingQty.Text) <= 0)
                 {
                     btnoutward.Visible = false;
                 }
@@ -598,7 +599,7 @@ public partial class Laxshmi_Inventory : System.Web.UI.Page
             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Please add total defect count..!!');", true);
             this.ModalPopupHistory.Show();
         }
-     
+
     }
 
     protected void txtdefectedqty_TextChanged(object sender, EventArgs e)

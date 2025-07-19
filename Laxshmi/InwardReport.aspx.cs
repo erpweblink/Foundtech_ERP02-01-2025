@@ -297,7 +297,7 @@ public partial class Laxshmi_InwardReport : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "select DISTINCT CompanyName from tbl_LM_inwarddata where  " + "CompanyName like @Search + '%' and IsDeleted=0";
+                com.CommandText = "select DISTINCT CompanyName from tbl_LM_CompanyMaster where  " + "CompanyName like @Search + '%' and IsDeleted=0";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -337,7 +337,7 @@ public partial class Laxshmi_InwardReport : System.Web.UI.Page
 
             using (SqlCommand com = new SqlCommand())
             {
-                com.CommandText = "select DISTINCT RowMaterial from tbl_LM_inwarddata where  " + "RowMaterial like  '%'+ @Search + '%' and IsDeleted=0";
+                com.CommandText = "select DISTINCT ComponentName from tbl_LM_ComponentMaster where  " + "ComponentName like  '%'+ @Search + '%' and IsDeleted=0";
 
                 com.Parameters.AddWithValue("@Search", prefixText);
                 com.Connection = con;
@@ -347,7 +347,7 @@ public partial class Laxshmi_InwardReport : System.Web.UI.Page
                 {
                     while (sdr.Read())
                     {
-                        countryNames.Add(sdr["RowMaterial"].ToString());
+                        countryNames.Add(sdr["ComponentName"].ToString());
                     }
                 }
                 con.Close();

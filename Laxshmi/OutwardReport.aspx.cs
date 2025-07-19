@@ -24,8 +24,25 @@ public partial class Laxshmi_OutwardReport : System.Web.UI.Page
         {
             if (!IsPostBack)
             {
+                if (Request.QueryString["CustName"] != null)
+                {
+                    txtCustomerName.Text = Request.QueryString["CustName"].ToString();
+                    txtRowMaterial.Text = Request.QueryString["ProductName"].ToString();
+                    txtCustomerName.ReadOnly = true;
+                    txtRowMaterial.ReadOnly = true;
+                    txtInwardno.ReadOnly = true;
+                    txtDeliveryNoteno.ReadOnly = true;
+                    txtReferenceNo.ReadOnly = true;
+                    txtfromdate.ReadOnly = true;
+                    txttodate.ReadOnly = true;
+                    btnSearchData.Enabled = false;
+                    GridView();
+                }
+                else
+                {
+                    GridView();
+                }
 
-                GridView();
             }
         }
     }
@@ -85,8 +102,8 @@ public partial class Laxshmi_OutwardReport : System.Web.UI.Page
             else
             {
                 cmd.Parameters.AddWithValue("@FromDate", txtfromdate.Text);
-                cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);    
-            }              
+                cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+            }
             SqlDataAdapter sda = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             sda.Fill(dt);
@@ -114,7 +131,8 @@ public partial class Laxshmi_OutwardReport : System.Web.UI.Page
 
     protected void btnresetfilter_Click(object sender, EventArgs e)
     {
-        Response.Redirect(Request.RawUrl);
+        //Response.Redirect(Request.RawUrl);
+        Response.Redirect("../Laxshmi/OutwardReport.aspx");
     }
 
     protected void btnDownload_Click(object sender, EventArgs e)
@@ -251,34 +269,34 @@ public partial class Laxshmi_OutwardReport : System.Web.UI.Page
 
     protected void GVfollowup_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-       // if (e.Row.RowType == DataControlRowType.Footer)
-       // {
-       //     decimal InwardQty = 0;
-       //     decimal OutwardQty = 0;
-       //     decimal DefectQty = 0;
-       //     decimal RemainingQty = 0;
+        // if (e.Row.RowType == DataControlRowType.Footer)
+        // {
+        //     decimal InwardQty = 0;
+        //     decimal OutwardQty = 0;
+        //     decimal DefectQty = 0;
+        //     decimal RemainingQty = 0;
 
 
-       //     // Loop through the data rows to calculate the totals
-       //     foreach (GridViewRow row in GVfollowup.Rows)
-       //     {
-       //         if (row.RowType == DataControlRowType.DataRow)
-       //         {
-       //             // Calculate the total for each column
-       //             InwardQty += Convert.ToDecimal((row.FindControl("lbInwardQty") as Label).Text);
-       //             OutwardQty += Convert.ToDecimal((row.FindControl("lblOutwardQty") as Label).Text);
-       //             DefectQty += Convert.ToDecimal((row.FindControl("lblDefectQty") as Label).Text);
-       //             RemainingQty += Convert.ToDecimal((row.FindControl("lblRemainingQty") as Label).Text);
+        //     // Loop through the data rows to calculate the totals
+        //     foreach (GridViewRow row in GVfollowup.Rows)
+        //     {
+        //         if (row.RowType == DataControlRowType.DataRow)
+        //         {
+        //             // Calculate the total for each column
+        //             InwardQty += Convert.ToDecimal((row.FindControl("lbInwardQty") as Label).Text);
+        //             OutwardQty += Convert.ToDecimal((row.FindControl("lblOutwardQty") as Label).Text);
+        //             DefectQty += Convert.ToDecimal((row.FindControl("lblDefectQty") as Label).Text);
+        //             RemainingQty += Convert.ToDecimal((row.FindControl("lblRemainingQty") as Label).Text);
 
-       //         }
-       //     }
+        //         }
+        //     }
 
-       //// Display the totals in the footer labels
-       //(e.Row.FindControl("lblTotalInwardQty") as Label).Text = InwardQty.ToString();
-       //     (e.Row.FindControl("lblTotalOutwardQty") as Label).Text = OutwardQty.ToString();
-       //     (e.Row.FindControl("lblTotalDefectQty") as Label).Text = DefectQty.ToString();
-       //     (e.Row.FindControl("lblTotalRemainingQty") as Label).Text = RemainingQty.ToString();
-       // }
+        //// Display the totals in the footer labels
+        //(e.Row.FindControl("lblTotalInwardQty") as Label).Text = InwardQty.ToString();
+        //     (e.Row.FindControl("lblTotalOutwardQty") as Label).Text = OutwardQty.ToString();
+        //     (e.Row.FindControl("lblTotalDefectQty") as Label).Text = DefectQty.ToString();
+        //     (e.Row.FindControl("lblTotalRemainingQty") as Label).Text = RemainingQty.ToString();
+        // }
     }
 
     //Search Customers methods
@@ -483,4 +501,107 @@ public partial class Laxshmi_OutwardReport : System.Web.UI.Page
     {
         GridView();
     }
+
+    protected void GVfollowup_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "Edit")
+        {
+            string rowIndex = e.CommandArgument.ToString();
+
+            GridViewRow row = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
+            GridView gvPurchase = (GridView)row.FindControl("GVfollowup");
+
+
+            string OutwardQty = ((Label)row.FindControl("lblOutwardQty")).Text;
+            string CustomerName = ((Label)row.FindControl("lblCompanyName")).Text;
+            string VehicleNo = ((Label)row.FindControl("lblVehicleNo")).Text;
+            string RowMaterial = ((Label)row.FindControl("lblRowMaterial")).Text;
+            string OutwardNo = ((Label)row.FindControl("lblInwardNo")).Text;
+            string Weight = ((Label)row.FindControl("lblWeight")).Text;
+            string DeliveryNoteno = ((Label)row.FindControl("lblDeliveryNoteno")).Text;
+            string DeliveryNotedate = ((Label)row.FindControl("lblDeliveryNotedate")).Text;
+            string ReferenceNo = ((Label)row.FindControl("lbldReferenceNo")).Text;
+            string ReferenceDate = ((Label)row.FindControl("lblReferenceDate")).Text;
+
+            if (ReferenceDate != "" && ReferenceDate != "01-01-1900")
+            {
+                //DateTime ffff1 = Convert.ToDateTime(ReferenceDate);
+                //txtReferenceDate.Text = ffff1.ToString("yyyy-MM-dd");
+                txtReferenceDate.Text = ReferenceDate;
+            }
+            if (DeliveryNotedate != "" && DeliveryNotedate!= "01-01-1900")
+            {
+                //DateTime ffff2 = Convert.ToDateTime(DeliveryNotedate);
+                //txtDeliverynotedate.Text = ffff2.ToString("yyyy-MM-dd");
+                txtDeliverynotedate.Text = DeliveryNotedate;
+            }
+
+
+
+            txtInwardnopop.Text = OutwardNo;
+            txtcustomernamepop.Text = CustomerName;
+            txtrowmaterialpop.Text = RowMaterial;
+            txtcustomernamepop.Text = CustomerName;
+            txtVehicleno.Text = VehicleNo;
+            txtWeight.Text = Weight;
+            TextBox1.Text = DeliveryNoteno;
+            // txtDeliverynotedate.Text = DeliveryNotedate;
+            txtrefrenceno.Text = ReferenceNo;
+            // txtReferenceDate.Text = ReferenceDate;
+            txtoutwardqty.Text = OutwardQty;
+
+            txtinwardqty.Text = OutwardQty;
+
+            this.ModalPopupHistory.Show();
+        }
+    }
+
+    protected void GVfollowup_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+
+    }
+
+    protected void btnsave_Click(object sender, EventArgs e)
+    {
+        try
+        {
+
+            double outtotal = Convert.ToDouble(txtoutwardqty.Text);
+
+            if (outtotal <= Convert.ToDouble(txtinwardqty.Text))
+            {
+
+                Cls_Main.Conn_Open();
+                SqlCommand cmd = new SqlCommand("SP_Laxshmidetails", Cls_Main.Conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Mode", "UpdateOutwardQTY");
+                cmd.Parameters.AddWithValue("@OutwardNo", txtInwardnopop.Text);
+                cmd.Parameters.AddWithValue("@OutwardQty", Convert.ToString(outtotal));
+                cmd.Parameters.AddWithValue("@Description", txtRemarks.Text);
+                cmd.Parameters.AddWithValue("@Vehicleno", txtVehicleno.Text);
+                cmd.Parameters.AddWithValue("@Weight", txtWeight.Text);
+                cmd.Parameters.AddWithValue("@DeliveryNotedate", txtDeliverynotedate.Text);
+                cmd.Parameters.AddWithValue("@DeliveryNoteno", TextBox1.Text);
+                cmd.Parameters.AddWithValue("@ReferenceNo", txtrefrenceno.Text);
+                cmd.Parameters.AddWithValue("@ReferenceDate", txtReferenceDate.Text);
+
+                cmd.ExecuteNonQuery();
+                Cls_Main.Conn_Close();
+                Cls_Main.Conn_Dispose();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Record Updated Successfully ..!!');window.location='OutwardReport.aspx';", true);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Outward quantity not matched ..!!');", true);
+                this.ModalPopupHistory.Show();
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+    }
+
 }

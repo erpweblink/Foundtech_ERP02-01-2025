@@ -232,13 +232,13 @@
                             </div>
                             <div class="col-md-3">
                                 <div style="margin-top: 14px;">
-                                    <asp:Label ID="lblfromdate" runat="server" Font-Bold="true" Text="From Date :"></asp:Label>
+                                    <asp:Label ID="lblfromdate" runat="server" Font-Bold="true" Text="From Date(Delivery Date) :"></asp:Label>
                                     <asp:TextBox ID="txtfromdate" CssClass="form-control" runat="server" TextMode="Date" Width="100%"></asp:TextBox>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div style="margin-top: 14px;">
-                                    <asp:Label ID="lbltodate" runat="server" Font-Bold="true" Text="To Date :"></asp:Label>
+                                    <asp:Label ID="lbltodate" runat="server" Font-Bold="true" Text="To Date(Delivery Date) :"></asp:Label>
                                     <asp:TextBox ID="txttodate" CssClass="form-control" runat="server" TextMode="Date" Width="100%"></asp:TextBox>
                                 </div>
                             </div>
@@ -326,7 +326,7 @@
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Delivery Date" HeaderStyle-CssClass="gvhead" ItemStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblDeliveryDate" runat="server" Text='<%#Eval("DeliveryDate")%>'></asp:Label>
+                                                    <asp:Label ID="lblDeliveryDate" runat="server" Text='<%#Eval("Delivery_date")%>'></asp:Label>
                                                 </ItemTemplate>
                                                 <FooterTemplate>
                                                     <asp:Label ID="lblGrandTtal" runat="server" />
@@ -334,7 +334,7 @@
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="WO Date" HeaderStyle-CssClass="gvhead" ItemStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblWODate" runat="server" Text='<%#Eval("WODate")%>'></asp:Label>
+                                                    <asp:Label ID="lblWODate" runat="server" Text='<%#Eval("WO_Date")%>'></asp:Label>
                                                 </ItemTemplate>
                                                 <FooterTemplate>
                                                     <asp:Label ID="lblGradTotal" runat="server" />

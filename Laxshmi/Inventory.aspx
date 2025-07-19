@@ -295,8 +295,8 @@
                                     <div class="table-responsive">
                                         <div class="table">
                                             <br />
-                                            <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="CompanyName,TotalInwardQty" PageSize="10" AllowPaging="true" Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
-                                                OnRowCommand="GVPurchase_RowCommand" OnPageIndexChanging="GVPurchase_PageIndexChanging" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
+                                            <asp:GridView ID="GVPurchase" runat="server" CellPadding="4" DataKeyNames="CompanyName,TotalInwardQty"  Width="100%" OnRowDataBound="GVPurchase_RowDataBound" OnRowEditing="GVPurchase_RowEditing"
+                                                OnRowCommand="GVPurchase_RowCommand" CssClass="display table table-striped table-hover dataTable" AutoGenerateColumns="false">
                                                 <Columns>
                                                     <asp:TemplateField HeaderText="Sr.No." ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
